@@ -1,0 +1,21 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Testing maven build
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  call-workflow-maven-build:
+    uses: felleslosninger/github-workflows/.github/workflows/ci-maven-build.yml@main
+    with:
+      java-version: 21
+    secrets: inherit
+  call-container-scan:
+    uses: felleslosninger/github-workflows/.github/workflows/ci-spring-boot-container-scan.yml@main
+    with:
+      image-name: idporten-wallet-verifier-demo
+      java-version: 21
+    secrets: inherit
