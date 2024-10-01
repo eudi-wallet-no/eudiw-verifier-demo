@@ -1,0 +1,39 @@
+name: Build/publish Docker image & update image version in config
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "src/test/**"
+      - "docker/**"
+      - "docker-compose*.yaml"
+      - "*.md"
+      - "LICENSE"
+      - "catalog-info/**"
+
+jobs:
+  call-workflow-image-build-publish:
+    uses: felleslosninger/github-workflows/.github/workflows/ci-spring-boot-build-publish-image.yml@main
+    with:
+      image-name: idporten-wallet-verifier-demo
+      java-version: 21
+    secrets: inherit
+
+  update-image-version:
+    uses: felleslosninger/github-workflows/.github/workflows/ci-call-update-image.yml@main
+    needs: call-workflow-image-build-publish
+    strategy:
+      matrix:
+        application-name: idporten-wallet-verifier-demo
+        include:
+          - application-name: idporten-wallet-verifier-demo
+            product-name: idporten
+    with:
+      application-name: ${{ matrix.application-name }}
+      deployment-environment: systest
+      image-digest: ${{ needs.call-workflow-image-build-publish.outputs.image-digest }}
+      image-name: idporten-wallet-verifier-demo 
+      image-version: ${{ needs.call-workflow-image-build-publish.outputs.image-version }}
+      kubernetes-repo: idporten-cd
+      product-name: ${{ matrix.product-name }}
+    secrets: inherit

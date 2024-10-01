@@ -1,0 +1,17 @@
+name: Publish Dev.Docker image
+
+#This job is disabled for now (untill dockerfile is created)
+
+on:
+  push:
+    branches: main
+    paths-ignore:
+      - 'src/test/**'
+      - '*.md'
+      - 'LICENSE'
+
+jobs:
+  build-publish-image:
+    if: false
+    uses: felleslosninger/github-workflows/.github/workflows/misc-publish-dev-docker.yml@main
+    secrets: inherit
