@@ -24,7 +24,7 @@ jobs:
     needs: call-workflow-image-build-publish
     strategy:
       matrix:
-        application-name: idporten-wallet-verifier-demo
+        application-name: [idporten-wallet-verifier-demo]
         include:
           - application-name: idporten-wallet-verifier-demo
             product-name: idporten
