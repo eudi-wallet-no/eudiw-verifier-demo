@@ -1,1 +1,6 @@
-spring.application.name=verifier-demo
+spring:
+  application:
+    name: verifier-demo
+
+  thymeleaf:
+    check-template-location: false
