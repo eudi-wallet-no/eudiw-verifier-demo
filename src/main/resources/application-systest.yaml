@@ -1,6 +1,6 @@
 vcverifier:
   siop2ClientId: abr.vc.local
-  externalBaseUrl: http://abr.vc.local:8080
+  externalBaseUrl: https://demo-aldersverifisering.idporten.dev
   keystores:
     - type: JKS
       location: classpath:./keystore-test.jks
