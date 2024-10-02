@@ -15,8 +15,10 @@
 	<description>Demo of Wallet Verifier in ID-porten</description>
 	<properties>
 		<java.version>21</java.version>
+		<kotlin.version>2.0.20</kotlin.version>
 		<idporten-actuator.version>1.2.0</idporten-actuator.version>
-
+		<nimbus-jose-jwt.version>9.41.1</nimbus-jose-jwt.version>
+		<zxing.javase.version>3.5.3</zxing.javase.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -32,6 +34,20 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.nimbusds</groupId>
+			<artifactId>nimbus-jose-jwt</artifactId>
+			<version>${nimbus-jose-jwt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.minidev</groupId>
+			<artifactId>json-smart</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>javase</artifactId>
+			<version>${zxing.javase.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
@@ -40,6 +56,34 @@
 			<groupId>no.idporten.actuator</groupId>
 			<artifactId>idporten-actuator-starter</artifactId>
 			<version>${idporten-actuator.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>id.walt.mdoc-credentials</groupId>
+			<artifactId>waltid-mdoc-credentials-jvm</artifactId>
+			<version>0.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-stdlib-jdk8</artifactId>
+			<version>${kotlin.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlinx</groupId>
+			<artifactId>kotlinx-datetime-jvm</artifactId>
+			<version>0.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlinx</groupId>
+			<artifactId>kotlinx-serialization-bom</artifactId>
+			<version>1.7.3</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlinx</groupId>
+			<artifactId>kotlinx-coroutines-core</artifactId>
+			<version>1.9.0</version>
+			<type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -50,6 +94,43 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-maven-plugin</artifactId>
+				<version>${kotlin.version}</version>
+				<executions>
+					<execution>
+						<id>compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<sourceDirs>
+								<source>src/main/java</source>
+								<source>target/generated-sources/annotations</source>
+								<source>src/test/kotlin</source>
+							</sourceDirs>
+						</configuration>
+					</execution>
+					<execution>
+						<id>test-compile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>test-compile</goal>
+						</goals>
+						<configuration>
+							<sourceDirs>
+								<source>src/test/java</source>
+								<source>target/generated-test-sources/test-annotations</source>
+							</sourceDirs>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<jvmTarget>21</jvmTarget>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -88,6 +169,12 @@
 			<name>GitHub felleslosninger Apache Maven Packages</name>
 			<url>https://maven.pkg.github.com/felleslosninger/.github</url>
 		</repository>
+		<repository>
+			<id>reposilite-repository-releases</id>
+			<name>Reposilite Repository</name>
+			<url>https://maven.waltid.dev/releases</url>
+		</repository>
+
 	</repositories>
 
 </project>
