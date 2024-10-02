@@ -1,0 +1,2 @@
+CVE-2024-23684 # Inefficient Algorithmic Complexity in com.upokecenter:cbo
+GHSA-fj2w-wfgv-mwq6 # Denial of service in CBOR library
