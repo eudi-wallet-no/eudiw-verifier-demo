@@ -1,0 +1,15 @@
+target/
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### jenv ###
+.java-version
+
+### Visual Studio Code ###
+.vscode/
+
+### macos finder ###
+.DS_Store
