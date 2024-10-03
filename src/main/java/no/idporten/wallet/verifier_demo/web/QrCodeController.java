@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.awt.image.BufferedImage;
 
@@ -21,9 +22,9 @@ public class QrCodeController {
     @Autowired
     private ConfigProvider configProvider;
 
-    @GetMapping(value = "/qrcode", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<BufferedImage> getQrCodeImage() throws Exception {
-        return ResponseEntity.ok(generateQRCodeImage());
+    @GetMapping(value = "/qrcode/{state}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<BufferedImage> getQrCodeImage(@PathVariable("state") String state) throws Exception {
+        return ResponseEntity.ok(generateQRCodeImage(state));
     }
 
     @ExceptionHandler
@@ -32,15 +33,15 @@ public class QrCodeController {
         return "error";
     }
 
-    private BufferedImage generateQRCodeImage() throws Exception {
+    private BufferedImage generateQRCodeImage(String state) throws Exception {
         QRCodeWriter barcodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix =
-                barcodeWriter.encode(getQrcodeText(), BarcodeFormat.QR_CODE, 200, 200);
+                barcodeWriter.encode(getQrcodeText(state), BarcodeFormat.QR_CODE, 200, 200);
         return MatrixToImageWriter.toBufferedImage(bitMatrix);
     }
-    private String getQrcodeText() {
+    private String getQrcodeText(String state) {
         return "eudi-openid4vp://" +configProvider.getSiop2ClientId()
                 +"?client_id="+configProvider.getSiop2ClientId()
-                +"&request_uri="+configProvider.getExternalBaseUrl()+"/req";
+                +"&request_uri="+configProvider.getExternalBaseUrl()+"/req/" + state;
     }
 }

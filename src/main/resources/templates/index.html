@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="nn">
+
+<head />
+<body onload="doPoll()">
+
+
+<div>
+    <img th:src="@{/qrcode/{state}(state=${state})}" alt="QR code"/>
+</div>
+<div>
+    <a th:href="${authzRequest}">Autentiser med mobiltelefonen</a>
+</div>
+
+
+</body>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const pollEndpoint = /*[[${responseStatusUri}]]*/ '';
+    const successUri = /*[[${responseResultUri}]]*/ '';
+    const successResponse = 200;
+    const pollingInterval = 5000; //
+    const maxPollingDuration = 300000; // 300 seconds (5 minutes) in milliseconds
+
+    function doPoll() {
+        pollApi(pollEndpoint, successResponse, pollingInterval, maxPollingDuration);
+    }
+
+    async function pollApi(apiEndpoint, successResponse, pollingInterval, maxPollingDuration) {
+        const startTime = Date.now(); // Record the start time
+
+        const makeRequest = async () => {
+            try {
+                const response = await fetch(apiEndpoint); // Make request
+                const data = await response;
+
+                if (response.status === successResponse) {
+                    console.log('Success response received:', data);
+                    window.location.href = successUri; // Redirect to response page
+                    return; // // Stop polling if success response
+                }
+
+                const elapsedTime = Date.now() - startTime;
+
+                if (elapsedTime < maxPollingDuration) {
+                    console.log('Polling again in', pollingInterval / 1000, 'seconds (status is ', );
+                    setTimeout(makeRequest, pollingInterval); // Schedule next request
+                } else {
+                    console.log('Maximum polling duration reached. Stopping polling.');
+                }
+            } catch (error) {
+                console.error('Error making API request:', error);
+                const elapsedTime = Date.now() - startTime;
+
+                if (elapsedTime < maxPollingDuration) {
+                    setTimeout(makeRequest, pollingInterval); // Schedule next request
+                } else {
+                    console.log('Maximum polling duration reached. Stopping polling.');
+                }
+            }
+        };
+
+        makeRequest(); // Start the first request
+    }
+    /*]]>*/
+</script>
+
+
+
+</html>
