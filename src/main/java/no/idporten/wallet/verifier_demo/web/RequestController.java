@@ -8,14 +8,17 @@ import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import no.idporten.wallet.verifier_demo.config.ConfigProvider;
 import no.idporten.wallet.verifier_demo.crypto.KeyProvider;
+import no.idporten.wallet.verifier_demo.service.CacheService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.Clock;
@@ -32,30 +35,32 @@ public class RequestController {
 
     private final KeyProvider keyProvider;
     private final ConfigProvider configProvider;
+    private final CacheService cacheService;
 
     @ResponseBody
     //@GetMapping(value = { "/req", "/request" }, produces = { "application/oauth-authz-req+jwt", "plain/text"})
-    @GetMapping(value = { "/req", "/request" })
-    public String request(HttpServletRequest request) throws Exception {
-       log.info("Authorization request was requested from "+request.getRemoteHost());
-        return makeRequestJwt();
+    @GetMapping(value = {"/req/{state}", "/request/{state}"})
+    public String request(HttpServletRequest request, HttpSession session, @PathVariable("state") String state) throws Exception {
+        log.info("Authorization request was requested from " + request.getRemoteHost());
+        return makeRequestJwt(state);
     }
-    public String makeRequestJwt() throws Exception {
+
+    public String makeRequestJwt(String state) throws Exception {
         List<Base64> certChain = new ArrayList<>();
         certChain.add(com.nimbusds.jose.util.Base64.encode(keyProvider.certificate().getEncoded()));
 
         JWSHeader jwtHeader = new JWSHeader.Builder(JWSAlgorithm.RS256)
-                    .x509CertChain(certChain)
-                    .build();
+                .x509CertChain(certChain)
+                .build();
 
         JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                 .audience("https://self-issued.me/v2")
                 .issuer("issuer")
-                .claim("response_uri", configProvider.getExternalBaseUrl()+"/response")
+                .claim("response_uri", configProvider.getExternalBaseUrl() + "/response")
                 .claim("response_type", "vp_token")
                 .claim("response_mode", "direct_post.jwt")
-                .claim("nonce", "noncevalue")
-                .claim("state", "stateval")
+                .claim("nonce", "nonceval")
+                .claim("state", state)
                 .claim("client_id_scheme", "x509_san_dns")
                 .claim("client_id", configProvider.getSiop2ClientId())
                 .claim("presentation_definition", makePresentationDefinition())
@@ -69,7 +74,6 @@ public class RequestController {
         JWSSigner signer = new RSASSASigner(keyProvider.privateKey());
         SignedJWT signedJWT = new SignedJWT(jwtHeader, claims);
         signedJWT.sign(signer);
-
         return signedJWT.serialize();
     }
 
@@ -79,11 +83,13 @@ public class RequestController {
         pd.appendField("input_descriptors", makeInputDescriptors());
         return pd;
     }
+
     public JSONArray makeInputDescriptors() {
         JSONArray ids = new JSONArray(1);
         ids.add(makeInputDescriptorForPID());
         return ids;
     }
+
     public JSONObject makeInputDescriptorForPID() {
         JSONObject descriptor = new JSONObject();
         descriptor.appendField("id", "eu.europa.ec.eudi.pid.1");
@@ -112,9 +118,9 @@ public class RequestController {
         return field;
     }
 
-        public JSONArray makePath(String claim) {
+    public JSONArray makePath(String claim) {
         JSONArray path = new JSONArray(1);
-        path.add("$['eu.europa.ec.eudi.pid.1']['"+claim+"']");
+        path.add("$['eu.europa.ec.eudi.pid.1']['" + claim + "']");
         return path;
     }
 
@@ -132,7 +138,7 @@ public class RequestController {
 
     public JSONObject makeClientMetadata() {
         JSONObject metadata = new JSONObject();
-        metadata.appendField("jwks_uri", configProvider.getExternalBaseUrl()+"/jwks");
+        metadata.appendField("jwks_uri", configProvider.getExternalBaseUrl() + "/jwks");
         metadata.appendField("id_token_signed_response_alg", "RS256");
         //metadata.appendField("authorization_encrypted_response_alg", "none");
         metadata.appendField("authorization_encrypted_response_alg", "RSA-OAEP-256");
