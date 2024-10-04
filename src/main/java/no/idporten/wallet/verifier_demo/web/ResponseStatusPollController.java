@@ -33,12 +33,16 @@ public class ResponseStatusPollController {
     }
 
     @GetMapping("/response-result")
-    @ResponseBody
     public String result(HttpSession session, Model model) {
         String state = (String) session.getAttribute("state");
         Map<String, String> claims = cacheService.getState(state);
+        // model i tilfelle vil gjøre sjekk istedenfor
         model.addAllAttributes(claims);
-        return claims.toString();
+        if (claims.getOrDefault("age_over_18", "false").equals("true")) {
+            return "over18";
+        } else {
+            return "under18";
+        }
     }
 
 }
