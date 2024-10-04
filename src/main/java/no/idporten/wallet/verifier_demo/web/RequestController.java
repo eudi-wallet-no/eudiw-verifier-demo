@@ -102,10 +102,7 @@ public class RequestController {
 
     public JSONObject makeConstraints() {
         JSONArray fields = new JSONArray(2);
-        fields.add(makeField("given_name", false));
-        fields.add(makeField("family_name", false));
-        fields.add(makeField("administrative_number", false));
-
+        fields.add(makeField("age_over_18", false));
         JSONObject constraints = new JSONObject();
         constraints.appendField("fields", fields);
         return constraints;

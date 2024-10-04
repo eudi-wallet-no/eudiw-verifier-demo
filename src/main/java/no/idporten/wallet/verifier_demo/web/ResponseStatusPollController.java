@@ -6,10 +6,13 @@ import no.idporten.wallet.verifier_demo.service.CacheService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Controller
@@ -31,9 +34,11 @@ public class ResponseStatusPollController {
 
     @GetMapping("/response-result")
     @ResponseBody
-    public String result(HttpSession session) {
+    public String result(HttpSession session, Model model) {
         String state = (String) session.getAttribute("state");
-        return cacheService.getState(state).toString();
+        Map<String, String> claims = cacheService.getState(state);
+        model.addAllAttributes(claims);
+        return claims.toString();
     }
 
 }
