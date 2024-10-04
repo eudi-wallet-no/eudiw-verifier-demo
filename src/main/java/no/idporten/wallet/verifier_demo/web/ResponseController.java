@@ -3,7 +3,6 @@ package no.idporten.wallet.verifier_demo.web;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWEObject;
 import com.nimbusds.jose.crypto.RSADecrypter;
-import id.walt.mdoc.SimpleCOSECryptoProvider;
 import id.walt.mdoc.dataelement.DataElement;
 import id.walt.mdoc.dataelement.EncodedCBORElement;
 import id.walt.mdoc.dataelement.MapElement;
@@ -26,7 +25,6 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -74,14 +72,21 @@ class ResponseController {
             mDoc.verifyValidity();
             IssuerSigned issuerSigned = mDoc.getIssuerSigned();
             for (String namespace : issuerSigned.getNameSpaces().keySet()) {
-                log.info("namespace = " + namespace);
                 List<EncodedCBORElement> elements = issuerSigned.getNameSpaces().get(namespace);
                 for (EncodedCBORElement element : elements) {
                     Map<MapKey, DataElement> elementMap = ((MapElement) element.decode()).getValue();
-                    for(MapKey mapKey : elementMap.keySet()) {
+                    String elementIdentifier = null;
+                    String elementValue = null;
+                    for (MapKey mapKey : elementMap.keySet()) {
+                        if (mapKey.getStr().equals("elementIdentifier")) {
+                            elementIdentifier = String.valueOf(elementMap.get(mapKey).getInternalValue());
+                        }
+                        if (mapKey.getStr().equals("elementValue")) {
+                            elementValue = String.valueOf(elementMap.get(mapKey).getInternalValue());
+                        }
                         log.info(mapKey.toString() + "=" + elementMap.get(mapKey).getInternalValue());
-                        claims.put(mapKey.toString(), String.valueOf(elementMap.get(mapKey).getInternalValue()));
                     }
+                    claims.put(elementIdentifier, elementValue);
                 }
             }
         }
