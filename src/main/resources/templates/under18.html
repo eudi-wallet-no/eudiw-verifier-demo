@@ -3,11 +3,31 @@
       xmlns:th="http://www.thymeleaf.org"
       lang="nn">
 
-<head />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="description" content="ID-porten NOKIOS VC Verifier demo">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link th:href="@{/css/idp-style-0.7.27.css}" rel="stylesheet">
+    <script th:src="@{/js/idp-script-0.7.27.js}" defer></script>
+    <title>ID-porten NOKIOS VC Verifier demo</title>
+</head>
 <body>
+<header th:replace="~{fragments/header :: header}">...</header>
 
-<h1>Du er IKKE over 18</h1>
-
+<main>
+    <div class="box">
+        <div class="box__body">
+            <div class="notification notification--error">
+                <h1>Mislykket verifisering</h1>
+                <p>Du er under 18 år og kan ikke bruke denne tjenesten.</p>
+            </div>
+            <div class="btn-group">
+                <a th:href="@{/}"><button class="button ">Prøv igjen</button></a>
+            </div>
+        </div>
+    </div>
+</main>
+<footer th:replace="~{fragments/footer :: footer}">...</footer>
 </body>
 
 </html>

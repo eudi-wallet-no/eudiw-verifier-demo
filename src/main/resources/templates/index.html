@@ -3,18 +3,37 @@
       xmlns:th="http://www.thymeleaf.org"
       lang="nn">
 
-<head />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="description" content="ID-porten NOKIOS VC Verifier demo">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link th:href="@{/css/idp-style-0.7.27.css}" rel="stylesheet">
+    <script th:src="@{/js/idp-script-0.7.27.js}" defer></script>
+    <title>ID-porten NOKIOS VC Verifier demo</title>
+</head>
 <body onload="doPoll()">
+<header th:replace="~{fragments/header :: header}">...</header>
 
-
-<div>
-    <img th:src="@{/qrcode/{state}(state=${state})}" alt="QR code"/>
-</div>
-<div>
-    <a th:href="${authzRequest}">Autentiser med mobiltelefonen</a>
-</div>
-
-
+<main>
+    <div class="box">
+        <div class="box__header">
+            <h1 class="title-bar">
+                <span class="title-bar__name">Verifiser aldersbevis</span>
+            </h1>
+        </div>
+        <div class="box__body">
+            <p>Du må være over 18 år for å bruke denne tjenesten.</p>
+            <p>Scan qr-koden eller trykk på knappen for å åpne på mobilen.</p>
+            <div>
+                <img th:src="@{/qrcode/{state}(state=${state})}" alt="QR code" style="width:100%;"/>
+            </div>
+            <div class="btn-group">
+                <a th:href="${authzRequest}"><button class="button ">Autentiser med mobiltelefonen</button></a>
+            </div>
+        </div>
+    </div>
+</main>
+<footer th:replace="~{fragments/footer :: footer}">...</footer>
 </body>
 
 <script th:inline="javascript">
@@ -67,7 +86,5 @@
     }
     /*]]>*/
 </script>
-
-
 
 </html>
