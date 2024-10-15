@@ -1,6 +1,7 @@
 package no.idporten.wallet.verifier_demo.crypto;
 
 import java.security.*;
+import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +35,10 @@ public class KeyProvider {
 
     public RSAPublicKey rsaPublicKey() {
         return (RSAPublicKey) publicKey();
+    }
+
+    public ECPublicKey ecPublicKey() {
+        return (ECPublicKey) publicKey();
     }
 
     public java.security.cert.Certificate certificate() {
