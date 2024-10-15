@@ -1,3 +1,7 @@
+spring:
+  application:
+    environment: dev
+
 vcverifier:
   siop2ClientId: abr.vc.local
   externalBaseUrl: http://abr.vc.local:8080
