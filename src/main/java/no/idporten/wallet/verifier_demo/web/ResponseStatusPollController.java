@@ -22,9 +22,9 @@ public class ResponseStatusPollController {
 
     private final CacheService cacheService;
 
-    @RequestMapping(method = RequestMethod.GET, path = "/response-status/{type}")
-    public ResponseEntity<String> status(@PathVariable("type") String type, HttpSession session) {
-        String state = (String) session.getAttribute("state");
+    @RequestMapping(method = RequestMethod.GET, path = "/response-status/{type}/{state}")
+    public ResponseEntity<String> pollStatus(@PathVariable("type") String type, @PathVariable("state") String state, HttpSession session) {
+//        String state = (String) session.getAttribute("state");
         if (state == null) {
             log.warn("No state in session {}", session.getId());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("WAIT");
@@ -32,24 +32,22 @@ public class ResponseStatusPollController {
         boolean finished = cacheService.containsState(state);
         if (finished) {
             session.removeAttribute("state");
-            log.info("Polling finished for state {}", state);
+            log.info("Polling finished for state {} in session {}", state, session.getId());
             return ResponseEntity.status(HttpStatus.OK).body("OK");
         } else {
-            log.info("Continue polling for state {}", state);
+            log.info("Continue polling for state {} in session {}", state, session.getId());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("WAIT");
         }
     }
 
     // TODO her må det bli mer generisk
-    @GetMapping("/response-result/{type}")
-    public String result(@PathVariable("type") String type, HttpSession session, Model model) {
-        String state = (String) session.getAttribute("state");
-        log.warn("No state in session {}", session.getId());
+    @GetMapping("/response-result/{type}/{state}")
+    public String pollComplete(@PathVariable("type") String type, @PathVariable("state") String state, HttpSession session, Model model) {
         Map<String, String> claims = cacheService.getState(state);
-        // model i tilfelle vil gjøre sjekk istedenfor
         model.addAllAttributes(claims);
 
         if ("alder".equals(type)) {
+            // TODO kanskje modellen skulle fikse dette selv
             if (claims.getOrDefault("age_over_18", "false").equals("true")) {
                 return "alder/over18";
             } else {

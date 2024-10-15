@@ -17,12 +17,16 @@
 <main>
     <div class="box">
         <div class="box__body">
-            <div class="notification notification--success">
+            <p class="notification notification--success">
                 <h1>Vellykket verifisering</h1>
-                <p>Masse data fra bevis her ...</p>
-            </div>
+
+            <p>Fullmektig etternavn: <span th:text="${fullmektig_etternavn}" th:remove="tag">...</span></p>
+            <p>Fullmektig fornavn: <span th:text="${fullmektig_fornavn}" th:remove="tag">...</span></p>
+            <p>Fullmaktsgiver fornavn: <span th:text="${fullmaktsgiver_fornavn}" th:remove="tag">...</span></p>
+            <p>Fullmaktsgiver etternavn: <span th:text="${fullmaktsgiver_etternavn}" th:remove="tag">...</span></p>
+            <p>Rettigheter: <span th:text="${fullmektig_rettigheter}" th:remove="tag">...</span></p>
             <div class="btn-group">
-                <a th:href="@{/static}"><button class="button ">Prøv igjen</button></a>
+                <a th:href="@{/}"><button class="button ">Prøv igjen</button></a>
             </div>
         </div>
     </div>
