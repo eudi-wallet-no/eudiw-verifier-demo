@@ -19,6 +19,11 @@ management:
       probes:
         enabled: true
 
+digdir:
+  access:
+    logging:
+      debug-level: response
+
 vcverifier:
   credential-types:
     - id: alder
