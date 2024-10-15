@@ -18,6 +18,7 @@
 		<kotlin.version>2.0.21</kotlin.version>
 		<idporten-actuator.version>1.2.0</idporten-actuator.version>
 		<idporten-access-log.version>2.4.3</idporten-access-log.version>
+		<opentelemetry-instrumentation-api.version>1.43.0</opentelemetry-instrumentation-api.version>
 		<nimbus-jose-jwt.version>9.41.2</nimbus-jose-jwt.version>
 		<zxing.javase.version>3.5.3</zxing.javase.version>
 	</properties>
@@ -42,6 +43,11 @@
 			<groupId>no.idporten.logging</groupId>
 			<artifactId>idporten-access-log-spring-boot-3-starter</artifactId>
 			<version>${idporten-access-log.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.opentelemetry</groupId>
+			<artifactId>opentelemetry-api</artifactId>
+			<version>${opentelemetry-instrumentation-api.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.nimbusds</groupId>
