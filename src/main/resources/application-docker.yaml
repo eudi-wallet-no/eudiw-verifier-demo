@@ -1,0 +1,27 @@
+# local dev profile
+spring:
+  application:
+    environment: docker
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    protocol: TLS
+    key-store-type: JKS
+    key-store: classpath:selfsigned.jks
+    key-store-password: changeit
+    key-alias: tomcat
+    key-password: changeit
+management:
+  server:
+    port: 8090
+
+vcverifier:
+  siop2ClientId: abr.vc.local
+  externalBaseUrl: https://abr.vc.local:8082
+  keystores:
+    - type: JKS
+      location: base64:${VC_VERIFIER_JKS}
+      password: changeit
+      key-alias: abr.vc.local
+      key-password: changeit
