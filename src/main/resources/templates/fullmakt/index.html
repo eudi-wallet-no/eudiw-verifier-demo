@@ -22,7 +22,7 @@
                 <p>Scan qr-koden eller trykk på knappen for å åpne på mobilen.</p>
             </div>
             <div>
-                <img th:src="@{/qrcode/{state}(state=${state})}" alt="QR code" style="width:100%;"/>
+                <img th:src="@{/qrcode/fullmakt/{state}(state=${state})}" alt="QR code" style="width:100%;"/>
             </div>
             <div class="btn-group">
                 <a th:href="${authzRequest}"><button class="button ">Åpne på mobilen</button></a>
