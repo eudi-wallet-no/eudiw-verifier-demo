@@ -33,8 +33,8 @@ public class StartVerifyCredentialController {
         model.addAttribute("state", state);
         model.addAttribute("authzRequest", getQrcodeText(type, state));
         // TODO enklest om kommer fra config!
-        model.addAttribute(("responseStatusUri"), builPolldUri(request.getRequestURL().toString(), "response-status", type).toString());
-        model.addAttribute(("responseResultUri"), builPolldUri(request.getRequestURL().toString(), "response-result", type).toString());
+        model.addAttribute(("responseStatusUri"), builPolldUri(request.getRequestURL().toString(), "response-status", type, state).toString());
+        model.addAttribute(("responseResultUri"), builPolldUri(request.getRequestURL().toString(), "response-result", type, state).toString());
         return type + "/index";
     }
 
