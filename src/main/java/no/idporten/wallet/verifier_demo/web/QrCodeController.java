@@ -4,8 +4,8 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import no.idporten.wallet.verifier_demo.config.ConfigProvider;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import no.idporten.wallet.verifier_demo.service.OID4VPRequestService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,16 +15,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.awt.image.BufferedImage;
 
+@RequiredArgsConstructor
 @Controller
 public class QrCodeController {
 
+    private final OID4VPRequestService OID4VPRequestService;
 
-    @Autowired
-    private ConfigProvider configProvider;
-
-    @GetMapping(value = "/qrcode/{state}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<BufferedImage> getQrCodeImage(@PathVariable("state") String state) throws Exception {
-        return ResponseEntity.ok(generateQRCodeImage(state));
+    @GetMapping(value = "/qrcode/{type}/{state}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<BufferedImage> getQrCodeImage(@PathVariable("type") String type, @PathVariable("state") String state) throws Exception {
+        return ResponseEntity.ok(generateQRCodeImage(type, state));
     }
 
     @ExceptionHandler
@@ -33,15 +32,11 @@ public class QrCodeController {
         return "error";
     }
 
-    private BufferedImage generateQRCodeImage(String state) throws Exception {
+    private BufferedImage generateQRCodeImage(String type, String state) throws Exception {
         QRCodeWriter barcodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix =
-                barcodeWriter.encode(getQrcodeText(state), BarcodeFormat.QR_CODE, 200, 200);
+                barcodeWriter.encode(OID4VPRequestService.getAuthorizationRequest(type, state), BarcodeFormat.QR_CODE, 200, 200);
         return MatrixToImageWriter.toBufferedImage(bitMatrix);
     }
-    private String getQrcodeText(String state) {
-        return "eudi-openid4vp://" +configProvider.getSiop2ClientId()
-                +"?client_id="+configProvider.getSiop2ClientId()
-                +"&request_uri="+configProvider.getExternalBaseUrl()+"/req/" + state;
-    }
+
 }
