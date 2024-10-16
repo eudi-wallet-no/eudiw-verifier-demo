@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link th:href="@{/css/idp-style-0.7.27.css}" rel="stylesheet">
     <script th:src="@{/js/idp-script-0.7.27.js}" defer></script>
-    <title>ID-porten NOKIOS VC Verifier demo</title>
+    <title>Demo verifisering av digitale bevis</title>
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}">...</header>
@@ -17,10 +17,14 @@
 <main>
     <div class="box">
         <div class="box__body">
-            <div class="notification notification--error">
-                <h1>Mislykket verifisering</h1>
-                <p>Du er under 18 år og kan ikke bruke denne tjenesten.</p>
-            </div>
+            <p class="notification notification--success">
+                <h1>Vellykket verifisering</h1>
+
+            <p>Fullmektig etternavn: <span th:text="${fullmektig_etternavn}" th:remove="tag">...</span></p>
+            <p>Fullmektig fornavn: <span th:text="${fullmektig_fornavn}" th:remove="tag">...</span></p>
+            <p>Fullmaktsgiver fornavn: <span th:text="${fullmaktsgiver_fornavn}" th:remove="tag">...</span></p>
+            <p>Fullmaktsgiver etternavn: <span th:text="${fullmaktsgiver_etternavn}" th:remove="tag">...</span></p>
+            <p>Rettigheter: <span th:text="${fullmektig_rettigheter}" th:remove="tag">...</span></p>
             <div class="btn-group">
                 <a th:href="@{/}"><button class="button ">Prøv igjen</button></a>
             </div>

@@ -18,3 +18,23 @@ management:
     health:
       probes:
         enabled: true
+
+digdir:
+  access:
+    logging:
+      debug-level: response
+
+vcverifier:
+  credential-types:
+    - id: alder
+      doc-type: "eu.europa.ec.eudi.pid.1"
+      fields:
+        - age_over_18
+    - id: fullmakt
+      doc-type: "no.digdir.eudiw.fullmakt.1"
+      fields:
+        - fullmektig_rettigheter
+        - fullmektig_fornavn
+        - fullmektig_etternavn
+        - fullmaktsgiver_fornavn
+        - fullmaktsgiver_etternavn

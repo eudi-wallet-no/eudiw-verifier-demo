@@ -23,6 +23,12 @@ public class ConfigProvider implements InitializingBean {
     private String siop2ClientId;
     @NotNull
     private String externalBaseUrl;
+    @NotEmpty
+    private List<CredentialConfig> credentialTypes = new ArrayList<>();
+
+    public CredentialConfig getCredentialConfig(String type) {
+        return credentialTypes.stream().filter(c -> c.getId().equals(type)).findFirst().orElse(null);
+    }
 
     @NotEmpty
     private List<Keystore> keystores = new ArrayList<>();
