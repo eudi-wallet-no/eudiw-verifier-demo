@@ -3,7 +3,9 @@ package no.idporten.wallet.verifier_demo.web;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.crypto.ECDSASigner;
 import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.jwk.Curve;
 import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
@@ -53,10 +55,6 @@ public class RequestController {
         List<Base64> certChain = new ArrayList<>();
         certChain.add(com.nimbusds.jose.util.Base64.encode(keyProvider.certificate().getEncoded()));
 
-        JWSHeader jwtHeader = new JWSHeader.Builder(JWSAlgorithm.RS256)
-                .x509CertChain(certChain)
-                .build();
-
         JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                 .audience("https://self-issued.me/v2")
                 .issuer("issuer")
@@ -75,7 +73,19 @@ public class RequestController {
 
         JWTClaimsSet claims = builder.build();
 
-        JWSSigner signer = new RSASSASigner(keyProvider.privateKey());
+        final JWSHeader jwtHeader;
+        final JWSSigner signer;
+        if (keyProvider.isRsa()) {
+            jwtHeader = new JWSHeader.Builder(JWSAlgorithm.RS256)
+                    .x509CertChain(certChain)
+                    .build();
+            signer = new RSASSASigner(keyProvider.privateKey());
+        } else {
+            jwtHeader = new JWSHeader.Builder(JWSAlgorithm.ES256)
+                    .x509CertChain(certChain)
+                    .build();
+            signer = new ECDSASigner(keyProvider.privateKey(), Curve.P_256);
+        }
         SignedJWT signedJWT = new SignedJWT(jwtHeader, claims);
         signedJWT.sign(signer);
         return signedJWT.serialize();
