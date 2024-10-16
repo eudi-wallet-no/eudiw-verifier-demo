@@ -1,8 +1,6 @@
 package no.idporten.wallet.verifier_demo.web;
 
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.ECDSASigner;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.jwk.Curve;
@@ -139,8 +137,9 @@ public class RequestController {
     }
 
     public JSONObject makeFormat() {
-        JSONArray algs = new JSONArray(1);
-        algs.add("RS256");
+        JSONArray algs = new JSONArray(2);
+        algs.add(JWSAlgorithm.RS256.getName());
+        algs.add(JWSAlgorithm.ES256.getName());
 
         JSONObject mdoc = new JSONObject();
         mdoc.appendField("alg", algs);
@@ -153,11 +152,9 @@ public class RequestController {
     public JSONObject makeClientMetadata() {
         JSONObject metadata = new JSONObject();
         metadata.appendField("jwks_uri", configProvider.getExternalBaseUrl() + "/jwks");
-        metadata.appendField("id_token_signed_response_alg", "RS256");
-        //metadata.appendField("authorization_encrypted_response_alg", "none");
-        metadata.appendField("authorization_encrypted_response_alg", "RSA-OAEP-256");
-        //metadata.appendField("authorization_encrypted_response_enc", "none");
-        metadata.appendField("authorization_encrypted_response_enc", "A128CBC-HS256");
+        metadata.appendField("id_token_signed_response_alg", JWSAlgorithm.RS256.getName());
+        metadata.appendField("authorization_encrypted_response_alg", JWEAlgorithm.ECDH_ES.getName());
+        metadata.appendField("authorization_encrypted_response_enc", EncryptionMethod.A128CBC_HS256.getName());
         return metadata;
     }
 }
