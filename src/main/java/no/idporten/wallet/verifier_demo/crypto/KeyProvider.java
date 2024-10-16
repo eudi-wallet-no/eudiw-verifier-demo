@@ -41,6 +41,10 @@ public class KeyProvider {
         return (ECPublicKey) publicKey();
     }
 
+    public boolean isRsa() {
+        return publicKey() instanceof RSAPublicKey;
+    }
+
     public java.security.cert.Certificate certificate() {
         return certificate;
     }

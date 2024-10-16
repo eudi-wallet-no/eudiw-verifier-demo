@@ -20,11 +20,19 @@ public class JwksProvider {
                 for (Certificate c : keyProvider.certificateChain()) {
                     encodedCertificates.add(Base64.encode(c.getEncoded()));
                 }
-                jwkList.add(new ECKey.Builder(Curve.P_256, keyProvider.ecPublicKey())
-                        .keyUse(KeyUse.parse(use))
-                        .keyIDFromThumbprint()
-                        .x509CertChain(encodedCertificates)
-                        .build());
+                if (keyProvider.isRsa()) {
+                    jwkList.add(new RSAKey.Builder(keyProvider.rsaPublicKey())
+                            .keyUse(KeyUse.parse(use))
+                            .keyIDFromThumbprint()
+                            .x509CertChain(encodedCertificates)
+                            .build());
+                } else {
+                    jwkList.add(new ECKey.Builder(Curve.P_256, keyProvider.ecPublicKey())
+                            .keyUse(KeyUse.parse(use))
+                            .keyIDFromThumbprint()
+                            .x509CertChain(encodedCertificates)
+                            .build());
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
