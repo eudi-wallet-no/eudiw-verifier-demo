@@ -31,4 +31,9 @@ public class IndexController {
         return "index";
     }
 
+    @GetMapping(value = "/crl")
+    public String crl(@RequestHeader Map<String, String> headers, HttpServletRequest request) {
+        return "";
+    }
+
 }
