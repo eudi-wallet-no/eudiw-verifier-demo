@@ -1,0 +1,29 @@
+name: wallet-demo
+networks:
+  demo:
+    name: demo
+
+
+services:
+  wallet-verifier:
+    build:
+      context: .
+      dockerfile: docker/dev.Dockerfile
+      args:
+        GIT_PACKAGE_TOKEN: ${GIT_PACKAGE_TOKEN}
+        GIT_PACKAGE_USERNAME: ${GIT_PACKAGE_USERNAME}
+    environment:
+      spring_profiles_active: docker
+    env_file:
+      - .env
+    ports:
+      - "8082:8443"
+      - "8092:8090"
+      - "5062:5006"
+    networks:
+      - demo
+    entrypoint: "/bin/bash -c"
+    command:
+      - |
+        cd /usr/local/tomcat/webapps/
+        java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006 -jar application.jar
