@@ -1,8 +1,9 @@
 package no.idporten.wallet.verifier_demo.web;
 
 import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWEDecrypter;
 import com.nimbusds.jose.JWEObject;
-import com.nimbusds.jose.crypto.RSADecrypter;
+import com.nimbusds.jose.crypto.factories.DefaultJWEDecrypterFactory;
 import id.walt.mdoc.dataelement.DataElement;
 import id.walt.mdoc.dataelement.EncodedCBORElement;
 import id.walt.mdoc.dataelement.MapElement;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
-import java.security.interfaces.RSAPrivateKey;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -51,14 +51,10 @@ class ResponseController {
         cacheService.addState(state, elementsFromPidDocumentInMDoc);
     }
 
-    private Map<String, Object> decryptAndDeserializeJweResponse(String response) throws IOException, ParseException, JOSEException {
-
-        RSAPrivateKey privateKey = (RSAPrivateKey) keyProvider.privateKey();
-        RSADecrypter decrypter = new RSADecrypter(privateKey);
-
+    private Map<String, Object> decryptAndDeserializeJweResponse(String response) throws ParseException, JOSEException {
         JWEObject jwe = JWEObject.parse(response);
+        JWEDecrypter decrypter = new DefaultJWEDecrypterFactory().createJWEDecrypter(jwe.getHeader(), keyProvider.privateKey());
         jwe.decrypt(decrypter);
-
         return jwe.getPayload().toJSONObject();
     }
 
