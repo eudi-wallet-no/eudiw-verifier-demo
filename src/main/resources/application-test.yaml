@@ -8,6 +8,6 @@ vcverifier:
   keystores:
     - type: JKS
       location: ${VC_VERIFIER_JKS}
-      password: ${VERIFIER_STORE_PASSWORD]
-      key-alias: ${VERIFIER_KEY_ALIAS]
-      key-password: ${VERIFIER_KEY_PASSWORD]
+      password: ${VERIFIER_STORE_PASSWORD}
+      key-alias: ${VERIFIER_KEY_ALIAS}
+      key-password: ${VERIFIER_KEY_PASSWORD}
