@@ -11,5 +11,5 @@ vcverifier:
     - type: JKS
       location: base64:${VC_VERIFIER_JKS}
       password: changeit
-      key-alias: abr.vc.local
+      key-alias: verifier
       key-password: changeit
