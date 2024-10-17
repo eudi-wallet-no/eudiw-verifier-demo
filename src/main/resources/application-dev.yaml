@@ -1,6 +1,8 @@
 spring:
   application:
     environment: dev
+  config:
+    import: file:.env[.properties]
 
 vcverifier:
   siop2ClientId: abr.vc.local
