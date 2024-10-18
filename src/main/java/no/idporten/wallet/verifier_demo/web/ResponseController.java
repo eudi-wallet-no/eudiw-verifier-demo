@@ -11,6 +11,7 @@ import id.walt.mdoc.dataelement.MapKey;
 import id.walt.mdoc.dataretrieval.DeviceResponse;
 import id.walt.mdoc.doc.MDoc;
 import id.walt.mdoc.issuersigned.IssuerSigned;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.idporten.wallet.verifier_demo.crypto.KeyProvider;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -37,7 +39,7 @@ class ResponseController {
 
     @ResponseBody
     @PostMapping("/response")
-    public void handleResponse(@ModelAttribute(name = "response") String response, @ModelAttribute(name = "state") String state, @ModelAttribute(name = "vp_token") String vpToken) throws ParseException, JOSEException, IOException {
+    public String handleResponse(@ModelAttribute(name = "response") String response, @ModelAttribute(name = "state") String state, @ModelAttribute(name = "vp_token") String vpToken) throws ParseException, JOSEException, IOException {
 
         Map<String, Object> claimsFromJwePayload = decryptAndDeserializeJweResponse(response);
         String nonce = (String) claimsFromJwePayload.get("nonce");
@@ -48,7 +50,15 @@ class ResponseController {
         log.info("Got following elements from PID-document:");
         elementsFromPidDocumentInMDoc.keySet().stream()
                 .forEach(k -> log.info(k + ": "+elementsFromPidDocumentInMDoc.get(k)));
-        cacheService.addState(state, elementsFromPidDocumentInMDoc);
+        String cacheState = state.startsWith("CD:") ? state.substring(3) : state;
+        cacheService.addState(cacheState, elementsFromPidDocumentInMDoc);
+
+        if (cacheState.equals(state)){
+            String redirectUri = cacheService.getRUri(cacheState);
+            return "{ \"redirect_uri\" : \"" + redirectUri + "\"}";
+        }else{      
+            return "{}";      
+        }
     }
 
     private Map<String, Object> decryptAndDeserializeJweResponse(String response) throws ParseException, JOSEException {

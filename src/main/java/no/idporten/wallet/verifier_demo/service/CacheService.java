@@ -25,4 +25,19 @@ public class CacheService {
         return stateCache.remove(state);
     }
 
+    Map<String, String> resultURICache = new HashMap<>();
+
+    public void addRUri(String state, String uri) {
+        resultURICache.put(state, uri);
+    }
+
+    public boolean containsRUri(String state) {
+        return resultURICache.containsKey(state);
+    }
+
+    public String getRUri(String state) {
+        return resultURICache.remove(state);
+    }
+    
+
 }

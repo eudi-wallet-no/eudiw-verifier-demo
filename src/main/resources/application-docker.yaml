@@ -21,7 +21,7 @@ vcverifier:
   externalBaseUrl: https://abr.vc.local:8082
   keystores:
     - type: JKS
-      location: base64:${VC_VERIFIER_JKS}
+      location: ${VC_VERIFIER_JKS}
       password: changeit
       key-alias: verifier
       key-password: changeit
