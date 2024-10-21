@@ -54,8 +54,12 @@
                 const data = await response;
 
                 if (response.status === successResponse) {
+                    const body = await response.text();
                     console.log('Success response received:', data);
-                    window.location.href = successUri; // Redirect to response page
+                    // check if body contains "OK"
+                    if (body === 'OK') {
+                        window.location.href = successUri; // Redirect to response page
+                    }                                 
                     return; // // Stop polling if success response
                 }
 

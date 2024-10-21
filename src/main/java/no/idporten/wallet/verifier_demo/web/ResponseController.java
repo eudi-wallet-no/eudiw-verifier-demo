@@ -50,6 +50,7 @@ class ResponseController {
         elementsFromPidDocumentInMDoc.keySet().stream()
                 .forEach(k -> log.info(k + ": "+elementsFromPidDocumentInMDoc.get(k)));
         String cacheState = state.startsWith("CD:") ? state.substring(3) : state;
+        cacheService.addCrossDevice(cacheState, !cacheState.equals(state));
         cacheService.addState(cacheState, elementsFromPidDocumentInMDoc);
 
         if (cacheState.equals(state)){

@@ -28,11 +28,16 @@ public class ResponseStatusPollController {
             log.warn("No state in session {}", session.getId());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("WAIT");
         }
-        boolean finished = cacheService.containsState(state);
+        boolean finished = cacheService.containsState(state) || cacheService.containsCrossDevice(state);
         if (finished) {
             session.removeAttribute("state");
             log.info("Polling finished for state {} in session {}", state, session.getId());
-            return ResponseEntity.status(HttpStatus.OK).body("OK");
+            Boolean crossDevice = cacheService.getCrossDevice(state);
+            if(crossDevice != null && !crossDevice){
+                return ResponseEntity.status(HttpStatus.OK).body("CLOSE");
+            }else{
+                return ResponseEntity.status(HttpStatus.OK).body("OK");
+            }
         } else {
             log.info("Continue polling for state {} in session {}", state, session.getId());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("WAIT");

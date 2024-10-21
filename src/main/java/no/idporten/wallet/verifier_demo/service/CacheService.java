@@ -18,7 +18,7 @@ public class CacheService {
         stateCache.put(state, claims);
     }
 
-    public boolean containsState(String state) {
+    public Boolean containsState(String state) {
         return stateCache.containsKey(state);
     }
 
@@ -33,12 +33,26 @@ public class CacheService {
         resultURICache.put(state, uri);
     }
 
-    public boolean containsRUri(String state) {
+    public Boolean containsRUri(String state) {
         return resultURICache.containsKey(state);
     }
 
     public String getRUri(String state) {
         return resultURICache.remove(state);
+    }
+
+    Map<String, Boolean> crossDeviceCache = new HashMap<>();
+
+    public void addCrossDevice(String state, Boolean isCrossDevice) {
+        crossDeviceCache.put(state, isCrossDevice);
+    }
+
+    public Boolean containsCrossDevice(String state) {
+        return crossDeviceCache.containsKey(state);
+    }
+
+    public Boolean getCrossDevice(String state) {
+        return crossDeviceCache.remove(state);
     }
     
 
