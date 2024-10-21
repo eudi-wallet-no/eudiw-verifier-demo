@@ -36,10 +36,10 @@ public class IndexController {
         log.info("Index headers: {}", headers);
         log.info("Server name: {}", request.getServerName());
         // TODO loope gjennom config på en eller annen måte?
-        if ("demo-aldersverifisering.idporten.dev".equals(request.getServerName())) {
+        if (request.getServerName().contains("demo-aldersverifisering")) {
             return "redirect:/verify/alder";
         }
-        if ("demo-fullmaktinnlogging.idporten.dev".equals(request.getServerName())) {
+        if (request.getServerName().contains("demo-fullmaktinnlogging")) {
             return "redirect:/verify/fullmakt";
         }
         return "index";
