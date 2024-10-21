@@ -23,8 +23,7 @@ public class CacheService {
     }
 
     public MultiValueMap<String, String> getState(String state) {
-        // TODO get istedenfor å remove for å fikse 2xtab-problem, men dette vil fylle opp mine og gjøre data tilgjengelig mye lengre enn tiltenkt!
-        return stateCache.get(state);
+        return stateCache.remove(state);
     }
 
     Map<String, String> resultURICache = new HashMap<>();
