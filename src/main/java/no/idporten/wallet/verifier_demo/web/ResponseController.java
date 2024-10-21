@@ -11,20 +11,19 @@ import id.walt.mdoc.dataelement.MapKey;
 import id.walt.mdoc.dataretrieval.DeviceResponse;
 import id.walt.mdoc.doc.MDoc;
 import id.walt.mdoc.issuersigned.IssuerSigned;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.idporten.wallet.verifier_demo.crypto.KeyProvider;
 import no.idporten.wallet.verifier_demo.service.CacheService;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +43,7 @@ class ResponseController {
         Map<String, Object> claimsFromJwePayload = decryptAndDeserializeJweResponse(response);
         String nonce = (String) claimsFromJwePayload.get("nonce");
 
-        Map<String, String> elementsFromPidDocumentInMDoc = retrieveElementsFromPidDocumentInMDoc((String) claimsFromJwePayload.get("vp_token"));
+        MultiValueMap<String, String> elementsFromPidDocumentInMDoc = retrieveElementsFromPidDocumentInMDoc((String) claimsFromJwePayload.get("vp_token"));
 
         log.info("Received authorization response from wallet");
         log.info("Got following elements from PID-document:");
@@ -68,9 +67,9 @@ class ResponseController {
         return jwe.getPayload().toJSONObject();
     }
 
-    private Map<String, String> retrieveElementsFromPidDocumentInMDoc(String vpToken) {
+    private MultiValueMap<String, String> retrieveElementsFromPidDocumentInMDoc(String vpToken) {
         DeviceResponse deviceResponse = DeviceResponse.Companion.fromCBORBase64URL(vpToken);
-        Map<String, String> claims = new HashMap<>();
+        MultiValueMap<String, String> claims = new LinkedMultiValueMap<>();
         for (MDoc mDoc : deviceResponse.getDocuments()) {
             mDoc.getMSO(); // TODO verify med hvilke nøkler?
             mDoc.verifyDocType();
@@ -92,7 +91,7 @@ class ResponseController {
                         }
                         log.info(mapKey.toString() + "=" + elementMap.get(mapKey).getInternalValue());
                     }
-                    claims.put(elementIdentifier, elementValue);
+                    claims.add(elementIdentifier, elementValue);
                 }
             }
         }

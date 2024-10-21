@@ -8,12 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.Map;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -43,12 +42,11 @@ public class ResponseStatusPollController {
     // TODO her må det bli mer generisk
     @GetMapping("/response-result/{type}/{state}")
     public String pollComplete(@PathVariable("type") String type, @PathVariable("state") String state, HttpSession session, Model model) {
-        Map<String, String> claims = cacheService.getState(state);
+        MultiValueMap<String, String> claims = cacheService.getState(state);
         model.addAllAttributes(claims);
-
         if ("alder".equals(type)) {
             // TODO kanskje modellen skulle fikse dette selv
-            if (claims.getOrDefault("age_over_18", "false").equals("true")) {
+            if (claims.containsKey("age_over_18") && "true".equalsIgnoreCase(claims.getFirst("age_over_18"))) {
                 return "alder/over18";
             } else {
                 return "alder/under18";
