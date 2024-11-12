@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.net.MalformedURLException;
 import java.util.Map;
 
 @Slf4j
@@ -22,13 +23,18 @@ public class IndexController {
         log.info("Index headers: {}", headers);
         log.info("Server name: {}", request.getServerName());
         // TODO loope gjennom config på en eller annen måte?
-        if ("demo-aldersverifisering.idporten.dev".equals(request.getServerName())) {
+        if (request.getServerName().contains("demo-aldersverifisering")) {
             return "redirect:/verify/alder";
         }
-        if ("demo-fullmaktinnlogging.idporten.dev".equals(request.getServerName())) {
+        if (request.getServerName().contains("demo-fullmaktinnlogging")) {
             return "redirect:/verify/fullmakt";
         }
         return "index";
+    }
+
+    @GetMapping(value = "/crl")
+    public  String crl(@RequestHeader Map<String, String> headers, HttpServletRequest request) throws MalformedURLException {
+        return "redirect:/files/root.crl.pem";
     }
 
 }

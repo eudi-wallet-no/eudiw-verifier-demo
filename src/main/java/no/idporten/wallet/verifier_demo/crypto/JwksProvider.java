@@ -1,9 +1,6 @@
 package no.idporten.wallet.verifier_demo.crypto;
 
-import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.KeyUse;
-import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jose.util.Base64;
 
 import java.security.cert.Certificate;
@@ -23,11 +20,19 @@ public class JwksProvider {
                 for (Certificate c : keyProvider.certificateChain()) {
                     encodedCertificates.add(Base64.encode(c.getEncoded()));
                 }
-                jwkList.add(new RSAKey.Builder(keyProvider.rsaPublicKey())
-                        .keyUse(KeyUse.parse(use))
-                        .keyIDFromThumbprint()
-                        .x509CertChain(encodedCertificates)
-                        .build());
+                if (keyProvider.isRsa()) {
+                    jwkList.add(new RSAKey.Builder(keyProvider.rsaPublicKey())
+                            .keyUse(KeyUse.parse(use))
+                            .keyIDFromThumbprint()
+                            .x509CertChain(encodedCertificates)
+                            .build());
+                } else {
+                    jwkList.add(new ECKey.Builder(Curve.P_256, keyProvider.ecPublicKey())
+                            .keyUse(KeyUse.parse(use))
+                            .keyIDFromThumbprint()
+                            .x509CertChain(encodedCertificates)
+                            .build());
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -35,7 +35,7 @@ public class QrCodeController {
     private BufferedImage generateQRCodeImage(String type, String state) throws Exception {
         QRCodeWriter barcodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix =
-                barcodeWriter.encode(OID4VPRequestService.getAuthorizationRequest(type, state), BarcodeFormat.QR_CODE, 200, 200);
+                barcodeWriter.encode(OID4VPRequestService.getAuthorizationRequest(type, "CD:"+state), BarcodeFormat.QR_CODE, 200, 200);
         return MatrixToImageWriter.toBufferedImage(bitMatrix);
     }
 

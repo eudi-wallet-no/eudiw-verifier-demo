@@ -1,10 +1,10 @@
 spring:
   application:
-    environment: systest
+    environment: test
 
 vcverifier:
-  siop2ClientId: demo-vc-verifier.idporten.dev
-  externalBaseUrl: https://demo-vc-verifier.idporten.dev
+  siop2ClientId: demo-vc-verifier.test.idporten.no
+  externalBaseUrl: https://demo-vc-verifier.test.idporten.no
   keystores:
     - type: JKS
       location: ${VC_VERIFIER_JKS}
