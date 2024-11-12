@@ -34,7 +34,5 @@ vcverifier:
       doc-type: "no.digdir.eudiw.fullmakt.1"
       fields:
         - fullmektig_rettigheter
-        - fullmektig_fornavn
-        - fullmektig_etternavn
-        - fullmaktsgiver_fornavn
-        - fullmaktsgiver_etternavn
+        - fullmektig_navn
+        - fullmaktsgiver_navn
