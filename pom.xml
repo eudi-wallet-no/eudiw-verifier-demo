@@ -77,7 +77,7 @@
 		<dependency>
 			<groupId>id.walt.mdoc-credentials</groupId>
 			<artifactId>waltid-mdoc-credentials-jvm</artifactId>
-			<version>0.9.0</version>
+			<version>0.10.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jetbrains.kotlin</groupId>
