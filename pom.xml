@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.0</version>
+		<version>3.4.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>no.idporten.wallet</groupId>
@@ -19,7 +19,7 @@
 		<idporten-actuator.version>1.2.1</idporten-actuator.version>
 		<idporten-access-log.version>2.5.0</idporten-access-log.version>
 		<opentelemetry-instrumentation-api.version>1.45.0</opentelemetry-instrumentation-api.version>
-		<nimbus-jose-jwt.version>9.47</nimbus-jose-jwt.version>
+		<nimbus-jose-jwt.version>10.0</nimbus-jose-jwt.version>
 		<zxing.javase.version>3.5.3</zxing.javase.version>
 	</properties>
 	<dependencies>
@@ -77,7 +77,7 @@
 		<dependency>
 			<groupId>id.walt.mdoc-credentials</groupId>
 			<artifactId>waltid-mdoc-credentials-jvm</artifactId>
-			<version>0.9.0</version>
+			<version>0.10.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jetbrains.kotlin</groupId>
@@ -98,7 +98,7 @@
 		<dependency>
 			<groupId>org.jetbrains.kotlinx</groupId>
 			<artifactId>kotlinx-coroutines-core</artifactId>
-			<version>1.9.0</version>
+			<version>1.10.1</version>
 			<type>pom</type>
 		</dependency>
 		<dependency>
