@@ -19,10 +19,8 @@
         <div class="box__body">
             <div class="notification notification--success">
                 <h1>Vellykket verifisering</h1>
-                <p>Fullmektig etternavn: <span th:text="${fullmektig_etternavn.first}" th:remove="tag">...</span></p>
-                <p>Fullmektig fornavn: <span th:text="${fullmektig_fornavn.first}" th:remove="tag">...</span></p>
-                <p>Fullmaktsgiver fornavn: <span th:text="${fullmaktsgiver_fornavn.first}" th:remove="tag">...</span></p>
-                <p>Fullmaktsgiver etternavn: <span th:text="${fullmaktsgiver_etternavn.first}" th:remove="tag">...</span></p>
+                <p>Fullmektig: <span th:text="${fullmektig_navn.first}" th:remove="tag">...</span></p>
+                <p>Fullmaktsgiver: <span th:text="${fullmaktsgiver_navn.first}" th:remove="tag">...</span></p>
                 <p>Rettigheter: <span th:text="${#strings.listJoin(fullmektig_rettigheter, ',')}">...</span></p>
                 <div class="btn-group">
                     <a th:href="@{/}">
