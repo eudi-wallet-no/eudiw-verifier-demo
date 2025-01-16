@@ -16,10 +16,9 @@
 	<properties>
 		<java.version>21</java.version>
 		<kotlin.version>2.1.0</kotlin.version>
-		<idporten-actuator.version>1.2.1</idporten-actuator.version>
+		<idporten-actuator.version>1.2.2</idporten-actuator.version>
 		<idporten-access-log.version>2.5.0</idporten-access-log.version>
 		<opentelemetry-instrumentation-api.version>1.46.0</opentelemetry-instrumentation-api.version>
-		<nimbus-jose-jwt.version>10.0</nimbus-jose-jwt.version>
 		<zxing.javase.version>3.5.3</zxing.javase.version>
 	</properties>
 	<dependencies>
@@ -92,7 +91,7 @@
 		<dependency>
 			<groupId>org.jetbrains.kotlinx</groupId>
 			<artifactId>kotlinx-serialization-bom</artifactId>
-			<version>1.7.3</version>
+			<version>1.8.0</version>
 			<type>pom</type>
 		</dependency>
 		<dependency>
