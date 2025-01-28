@@ -15,6 +15,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.idporten.wallet.verifier_demo.crypto.KeyProvider;
 import no.idporten.wallet.verifier_demo.service.CacheService;
+import no.idporten.wallet.verifier_demo.trace.JsonTrace;
+import no.idporten.wallet.verifier_demo.trace.MapTrace;
+import no.idporten.wallet.verifier_demo.trace.ProtocolTrace;
+import no.idporten.wallet.verifier_demo.trace.StringTrace;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -24,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,12 +43,19 @@ class ResponseController {
 
     @ResponseBody
     @PostMapping("/response")
-    public String handleResponse(@ModelAttribute(name = "response") String response, @ModelAttribute(name = "state") String state, @ModelAttribute(name = "vp_token") String vpToken) throws ParseException, JOSEException, IOException {
+    public String handleResponse(@ModelAttribute(name = "response") String response, @ModelAttribute(name = "state") String state) throws ParseException, JOSEException, IOException {
 
+        List<ProtocolTrace> traces = new ArrayList<>();
+        traces.add(new StringTrace("walletResponse", "Wallet response", response));
+
+
+        // TODO samle opp her, legge i cache?
         Map<String, Object> claimsFromJwePayload = decryptAndDeserializeJweResponse(response);
+        traces.add(new JsonTrace("jweClaims", "Decrypted JWE payload", claimsFromJwePayload));
         String nonce = (String) claimsFromJwePayload.get("nonce");
 
         MultiValueMap<String, String> elementsFromPidDocumentInMDoc = retrieveElementsFromPidDocumentInMDoc((String) claimsFromJwePayload.get("vp_token"));
+        traces.add(new MapTrace("pidDocumentElements", "Elements from PID-document in MDoc", elementsFromPidDocumentInMDoc));
 
         log.info("Received authorization response from wallet");
         log.info("Got following elements from PID-document:");
@@ -53,12 +65,14 @@ class ResponseController {
         cacheService.addCrossDevice(cacheState, !cacheState.equals(state));
         cacheService.addState(cacheState, elementsFromPidDocumentInMDoc);
 
+        String responseBody = "{}";
         if (cacheState.equals(state)){
             String redirectUri = cacheService.getRUri(cacheState);
-            return "{ \"redirect_uri\" : \"" + redirectUri + "\"}";
-        }else{      
-            return "{}";      
+            responseBody = "{ \"redirect_uri\" : \"" + redirectUri + "\"}";
         }
+        traces.add(new StringTrace("walletResponseResponse", "Response to wallet response", responseBody));
+        cacheService.addTrace(cacheState, traces);
+        return responseBody;
     }
 
     private Map<String, Object> decryptAndDeserializeJweResponse(String response) throws ParseException, JOSEException {

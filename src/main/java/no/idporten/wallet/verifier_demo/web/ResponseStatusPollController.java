@@ -49,6 +49,7 @@ public class ResponseStatusPollController {
     public String pollComplete(@PathVariable("type") String type, @PathVariable("state") String state, HttpSession session, Model model) {
         MultiValueMap<String, String> claims = cacheService.getState(state);
         model.addAllAttributes(claims);
+        model.addAttribute("traces", cacheService.getTrace(state));
         if ("alder".equals(type)) {
             // TODO kanskje modellen skulle fikse dette selv
             if (claims.containsKey("age_over_18") && "true".equalsIgnoreCase(claims.getFirst("age_over_18"))) {

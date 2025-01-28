@@ -1,9 +1,11 @@
 package no.idporten.wallet.verifier_demo.service;
 
+import no.idporten.wallet.verifier_demo.trace.ProtocolTrace;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,6 +55,15 @@ public class CacheService {
     public Boolean getCrossDevice(String state) {
         return crossDeviceCache.remove(state);
     }
-    
+
+    Map<String, List<ProtocolTrace>> traceCache = new HashMap<>();
+
+    public void addTrace(String state, List<ProtocolTrace> traces) {
+        traceCache.put(state, traces);
+    }
+
+    public List<ProtocolTrace> getTrace(String state) {
+        return traceCache.remove(state);
+    }
 
 }
