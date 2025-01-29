@@ -15,10 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.idporten.wallet.verifier_demo.crypto.KeyProvider;
 import no.idporten.wallet.verifier_demo.service.CacheService;
-import no.idporten.wallet.verifier_demo.trace.JsonTrace;
-import no.idporten.wallet.verifier_demo.trace.MapTrace;
-import no.idporten.wallet.verifier_demo.trace.ProtocolTrace;
-import no.idporten.wallet.verifier_demo.trace.StringTrace;
+import no.idporten.wallet.verifier_demo.trace.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -53,8 +50,10 @@ class ResponseController {
         Map<String, Object> claimsFromJwePayload = decryptAndDeserializeJweResponse(response);
         traces.add(new JsonTrace("jweClaims", "Decrypted JWE payload", claimsFromJwePayload));
         String nonce = (String) claimsFromJwePayload.get("nonce");
+        String vpToken = (String) claimsFromJwePayload.get("vp_token");
+        traces.add(new CBORTrace("vpTokenCbort", "vp_token CBOR pretty", vpToken));
 
-        MultiValueMap<String, String> elementsFromPidDocumentInMDoc = retrieveElementsFromPidDocumentInMDoc((String) claimsFromJwePayload.get("vp_token"));
+        MultiValueMap<String, String> elementsFromPidDocumentInMDoc = retrieveElementsFromPidDocumentInMDoc(vpToken);
         traces.add(new MapTrace("pidDocumentElements", "Elements from PID-document in MDoc", elementsFromPidDocumentInMDoc));
 
         log.info("Received authorization response from wallet");
