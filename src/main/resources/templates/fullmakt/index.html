@@ -5,10 +5,10 @@
 
 <head>
     <meta charset="UTF-8"/>
-    <meta name="description" content="ID-porten NOKIOS VC Verifier demo">
+    <meta name="description" content="ID-porten VC Verifier demo">
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link th:href="@{/css/idp-style-0.7.27.css}" rel="stylesheet">
-    <script th:src="@{/js/idp-script-0.7.27.js}" defer></script>
+    <link th:href="@{/css/idp-style-0.7.33.css}" rel="stylesheet">
+    <script th:src="@{/js/idp-script-0.7.33.js}" defer></script>
     <title>ID-porten NOKIOS VC Verifier demo</title>
 </head>
 <body onload="doPoll()">
@@ -27,6 +27,7 @@
             <div class="btn-group">
                 <a th:href="${authzRequest}"><button class="button ">Åpne på mobilen</button></a>
             </div>
+            <div th:replace="~{fragments/traces :: traces}">...</div>
         </div>
     </div>
 </main>

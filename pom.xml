@@ -80,6 +80,11 @@
 			<version>0.10.0</version>
 		</dependency>
 		<dependency>
+			<groupId>com.authlete</groupId>
+			<artifactId>cbor</artifactId>
+			<version>1.19</version>
+		</dependency>
+		<dependency>
 			<groupId>org.jetbrains.kotlin</groupId>
 			<artifactId>kotlin-stdlib-jdk8</artifactId>
 			<version>${kotlin.version}</version>
