@@ -22,7 +22,7 @@
                      class="accordion-collapse collapse"
                      th:aria-labelledby="${'heading' + trace.id}"
                      data-bs-parent="#traces">
-                    <div class="accordion-body" style="white-space: pre-wrap;" th:text="${trace.formatted}"></div>
+                    <div class="accordion-body" style="white-space: pre-wrap; overflow-wrap: break-word;" th:text="${trace.formatted}"></div>
                 </div>
             </div>
         </th:block>
