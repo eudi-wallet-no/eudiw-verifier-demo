@@ -58,7 +58,10 @@ public class ResponseStatusPollController {
                 return "alder/under18";
             }
         }
-        return "fullmakt/result";
+        if ("fullmakt".equals(type)) {
+            return "fullmakt/result";
+        }
+        return "pid/result";
     }
 
 }
