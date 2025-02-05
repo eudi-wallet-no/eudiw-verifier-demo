@@ -39,4 +39,4 @@ vcverifier:
     - id: pid
       doc-type: "eu.europa.ec.eudi.pid.1"
       fields:
-        - administrative_number
+        - personal_administrative_number
