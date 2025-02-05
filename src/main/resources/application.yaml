@@ -36,3 +36,7 @@ vcverifier:
         - fullmektig_rettigheter
         - fullmektig_navn
         - fullmaktsgiver_navn
+    - id: pid
+      doc-type: "eu.europa.ec.eudi.pid.1"
+      fields:
+        - administrative_number
