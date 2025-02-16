@@ -15,6 +15,7 @@
 	<description>Demo EUDIW Verifier</description>
 	<properties>
 		<java.version>23</java.version>
+		<maven.compiler.proc>full</maven.compiler.proc>
 		<kotlin.version>2.1.10</kotlin.version>
 		<idporten-actuator.version>1.2.2</idporten-actuator.version>
 		<idporten-access-log.version>2.7.0</idporten-access-log.version>

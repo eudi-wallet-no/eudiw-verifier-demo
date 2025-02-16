@@ -12,7 +12,7 @@ Hosts-fil:
 ```
 127.0.0.1 abr.vc.local
 ```
-Starte med spring boot, profilen `dev` er satt opp for å kjøre på http://abr.vc.local:8080/ .
+Starte med spring boot, profilen `dev` er satt opp for å kjøre på https://abr.vc.local:8082/ .
 
 ```
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
@@ -23,5 +23,5 @@ Køyr kommandolinje:
 ```
 docker compose up -build
 ```
-Starter med profilen `docker`, og køyrer på url https://abr.vc.local:8080 
+Starter med profilen `docker`, og køyrer på url https://abr.vc.local:8082
 
