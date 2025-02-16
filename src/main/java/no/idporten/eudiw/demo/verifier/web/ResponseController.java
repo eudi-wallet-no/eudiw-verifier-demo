@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.idporten.eudiw.demo.verifier.crypto.KeyProvider;
 import no.idporten.eudiw.demo.verifier.service.CacheService;
 import no.idporten.eudiw.demo.verifier.trace.*;
-import no.idporten.wallet.verifier_demo.trace.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;

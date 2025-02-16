@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.idporten.eudiw.demo.verifier.service.CacheService;
-import no.idporten.wallet.verifier_demo.service.*;
 import no.idporten.eudiw.demo.verifier.trace.JsonTrace;
 import no.idporten.eudiw.demo.verifier.trace.ProtocolTrace;
 import no.idporten.eudiw.demo.verifier.trace.UriTrace;

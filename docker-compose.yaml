@@ -1,11 +1,11 @@
-name: wallet-demo
+name: eudiw-demo
 networks:
   demo:
     name: demo
 
 
 services:
-  wallet-verifier:
+  eudiw-verifier:
     build:
       context: .
       dockerfile: docker/dev.Dockerfile
