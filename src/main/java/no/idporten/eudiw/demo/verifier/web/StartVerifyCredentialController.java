@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.idporten.eudiw.demo.verifier.service.CacheService;
+import no.idporten.eudiw.demo.verifier.service.OID4VPRequestService;
 import no.idporten.eudiw.demo.verifier.trace.JsonTrace;
 import no.idporten.eudiw.demo.verifier.trace.ProtocolTrace;
 import no.idporten.eudiw.demo.verifier.trace.UriTrace;
@@ -25,7 +26,7 @@ import java.util.UUID;
 @Controller
 public class StartVerifyCredentialController {
 
-    private final no.idporten.eudiw.demo.verifier.service.OID4VPRequestService OID4VPRequestService;
+    private final OID4VPRequestService oid4VPRequestService;
     private final CacheService cacheService;
 
     @GetMapping(value = "/verify/{type}")
@@ -36,10 +37,10 @@ public class StartVerifyCredentialController {
         String state = UUID.randomUUID().toString();
         session.setAttribute("state", state);
         model.addAttribute("state", state);
-        model.addAttribute("authzRequest", OID4VPRequestService.getAuthorizationRequest(type, state));
+        model.addAttribute("authzRequest", oid4VPRequestService.getAuthorizationRequest(type, state));
         List<ProtocolTrace> protocolTraceList = List.of(
-                new UriTrace("authzRequest", "Authorization request", URI.create(OID4VPRequestService.getAuthorizationRequest(type, state))),
-                new JsonTrace("presentationRequest", "Presentation request", OID4VPRequestService.makeRequestJwt(type, state).getJWTClaimsSet().toJSONObject())
+                new UriTrace("authzRequest", "Authorization request", URI.create(oid4VPRequestService.getAuthorizationRequest(type, state))),
+                new JsonTrace("presentationRequest", "Presentation request", oid4VPRequestService.makeRequestJwt(type, state).getJWTClaimsSet().toJSONObject())
         );
         model.addAttribute("traces", protocolTraceList);
 
