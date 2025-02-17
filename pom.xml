@@ -12,7 +12,7 @@
 	<artifactId>eudiw-verifier-demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>eudiw-verifier-demo</name>
-	<description>EUDIW demp verifier</description>
+	<description>EUDIW demo verifier</description>
 	<properties>
 		<java.version>23</java.version>
 		<maven.compiler.proc>full</maven.compiler.proc>
