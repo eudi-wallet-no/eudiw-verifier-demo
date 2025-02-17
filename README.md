@@ -21,7 +21,7 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ### Docker
 Køyr kommandolinje:
 ```
-docker compose up -build
+docker compose up --build
 ```
 Starter med profilen `docker`, og køyrer på url https://abr.vc.local:8082
 
