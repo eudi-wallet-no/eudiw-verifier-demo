@@ -15,8 +15,8 @@ jobs:
   call-workflow-image-build-publish:
     uses: felleslosninger/github-workflows/.github/workflows/ci-spring-boot-build-publish-image.yml@main
     with:
-      image-name: idporten-wallet-verifier-demo
-      java-version: 21
+      image-name: eudiw-verifier-demo
+      java-version: 23
     secrets: inherit
 
   update-image-version:
@@ -24,15 +24,15 @@ jobs:
     needs: call-workflow-image-build-publish
     strategy:
       matrix:
-        application-name: [idporten-wallet-verifier-demo]
+        application-name: [eudiw-verifier-demo]
         include:
-          - application-name: idporten-wallet-verifier-demo
+          - application-name: eudiw-verifier-demo
             product-name: idporten
     with:
       application-name: ${{ matrix.application-name }}
       deployment-environment: systest
       image-digest: ${{ needs.call-workflow-image-build-publish.outputs.image-digest }}
-      image-name: idporten-wallet-verifier-demo 
+      image-name: eudiw-verifier-demo
       image-version: ${{ needs.call-workflow-image-build-publish.outputs.image-version }}
       kubernetes-repo: idporten-cd
       product-name: ${{ matrix.product-name }}

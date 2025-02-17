@@ -15,9 +15,9 @@ COPY src ./src
 RUN --mount=type=cache,target=/root/.m2/repository mvn -B package dependency:go-offline -Dmaven.test.skip=true -Dmaven.gitcommitid.skip=true
 
 
-FROM eclipse-temurin:21-jre-jammy
+FROM  eclipse-temurin:23-jre-noble
 
-ARG APPLICATION=verifier-demo-0.0.1
+ARG APPLICATION=eudiw-verifier-demo-0.0.1
 RUN mkdir /var/log/${APPLICATION}
 RUN mkdir /usr/local/webapps
 WORKDIR /usr/local/webapps

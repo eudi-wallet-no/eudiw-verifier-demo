@@ -8,13 +8,14 @@
 		<version>3.4.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>no.idporten.wallet</groupId>
-	<artifactId>verifier-demo</artifactId>
+	<groupId>no.idporten.eudiw</groupId>
+	<artifactId>eudiw-verifier-demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>verifier-demo</name>
-	<description>Demo of Wallet Verifier in ID-porten</description>
+	<name>eudiw-verifier-demo</name>
+	<description>EUDIW demo verifier</description>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>23</java.version>
+		<maven.compiler.proc>full</maven.compiler.proc>
 		<kotlin.version>2.1.10</kotlin.version>
 		<idporten-actuator.version>1.2.2</idporten-actuator.version>
 		<idporten-access-log.version>2.7.0</idporten-access-log.version>
