@@ -27,7 +27,7 @@ jobs:
         application-name: [eudiw-verifier-demo]
         include:
           - application-name: eudiw-verifier-demo
-            product-name: idporten
+            product-name: eudiw
     with:
       application-name: ${{ matrix.application-name }}
       deployment-environment: systest
