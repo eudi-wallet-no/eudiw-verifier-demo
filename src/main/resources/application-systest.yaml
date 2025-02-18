@@ -3,8 +3,8 @@ spring:
     environment: systest
 
 vcverifier:
-  siop2ClientId: demo-vc-verifier.idporten.dev
-  externalBaseUrl: https://demo-vc-verifier.idporten.dev
+  siop2ClientId: eudiw-verifier-demo.idporten.dev
+  externalBaseUrl: https://eudiw-verifier-demo.idporten.dev/
   keystores:
     - type: JKS
       location: base64:${VERIFIER_KEYSTORE}
