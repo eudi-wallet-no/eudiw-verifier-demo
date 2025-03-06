@@ -27,7 +27,8 @@ public class JwksProvider {
                             .x509CertChain(encodedCertificates)
                             .build());
                 } else {
-                    jwkList.add(new ECKey.Builder(Curve.P_256, keyProvider.ecPublicKey())
+                    jwkList.add(new ECKey.Builder(
+                            ECUtils.curveFromKey(keyProvider), keyProvider.ecPublicKey())
                             .keyUse(KeyUse.parse(use))
                             .keyIDFromThumbprint()
                             .x509CertChain(encodedCertificates)

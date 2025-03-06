@@ -1,6 +1,7 @@
 package no.idporten.eudiw.demo.verifier.crypto;
 
 import java.security.*;
+import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
@@ -39,6 +40,10 @@ public class KeyProvider {
 
     public ECPublicKey ecPublicKey() {
         return (ECPublicKey) publicKey();
+    }
+
+    public ECPrivateKey ecPrivateKey() {
+        return (ECPrivateKey) privateKey();
     }
 
     public boolean isRsa() {

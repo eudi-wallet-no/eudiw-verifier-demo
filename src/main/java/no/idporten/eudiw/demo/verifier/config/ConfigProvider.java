@@ -44,12 +44,9 @@ public class ConfigProvider implements InitializingBean {
         private String password;
         private String keyAlias;
         private String keyPassword;
-
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        int i = 1;
-
     }
 }
