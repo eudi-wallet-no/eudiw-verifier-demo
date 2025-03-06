@@ -3,7 +3,6 @@ package no.idporten.eudiw.demo.verifier.service;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.ECDSASigner;
 import com.nimbusds.jose.crypto.RSASSASigner;
-import com.nimbusds.jose.jwk.Curve;
 import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -13,14 +12,12 @@ import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
 import no.idporten.eudiw.demo.verifier.config.CredentialConfig;
+import no.idporten.eudiw.demo.verifier.crypto.ECUtils;
 import no.idporten.eudiw.demo.verifier.crypto.KeyProvider;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -32,8 +29,8 @@ public class OID4VPRequestService {
     public String getAuthorizationRequest(String type, String state) {
         return "eudi-openid4vp://"
                 + configProvider.getSiop2ClientId()
-                +"?client_id="+configProvider.getSiop2ClientId()
-                +"&request_uri="+configProvider.getExternalBaseUrl()+"/req/" + type + "/" + state;
+                + "?client_id=" + configProvider.getSiop2ClientId()
+                + "&request_uri=" + configProvider.getExternalBaseUrl() + "/req/" + type + "/" + state;
     }
 
     public JWT makeRequestJwt(String type, String state) throws Exception {
@@ -68,10 +65,10 @@ public class OID4VPRequestService {
                     .build();
             signer = new RSASSASigner(keyProvider.privateKey());
         } else {
-            jwtHeader = new JWSHeader.Builder(JWSAlgorithm.ES256)
+            jwtHeader = new JWSHeader.Builder(ECUtils.jwsAlgorithmFromKey(keyProvider))
                     .x509CertChain(certChain)
                     .build();
-            signer = new ECDSASigner(keyProvider.privateKey(), Curve.P_256);
+            signer = new ECDSASigner(keyProvider.ecPrivateKey());
         }
         SignedJWT signedJWT = new SignedJWT(jwtHeader, claims);
         signedJWT.sign(signer);
@@ -146,7 +143,6 @@ public class OID4VPRequestService {
         metadata.appendField("authorization_encrypted_response_enc", EncryptionMethod.A128CBC_HS256.getName());
         return metadata;
     }
-
 
 
 }
