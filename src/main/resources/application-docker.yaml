@@ -18,6 +18,7 @@ management:
 
 vcverifier:
   siop2ClientId: abr.vc.local
+  client-identifier-scheme: x509_san_dns
   externalBaseUrl: https://abr.vc.local:8082
   keystores:
     - type: JKS

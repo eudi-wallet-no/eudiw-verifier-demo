@@ -6,6 +6,7 @@ spring:
 
 vcverifier:
   siop2ClientId: abr.vc.local
+  client-identifier-scheme: x509_san_dns
   externalBaseUrl: http://abr.vc.local:8080
   keystores:
     - type: JKS

@@ -29,9 +29,10 @@ public class OID4VPRequestService {
     public String getAuthorizationRequest(String type, String state) {
         return "eudi-openid4vp://"
                 + configProvider.getSiop2ClientId()
-                + "?client_id=" + configProvider.getSiop2ClientId()
+                + "?client_id=" + configProvider.getClientIdentifier()
                 + "&request_uri=" + configProvider.getExternalBaseUrl() + "/req/" + type + "/" + state;
     }
+
 
     public JWT makeRequestJwt(String type, String state) throws Exception {
         CredentialConfig credentialConfig = configProvider.getCredentialConfig(type);
@@ -47,8 +48,7 @@ public class OID4VPRequestService {
                 .claim("response_mode", "direct_post.jwt")
                 .claim("nonce", "nonceval") // TODO: Generate nonce
                 .claim("state", state)
-                .claim("client_id_scheme", "x509_san_dns")
-                .claim("client_id", configProvider.getSiop2ClientId())
+                .claim("client_id", configProvider.getClientIdentifier())
                 .claim("presentation_definition", makePresentationDefinition(credentialConfig))
                 .claim("client_metadata", makeClientMetadata())
                 .jwtID(UUID.randomUUID().toString()) // Must be unique for each grant

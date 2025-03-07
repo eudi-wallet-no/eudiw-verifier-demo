@@ -3,8 +3,9 @@ spring:
     environment: test
 
 vcverifier:
-  siop2ClientId:  eudiw-verifier-demo.test.idporten.no
-  externalBaseUrl: https:// eudiw-verifier-demo.test.idporten.no
+  siop2ClientId: eudiw-verifier-demo.test.idporten.no
+  client-identifier-scheme: x509_san_dns
+  externalBaseUrl: https://eudiw-verifier-demo.test.idporten.no
   keystores:
     - type: JKS
       location: base64:${VERIFIER_KEYSTORE}
