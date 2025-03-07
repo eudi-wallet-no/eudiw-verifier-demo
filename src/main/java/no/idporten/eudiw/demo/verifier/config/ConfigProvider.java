@@ -21,6 +21,10 @@ public class ConfigProvider implements InitializingBean {
 
     @NotNull
     private String siop2ClientId;
+
+    @NotNull
+    private String clientIdentifierScheme;
+
     @NotNull
     private String externalBaseUrl;
     @NotEmpty
@@ -49,4 +53,9 @@ public class ConfigProvider implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
     }
+
+    public String getClientIdentifier() {
+        return String.format("%s:%s", clientIdentifierScheme, siop2ClientId);
+    }
+
 }
