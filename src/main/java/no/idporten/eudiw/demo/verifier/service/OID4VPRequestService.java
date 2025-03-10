@@ -49,6 +49,7 @@ public class OID4VPRequestService {
                 .claim("nonce", "nonceval") // TODO: Generate nonce
                 .claim("state", state)
                 .claim("client_id", configProvider.getClientIdentifier())
+                .claim("client_id_scheme", configProvider.getClientIdentifierScheme())
                 .claim("presentation_definition", makePresentationDefinition(credentialConfig))
                 .claim("client_metadata", makeClientMetadata())
                 .jwtID(UUID.randomUUID().toString()) // Must be unique for each grant
@@ -126,6 +127,7 @@ public class OID4VPRequestService {
         JSONArray algs = new JSONArray(2);
         algs.add(JWSAlgorithm.RS256.getName());
         algs.add(JWSAlgorithm.ES256.getName());
+        algs.add(JWSAlgorithm.ES384.getName());
 
         JSONObject mdoc = new JSONObject();
         mdoc.appendField("alg", algs);
@@ -143,6 +145,5 @@ public class OID4VPRequestService {
         metadata.appendField("authorization_encrypted_response_enc", EncryptionMethod.A128CBC_HS256.getName());
         return metadata;
     }
-
 
 }
