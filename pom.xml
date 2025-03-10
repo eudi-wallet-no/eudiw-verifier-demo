@@ -19,7 +19,7 @@
 		<kotlin.version>2.1.10</kotlin.version>
 		<idporten-actuator.version>1.2.2</idporten-actuator.version>
 		<idporten-access-log.version>2.7.0</idporten-access-log.version>
-		<opentelemetry-instrumentation-api.version>1.47.0</opentelemetry-instrumentation-api.version>
+		<opentelemetry-instrumentation-api.version>1.48.0</opentelemetry-instrumentation-api.version>
 		<nimbus-jose-jwt.version>10.0.2</nimbus-jose-jwt.version>
 		<zxing.javase.version>3.5.3</zxing.javase.version>
 	</properties>
