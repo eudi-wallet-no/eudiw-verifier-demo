@@ -5,7 +5,7 @@ Demo av verifisering verified credentials til digital lommebok.
 
 ## Kjøre lokalt
 
-Java 23
+Java 24
 
 ### Dev
 Hosts-fil:
