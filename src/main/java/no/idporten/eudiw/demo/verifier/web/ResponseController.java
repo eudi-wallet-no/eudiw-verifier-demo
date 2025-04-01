@@ -40,7 +40,7 @@ class ResponseController {
 
     @ResponseBody
     @PostMapping("/response")
-    public String handleResponse(@ModelAttribute(name = "response") String response, @ModelAttribute(name = "state") String state) throws ParseException, JOSEException, IOException {
+    public String handleResponse(@ModelAttribute(name = "response") String response) throws ParseException, JOSEException, IOException {
 
         List<ProtocolTrace> traces = new ArrayList<>();
         traces.add(new StringTrace("walletResponse", "Wallet response", response));
@@ -50,13 +50,14 @@ class ResponseController {
         Map<String, Object> claimsFromJwePayload = decryptAndDeserializeJweResponse(response);
         traces.add(new JsonTrace("jweClaims", "Decrypted JWE payload", claimsFromJwePayload));
         String nonce = (String) claimsFromJwePayload.get("nonce");
+        String state = (String) claimsFromJwePayload.get("state");
         String vpToken = (String) claimsFromJwePayload.get("vp_token");
         traces.add(new CBORTrace("vpTokenCbort", "vp_token CBOR pretty", vpToken));
 
         MultiValueMap<String, String> elementsFromPidDocumentInMDoc = retrieveElementsFromPidDocumentInMDoc(vpToken);
         traces.add(new MapTrace("pidDocumentElements", "Elements from PID-document in MDoc", elementsFromPidDocumentInMDoc));
 
-        log.info("Received authorization response from wallet");
+        log.info("Received authorization response from wallet with nonce [%s] and state [%s]".formatted(nonce, state));
         log.info("Got following elements from PID-document:");
         elementsFromPidDocumentInMDoc.keySet().stream()
                 .forEach(k -> log.info(k + ": "+elementsFromPidDocumentInMDoc.get(k)));
