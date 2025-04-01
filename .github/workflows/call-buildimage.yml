@@ -16,7 +16,7 @@ jobs:
     uses: felleslosninger/github-workflows/.github/workflows/ci-spring-boot-build-publish-image.yml@main
     with:
       image-name: eudiw-verifier-demo
-      java-version: 23
+      java-version: 24
     secrets: inherit
 
   update-image-version:
