@@ -50,7 +50,7 @@ class ResponseController {
         Map<String, Object> claimsFromJwePayload = decryptAndDeserializeJweResponse(response);
         traces.add(new JsonTrace("jweClaims", "Decrypted JWE payload", claimsFromJwePayload));
         String nonce = (String) claimsFromJwePayload.get("nonce");
-        String state = (String) claimsFromJwePayload.get("nonce");
+        String state = (String) claimsFromJwePayload.get("state");
         String vpToken = (String) claimsFromJwePayload.get("vp_token");
         traces.add(new CBORTrace("vpTokenCbort", "vp_token CBOR pretty", vpToken));
 
