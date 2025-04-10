@@ -21,6 +21,11 @@
 		<idporten-access-log.version>2.7.1</idporten-access-log.version>
 		<opentelemetry-instrumentation-api.version>1.49.0</opentelemetry-instrumentation-api.version>
 		<nimbus-jose-jwt.version>10.2</nimbus-jose-jwt.version>
+		<waltid-mdoc-credentials-jvm.version>0.13.0</waltid-mdoc-credentials-jvm.version>
+		<cose-java.version>1.1.1-SNAPSHOT</cose-java.version>
+		<cbor.version>1.19</cbor.version>
+		<bcprov-lts8on.version>2.73.7</bcprov-lts8on.version>
+		<zxing.javase.version>3.5.3</zxing.javase.version>
 		<zxing.javase.version>3.5.3</zxing.javase.version>
 		<lombok.version>1.18.38</lombok.version>
 	</properties>
@@ -84,12 +89,36 @@
 		<dependency>
 			<groupId>id.walt.mdoc-credentials</groupId>
 			<artifactId>waltid-mdoc-credentials-jvm</artifactId>
-			<version>0.13.0</version>
+			<version>${waltid-mdoc-credentials-jvm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cose</groupId>
+			<artifactId>cose-java</artifactId>
+			<version>${cose-java.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-lts8on</artifactId>
+			<version>${bcprov-lts8on.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.authlete</groupId>
 			<artifactId>cbor</artifactId>
-			<version>1.19</version>
+			<version>${cbor.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bcpkix-jdk18on</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bcprov-jdk18on</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bcutil-jdk18on</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.jetbrains.kotlin</groupId>
@@ -198,11 +227,15 @@
 			<url>https://maven.pkg.github.com/felleslosninger/.github</url>
 		</repository>
 		<repository>
-			<id>reposilite-repository-releases</id>
-			<name>Reposilite Repository</name>
+			<id>waltid-repository-releases</id>
+			<name>walt.id Release Repository</name>
 			<url>https://maven.waltid.dev/releases</url>
 		</repository>
-
+		<repository>
+			<id>waltid-repository-snapshots</id>
+			<name>walt.id Snapshot Repository</name>
+			<url>https://maven.waltid.dev/snapshots</url>
+		</repository>
 	</repositories>
 
 </project>
