@@ -26,7 +26,6 @@
 		<cbor.version>1.19</cbor.version>
 		<bcprov-lts8on.version>2.73.7</bcprov-lts8on.version>
 		<zxing.javase.version>3.5.3</zxing.javase.version>
-		<zxing.javase.version>3.5.3</zxing.javase.version>
 		<lombok.version>1.18.38</lombok.version>
 	</properties>
 	<dependencies>
