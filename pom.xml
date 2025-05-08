@@ -17,7 +17,7 @@
 		<java.version>24</java.version>
 		<maven.compiler.proc>full</maven.compiler.proc>
 		<kotlin.version>2.1.20</kotlin.version>
-		<idporten-actuator.version>1.3.1</idporten-actuator.version>
+		<idporten-actuator.version>1.3.3</idporten-actuator.version>
 		<idporten-access-log.version>2.7.2</idporten-access-log.version>
 		<opentelemetry-instrumentation-api.version>1.49.0</opentelemetry-instrumentation-api.version>
 		<nimbus-jose-jwt.version>10.2</nimbus-jose-jwt.version>
