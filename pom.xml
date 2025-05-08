@@ -21,7 +21,7 @@
 		<idporten-access-log.version>2.7.2</idporten-access-log.version>
 		<opentelemetry-instrumentation-api.version>1.49.0</opentelemetry-instrumentation-api.version>
 		<nimbus-jose-jwt.version>10.2</nimbus-jose-jwt.version>
-		<waltid-mdoc-credentials-jvm.version>0.13.0</waltid-mdoc-credentials-jvm.version>
+		<waltid-mdoc-credentials-jvm.version>0.14.0</waltid-mdoc-credentials-jvm.version>
 		<cose-java.version>1.1.1-SNAPSHOT</cose-java.version>
 		<cbor.version>1.19</cbor.version>
 		<bcprov-lts8on.version>2.73.7</bcprov-lts8on.version>
