@@ -143,7 +143,20 @@ public class OID4VPRequestService {
         metadata.appendField("id_token_signed_response_alg", JWSAlgorithm.RS256.getName());
         metadata.appendField("authorization_encrypted_response_alg", JWEAlgorithm.ECDH_ES.getName());
         metadata.appendField("authorization_encrypted_response_enc", EncryptionMethod.A128CBC_HS256.getName());
+        metadata.appendField("vp_formats", makeVpFormats());
         return metadata;
+    }
+
+    public JSONObject makeVpFormats() {
+        JSONObject formatMsoMdoc = new JSONObject();
+        JSONArray algs = new JSONArray();
+        algs.add("ES256");
+        algs.add("ES384");
+        algs.add("ES512");
+        formatMsoMdoc.appendField("alg", algs);
+        JSONObject vpFormats = new JSONObject();
+        vpFormats.appendField("mso_mdoc", formatMsoMdoc);
+        return vpFormats;
     }
 
 }
