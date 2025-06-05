@@ -17,17 +17,26 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*")
 public class JwksController {
 
-        private JwksProvider jwksProvider;
+    private JwksProvider jwksProvider;
 
-        @Autowired
-        public JwksController(JwksProvider jwksProvider) {
-            this.jwksProvider = jwksProvider;
-        }
+    @Autowired
+    public JwksController(JwksProvider jwksProvider) {
+        this.jwksProvider = jwksProvider;
+    }
 
-        @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-        @ResponseBody
-        public ResponseEntity getJwk() {
-            return ResponseEntity.ok(JwkResponse.builder().addJwks(jwksProvider.jwks().getKeys().stream().map(JWK::toJSONString).collect(Collectors.toList())).build());
-        }
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public ResponseEntity getJwks() {
+        return ResponseEntity.ok(
+                JwkResponse
+                        .builder()
+                        .addJwks(jwksProvider.jwks()
+                                .getKeys()
+                                .stream()
+                                .map(JWK::toPublicJWK)
+                                .map(JWK::toJSONString)
+                                .collect(Collectors.toList()))
+                        .build());
+    }
 
 }

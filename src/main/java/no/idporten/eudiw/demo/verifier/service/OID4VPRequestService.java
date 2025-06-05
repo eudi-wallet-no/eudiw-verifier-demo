@@ -3,11 +3,13 @@ package no.idporten.eudiw.demo.verifier.service;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.ECDSASigner;
 import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
@@ -139,12 +141,29 @@ public class OID4VPRequestService {
 
     public JSONObject makeClientMetadata() {
         JSONObject metadata = new JSONObject();
-        metadata.appendField("jwks_uri", configProvider.getExternalBaseUrl() + "/jwks");
+        metadata.appendField("jwks", makeJwks().toPublicJWKSet().toJSONObject());
         metadata.appendField("id_token_signed_response_alg", JWSAlgorithm.RS256.getName());
         metadata.appendField("authorization_encrypted_response_alg", JWEAlgorithm.ECDH_ES.getName());
         metadata.appendField("authorization_encrypted_response_enc", EncryptionMethod.A128CBC_HS256.getName());
         metadata.appendField("vp_formats", makeFormat());
         return metadata;
+    }
+
+    @SneakyThrows
+    private JWKSet makeJwks() {
+        List<JWK> jwkList = new ArrayList<>();
+        if (keyProvider.isRsa()) {
+            jwkList.add(new RSAKey.Builder(keyProvider.rsaPublicKey())
+                    .keyIDFromThumbprint()
+                    .x509CertChain(List.of(Base64.encode(keyProvider.certificate().getEncoded())))
+                    .build());
+        } else {
+            jwkList.add(new ECKey.Builder(ECUtils.curveFromKey(keyProvider), keyProvider.ecPublicKey())
+                    .keyIDFromThumbprint()
+                    .x509CertChain(List.of(Base64.encode(keyProvider.certificate().getEncoded())))
+                    .build());
+        }
+        return new JWKSet(jwkList);
     }
 
 }
