@@ -158,8 +158,7 @@ public class OID4VPRequestService {
                     .x509CertChain(List.of(Base64.encode(keyProvider.certificate().getEncoded())))
                     .build());
         } else {
-            jwkList.add(new ECKey.Builder(
-                    ECUtils.curveFromKey(keyProvider), keyProvider.ecPublicKey())
+            jwkList.add(new ECKey.Builder(ECUtils.curveFromKey(keyProvider), keyProvider.ecPublicKey())
                     .keyIDFromThumbprint()
                     .x509CertChain(List.of(Base64.encode(keyProvider.certificate().getEncoded())))
                     .build());
