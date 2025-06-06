@@ -18,6 +18,7 @@ import no.idporten.eudiw.demo.verifier.crypto.ECUtils;
 import no.idporten.eudiw.demo.verifier.crypto.KeyProvider;
 import org.springframework.stereotype.Service;
 
+import java.security.cert.Certificate;
 import java.time.Clock;
 import java.util.*;
 
@@ -38,10 +39,10 @@ public class OID4VPRequestService {
 
     public JWT makeRequestJwt(String type, String state) throws Exception {
         CredentialConfig credentialConfig = configProvider.getCredentialConfig(type);
-
         List<Base64> certChain = new ArrayList<>();
-        certChain.add(com.nimbusds.jose.util.Base64.encode(keyProvider.certificate().getEncoded()));
-
+        for (Certificate certificate : keyProvider.certificateChain()) {
+            certChain.add(com.nimbusds.jose.util.Base64.encode(certificate.getEncoded()));
+        }
         JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                 .audience("https://self-issued.me/v2")
                 .issuer("issuer")
@@ -57,9 +58,7 @@ public class OID4VPRequestService {
                 .jwtID(UUID.randomUUID().toString()) // Must be unique for each grant
                 .issueTime(new Date(Clock.systemUTC().millis())) // Use UTC time!
                 .expirationTime(new Date(Clock.systemUTC().millis() + 120000));
-
         JWTClaimsSet claims = builder.build();
-
         final JWSHeader jwtHeader;
         final JWSSigner signer;
         if (keyProvider.isRsa()) {
@@ -154,13 +153,13 @@ public class OID4VPRequestService {
         List<JWK> jwkList = new ArrayList<>();
         if (keyProvider.isRsa()) {
             jwkList.add(new RSAKey.Builder(keyProvider.rsaPublicKey())
+                    .keyUse(KeyUse.ENCRYPTION)
                     .keyIDFromThumbprint()
-                    .x509CertChain(List.of(Base64.encode(keyProvider.certificate().getEncoded())))
                     .build());
         } else {
             jwkList.add(new ECKey.Builder(ECUtils.curveFromKey(keyProvider), keyProvider.ecPublicKey())
+                    .keyUse(KeyUse.ENCRYPTION)
                     .keyIDFromThumbprint()
-                    .x509CertChain(List.of(Base64.encode(keyProvider.certificate().getEncoded())))
                     .build());
         }
         return new JWKSet(jwkList);
