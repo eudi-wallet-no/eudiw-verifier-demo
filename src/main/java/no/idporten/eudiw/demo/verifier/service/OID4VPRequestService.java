@@ -40,9 +40,7 @@ public class OID4VPRequestService {
     public JWT makeRequestJwt(String type, String state) throws Exception {
         CredentialConfig credentialConfig = configProvider.getCredentialConfig(type);
         List<Base64> certChain = new ArrayList<>();
-        for (Certificate certificate : keyProvider.certificateChain()) {
-            certChain.add(com.nimbusds.jose.util.Base64.encode(certificate.getEncoded()));
-        }
+        certChain.add(com.nimbusds.jose.util.Base64.encode(keyProvider.certificate().getEncoded()));
         JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                 .audience("https://self-issued.me/v2")
                 .issuer("issuer")
