@@ -62,11 +62,13 @@ public class OID4VPRequestService {
         if (keyProvider.isRsa()) {
             jwtHeader = new JWSHeader.Builder(JWSAlgorithm.RS256)
                     .x509CertChain(certChain)
+                    .type(new JOSEObjectType("oauth-authz-req+jwt"))
                     .build();
             signer = new RSASSASigner(keyProvider.privateKey());
         } else {
             jwtHeader = new JWSHeader.Builder(ECUtils.jwsAlgorithmFromKey(keyProvider))
                     .x509CertChain(certChain)
+                    .type(new JOSEObjectType("oauth-authz-req+jwt"))
                     .build();
             signer = new ECDSASigner(keyProvider.ecPrivateKey());
         }
