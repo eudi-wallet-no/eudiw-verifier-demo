@@ -1,4 +1,4 @@
-name: eudiw-demo
+name: digital-lommebok-demo
 networks:
   demo:
     name: demo
