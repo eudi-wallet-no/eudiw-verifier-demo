@@ -15,25 +15,19 @@ jobs:
   call-workflow-image-build-publish:
     uses: felleslosninger/github-workflows/.github/workflows/ci-spring-boot-build-publish-image.yml@main
     with:
-      image-name: eudiw-verifier-demo
+      image-name: digital-lommebok-verifier-demo
       java-version: 24
     secrets: inherit
 
   update-image-version:
     uses: felleslosninger/github-workflows/.github/workflows/ci-call-update-image.yml@main
     needs: call-workflow-image-build-publish
-    strategy:
-      matrix:
-        application-name: [eudiw-verifier-demo]
-        include:
-          - application-name: eudiw-verifier-demo
-            product-name: eudiw
     with:
-      application-name: ${{ matrix.application-name }}
+      application-name: digital-lommebok-verifier-demo
       deployment-environment: systest
       image-digest: ${{ needs.call-workflow-image-build-publish.outputs.image-digest }}
-      image-name: eudiw-verifier-demo
+      image-name: digital-lommebok-verifier-demo
       image-version: ${{ needs.call-workflow-image-build-publish.outputs.image-version }}
-      kubernetes-repo: idporten-cd
-      product-name: ${{ matrix.product-name }}
+      kubernetes-repo: digital-lommebok-cd
+      product-name: digital-lommebok
     secrets: inherit
