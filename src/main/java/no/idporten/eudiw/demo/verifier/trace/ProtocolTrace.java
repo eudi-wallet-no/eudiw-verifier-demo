@@ -1,6 +1,8 @@
 package no.idporten.eudiw.demo.verifier.trace;
 
-public interface ProtocolTrace {
+import java.io.Serializable;
+
+public interface ProtocolTrace extends Serializable {
 
     String id();
     String description();
