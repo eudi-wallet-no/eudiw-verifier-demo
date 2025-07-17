@@ -1,5 +1,6 @@
 package no.idporten.eudiw.demo.verifier.service;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -9,6 +10,7 @@ import java.util.Map;
 /**
  * In-memory cache for bruk i enhetstester.
  */
+@Primary
 @Service
 public class InMemoryCache implements Cache {
 
