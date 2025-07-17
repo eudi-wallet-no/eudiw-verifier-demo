@@ -1,9 +1,16 @@
 spring:
   application:
     name: verifier-demo
-
   thymeleaf:
     check-template-location: false
+  session:
+    store-type: redis
+    redis:
+      namespace: "${spring.application.name}:session"
+  data:
+    redis:
+      timeout: 3s
+      connect-timeout: 3s
 
 # Spring Boot Actuator
 management:
