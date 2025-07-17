@@ -1,3 +1,16 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+    session:
+      tracking-modes:
+        - cookie
+      cookie:
+        same-site: lax
+        secure: true
+        name: ${spring.application.name}-session
+      timeout: 30m
+
 spring:
   application:
     name: verifier-demo
@@ -11,6 +24,7 @@ spring:
     redis:
       timeout: 3s
       connect-timeout: 3s
+
 
 # Spring Boot Actuator
 management:
