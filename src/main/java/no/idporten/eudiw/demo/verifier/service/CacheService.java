@@ -2,6 +2,7 @@ package no.idporten.eudiw.demo.verifier.service;
 
 import lombok.RequiredArgsConstructor;
 import no.idporten.eudiw.demo.verifier.trace.ProtocolTrace;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
@@ -16,10 +17,13 @@ import java.util.List;
 @Service
 public class CacheService {
 
+    @Value("${spring.application.name}")
+    private String applicationName;
+
     private final Cache cache;
 
     protected String stateCacheKey(String state) {
-        return "demo-brukersted.state." + state;
+        return applicationName + ":state:" + state;
     }
 
     public void addState(String state, MultiValueMap<String, String> claims) {
@@ -35,7 +39,7 @@ public class CacheService {
     }
 
     protected String resultUriCacheKey(String state) {
-        return "demo-brukersted.result-uri." + state;
+        return applicationName + ":result-uri:" + state;
     }
 
     public void addRUri(String state, String uri) {
@@ -52,7 +56,7 @@ public class CacheService {
 
 
     protected String crossDeviceCacheKey(String state) {
-        return "demo-brukersted.cross-device." + state;
+        return applicationName + ":cross-device:" + state;
     }
 
     public void addCrossDevice(String state, Boolean isCrossDevice) {
@@ -68,7 +72,7 @@ public class CacheService {
     }
 
     protected String traceCacheKey(String state) {
-        return "demo-brukersted.trace." + state;
+        return applicationName + ":trace:" + state;
     }
 
     public void addTrace(String state, List<ProtocolTrace> traces) {
