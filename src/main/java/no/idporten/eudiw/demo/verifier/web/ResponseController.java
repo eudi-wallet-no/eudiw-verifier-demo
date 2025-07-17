@@ -82,7 +82,7 @@ class ResponseController {
         return jwe.getPayload().toJSONObject();
     }
 
-    private MultiValueMap<String, String> retrieveElementsFromPidDocumentInMDoc(String vpToken) {
+    protected MultiValueMap<String, String> retrieveElementsFromPidDocumentInMDoc(String vpToken) {
         DeviceResponse deviceResponse = DeviceResponse.Companion.fromCBORBase64URL(vpToken);
         MultiValueMap<String, String> claims = new LinkedMultiValueMap<>();
         for (MDoc mDoc : deviceResponse.getDocuments()) {
