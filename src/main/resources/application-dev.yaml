@@ -3,6 +3,10 @@ spring:
     environment: dev
   config:
     import: file:.env[.properties]
+  data:
+    redis:
+      port: 9282
+      host: localhost
 
 vcverifier:
   siop2ClientId: abr.vc.local
