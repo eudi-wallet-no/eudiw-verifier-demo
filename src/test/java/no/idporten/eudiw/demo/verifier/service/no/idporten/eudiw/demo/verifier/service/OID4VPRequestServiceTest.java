@@ -12,7 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("When generating wallet requests")
-@ActiveProfiles("test")
+@ActiveProfiles("junit")
 @SpringBootTest
 public class OID4VPRequestServiceTest {
 

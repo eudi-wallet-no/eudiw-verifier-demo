@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("When reading application configuration")
-@ActiveProfiles("test")
+@ActiveProfiles("junit")
 @SpringBootTest
 public class ConfigProviderTest {
 
