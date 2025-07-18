@@ -1,6 +1,5 @@
-package no.idporten.eudiw.demo.verifier.service.no.idporten.eudiw.demo.verifier.service;
+package no.idporten.eudiw.demo.verifier.service;
 
-import no.idporten.eudiw.demo.verifier.service.OID4VPRequestService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

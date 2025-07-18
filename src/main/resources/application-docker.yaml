@@ -2,6 +2,11 @@
 spring:
   application:
     environment: docker
+  data:
+    redis:
+      port: 9282
+      host: localhost
+
 server:
   port: 8443
   ssl:

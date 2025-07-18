@@ -1,69 +1,86 @@
 package no.idporten.eudiw.demo.verifier.service;
 
+import lombok.RequiredArgsConstructor;
 import no.idporten.eudiw.demo.verifier.trace.ProtocolTrace;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
-import java.util.HashMap;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Veldig enkel cache for å starte autentisering og lagre claims når ferdig.  Denne vil fylle opp minne!
+ * Caching av å starte autentisering og lagre claims når ferdig.
  */
+@RequiredArgsConstructor
 @Service
 public class CacheService {
 
-    Map<String, MultiValueMap<String, String>> stateCache = new HashMap<>();
+    @Value("${spring.application.name}")
+    private String applicationName;
+
+    private final Cache cache;
+
+    protected String stateCacheKey(String state) {
+        return applicationName + ":state:" + state;
+    }
 
     public void addState(String state, MultiValueMap<String, String> claims) {
-        stateCache.put(state, claims);
+        cache.set(stateCacheKey(state), claims, Duration.of(30, ChronoUnit.MINUTES));
     }
 
     public Boolean containsState(String state) {
-        return stateCache.containsKey(state);
+        return cache.get(stateCacheKey(state)) != null;
     }
 
     public MultiValueMap<String, String> getState(String state) {
-        return stateCache.remove(state);
+        return (MultiValueMap<String, String>) cache.remove(stateCacheKey(state));
     }
 
-    Map<String, String> resultURICache = new HashMap<>();
+    protected String resultUriCacheKey(String state) {
+        return applicationName + ":result-uri:" + state;
+    }
 
     public void addRUri(String state, String uri) {
-        resultURICache.put(state, uri);
+        cache.set(resultUriCacheKey(state), uri, Duration.of(30, ChronoUnit.MINUTES));
     }
 
     public Boolean containsRUri(String state) {
-        return resultURICache.containsKey(state);
+        return cache.get(resultUriCacheKey(state)) != null;
     }
 
     public String getRUri(String state) {
-        return resultURICache.remove(state);
+        return (String) cache.remove(resultUriCacheKey(state));
     }
 
-    Map<String, Boolean> crossDeviceCache = new HashMap<>();
+
+    protected String crossDeviceCacheKey(String state) {
+        return applicationName + ":cross-device:" + state;
+    }
 
     public void addCrossDevice(String state, Boolean isCrossDevice) {
-        crossDeviceCache.put(state, isCrossDevice);
+        cache.set(crossDeviceCacheKey(state), isCrossDevice, Duration.of(30, ChronoUnit.MINUTES));
     }
 
     public Boolean containsCrossDevice(String state) {
-        return crossDeviceCache.containsKey(state);
+        return cache.get(crossDeviceCacheKey(state)) != null;
     }
 
     public Boolean getCrossDevice(String state) {
-        return crossDeviceCache.remove(state);
+        return (Boolean) cache.remove(crossDeviceCacheKey(state));
     }
 
-    Map<String, List<ProtocolTrace>> traceCache = new HashMap<>();
+    protected String traceCacheKey(String state) {
+        return applicationName + ":trace:" + state;
+    }
 
     public void addTrace(String state, List<ProtocolTrace> traces) {
-        traceCache.put(state, traces);
+        cache.set(traceCacheKey(state), traces, Duration.of(30, ChronoUnit.MINUTES));
     }
 
     public List<ProtocolTrace> getTrace(String state) {
-        return traceCache.remove(state);
+        return (List<ProtocolTrace>) cache.remove(traceCacheKey(state));
     }
 
 }

@@ -1,6 +1,8 @@
 spring:
   config:
     import: file:.env[.properties]
+  session:
+    store-type: none
 
 vcverifier:
   siop2ClientId: junit.idporten.dev
