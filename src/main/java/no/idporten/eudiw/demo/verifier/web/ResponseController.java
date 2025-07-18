@@ -19,6 +19,7 @@ import no.idporten.eudiw.demo.verifier.trace.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -66,8 +67,8 @@ class ResponseController {
         cacheService.addState(cacheState, elementsFromPidDocumentInMDoc);
 
         String responseBody = "{}";
-        if (cacheState.equals(state)){
-            String redirectUri = cacheService.getRUri(cacheState);
+        String redirectUri = cacheService.getRUri(cacheState);
+        if (cacheState.equals(state) && StringUtils.hasText(redirectUri)) {
             responseBody = "{ \"redirect_uri\" : \"" + redirectUri + "\"}";
         }
         traces.add(new StringTrace("walletResponseResponse", "Response to wallet response", responseBody));
