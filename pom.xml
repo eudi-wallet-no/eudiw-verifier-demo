@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.5</version>
+		<version>3.5.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>no.idporten.eudiw</groupId>
@@ -16,7 +16,7 @@
 	<properties>
 		<java.version>24</java.version>
 		<maven.compiler.proc>full</maven.compiler.proc>
-		<kotlin.version>2.2.10</kotlin.version>
+		<kotlin.version>2.2.20</kotlin.version>
 		<idporten-actuator.version>2.0.0</idporten-actuator.version>
 		<idporten-access-log.version>2.8.0</idporten-access-log.version>
 		<opentelemetry-instrumentation-api.version>1.54.1</opentelemetry-instrumentation-api.version>
@@ -24,9 +24,9 @@
 		<waltid-mdoc-credentials-jvm.version>0.15.1</waltid-mdoc-credentials-jvm.version>
 		<cose-java.version>1.1.1-SNAPSHOT</cose-java.version>
 		<cbor.version>1.19</cbor.version>
-		<bcprov-lts8on.version>2.73.8</bcprov-lts8on.version>
+		<bcprov-lts8on.version>2.73.9</bcprov-lts8on.version>
 		<zxing.javase.version>3.5.3</zxing.javase.version>
-		<lombok.version>1.18.40</lombok.version>
+		<lombok.version>1.18.42</lombok.version>
 	</properties>
 	<dependencies>
 		<dependency>
