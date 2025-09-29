@@ -26,9 +26,6 @@ public class IndexController {
         if (request.getServerName().contains("demo-aldersverifisering")) {
             return "redirect:/verify/alder";
         }
-        if (request.getServerName().contains("demo-fullmaktinnlogging")) {
-            return "redirect:/verify/fullmakt";
-        }
         return "index";
     }
 

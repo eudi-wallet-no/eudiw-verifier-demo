@@ -55,12 +55,6 @@ vcverifier:
       doc-type: "eu.europa.ec.eudi.pid.1"
       fields:
         - age_over_18
-    - id: fullmakt
-      doc-type: "no.digdir.eudiw.fullmakt.1"
-      fields:
-        - fullmektig_rettigheter
-        - fullmektig_navn
-        - fullmaktsgiver_navn
     - id: pid
       doc-type: "eu.europa.ec.eudi.pid.1"
       fields:
