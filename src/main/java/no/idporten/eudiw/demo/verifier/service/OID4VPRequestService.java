@@ -5,6 +5,7 @@ import com.nimbusds.jose.crypto.ECDSASigner;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jose.util.Base64;
+import com.nimbusds.jose.util.JSONObjectUtils;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
@@ -18,7 +19,6 @@ import no.idporten.eudiw.demo.verifier.crypto.ECUtils;
 import no.idporten.eudiw.demo.verifier.crypto.KeyProvider;
 import org.springframework.stereotype.Service;
 
-import java.security.cert.Certificate;
 import java.time.Clock;
 import java.util.*;
 
@@ -43,15 +43,16 @@ public class OID4VPRequestService {
         certChain.add(com.nimbusds.jose.util.Base64.encode(keyProvider.certificate().getEncoded()));
         JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                 .audience("https://self-issued.me/v2")
-                .issuer("issuer")
-                .claim("response_uri", configProvider.getExternalBaseUrl() + "/response")
+                .issuer(configProvider.getExternalBaseUrl())
+                .claim("response_uri", configProvider.getExternalBaseUrl() + "/response/" + credentialConfig.getId())
                 .claim("response_type", "vp_token")
                 .claim("response_mode", "direct_post.jwt")
-                .claim("nonce", "nonceval") // TODO: Generate nonce
+                .claim("nonce", UUID.randomUUID().toString())
                 .claim("state", state)
                 .claim("client_id", configProvider.getClientIdentifier())
-                .claim("client_id_scheme", configProvider.getClientIdentifierScheme())
-                .claim("presentation_definition", makePresentationDefinition(credentialConfig))
+//                .claim("client_id_scheme", configProvider.getClientIdentifierScheme())
+//                .claim("presentation_definition", makePresentationDefinition(credentialConfig))
+                .claim("dcql_query", makeDCQL(credentialConfig))
                 .claim("client_metadata", makeClientMetadata())
                 .jwtID(UUID.randomUUID().toString()) // Must be unique for each grant
                 .issueTime(new Date(Clock.systemUTC().millis())) // Use UTC time!
@@ -77,25 +78,53 @@ public class OID4VPRequestService {
         return signedJWT;
     }
 
-    public JSONObject makePresentationDefinition(CredentialConfig credentialConfig) {
+    @SneakyThrows
+    public JSONObject makeDCQL(CredentialConfig credentialConfig) {
+        JSONObject pd = new JSONObject();
+        pd.appendField("id", UUID.randomUUID().toString());
+//        pd.appendField("input_descriptors", makeInputDescriptors(credentialConfig));
+        // TODO dette skal gjøres ordentlig
+        String dcqlQuery = """
+                {
+                  "credentials": [
+                    {
+                      "id": "%s",
+                      "format": "mso_mdoc",
+                      "meta": {
+                        "doctype_value": "%s"
+                      },
+                      "claims": [
+                        {
+                          "path": [
+                            "%s", "%s"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }""".formatted(credentialConfig.getId(), credentialConfig.getDocType(), credentialConfig.getDocType(), credentialConfig.getFields().getFirst());
+        return new JSONObject(JSONObjectUtils.parse(dcqlQuery));
+    }
+
+    private JSONObject makePresentationDefinition(CredentialConfig credentialConfig) {
         JSONObject pd = new JSONObject();
         pd.appendField("id", UUID.randomUUID().toString());
         pd.appendField("input_descriptors", makeInputDescriptors(credentialConfig));
         return pd;
     }
 
-    public JSONArray makeInputDescriptors(CredentialConfig credentialConfig) {
+    private JSONArray makeInputDescriptors(CredentialConfig credentialConfig) {
         JSONArray ids = new JSONArray(1);
         ids.add(makeInputDescriptor(credentialConfig.getDocType(), credentialConfig.getFields()));
         return ids;
     }
 
-    public JSONObject makeInputDescriptor(String docType, List<String> attributes) {
+    private JSONObject makeInputDescriptor(String docType, List<String> attributes) {
         JSONObject descriptor = new JSONObject();
         descriptor.appendField("id", docType);
         descriptor.appendField("name", "EUDI PID");
         descriptor.appendField("purpose", "We need to verify your identity");
-        descriptor.appendField("format", makeFormat());
+        descriptor.appendField("format", makeVpFormatsSupported());
         descriptor.appendField("constraints", makeConstraints(docType, attributes));
         return descriptor;
     }
@@ -124,14 +153,16 @@ public class OID4VPRequestService {
         return path;
     }
 
-    public JSONObject makeFormat() {
-        JSONArray algs = new JSONArray(2);
-        algs.add(JWSAlgorithm.RS256.getName());
-        algs.add(JWSAlgorithm.ES256.getName());
-        algs.add(JWSAlgorithm.ES384.getName());
+    public JSONObject makeVpFormatsSupported() {
+//        JSONArray algs = new JSONArray(2);
+//
+//
+//        algs.add(JWSAlgorithm.RS256.getName());
+//        algs.add(JWSAlgorithm.ES256.getName());
+//        algs.add(JWSAlgorithm.ES384.getName());
 
         JSONObject mdoc = new JSONObject();
-        mdoc.appendField("alg", algs);
+//        mdoc.appendField("alg", algs);
 
         JSONObject format = new JSONObject();
         format.appendField("mso_mdoc", mdoc);
@@ -141,10 +172,13 @@ public class OID4VPRequestService {
     public JSONObject makeClientMetadata() {
         JSONObject metadata = new JSONObject();
         metadata.appendField("jwks", makeJwks().toPublicJWKSet().toJSONObject());
-        metadata.appendField("id_token_signed_response_alg", JWSAlgorithm.RS256.getName());
-        metadata.appendField("authorization_encrypted_response_alg", JWEAlgorithm.ECDH_ES.getName());
-        metadata.appendField("authorization_encrypted_response_enc", EncryptionMethod.A128CBC_HS256.getName());
-        metadata.appendField("vp_formats", makeFormat());
+//        metadata.appendField("id_token_signed_response_alg", JWSAlgorithm.RS256.getName());
+//        metadata.appendField("authorization_encrypted_response_alg", JWEAlgorithm.ECDH_ES.getName());
+//        metadata.appendField("authorization_encrypted_response_enc", EncryptionMethod.A128GCM.getName());
+        JSONArray encryptedResponseAlgs = new JSONArray();
+        encryptedResponseAlgs.add(EncryptionMethod.A128GCM.getName());
+        metadata.appendField("encrypted_response_enc_values_supported", encryptedResponseAlgs);
+        metadata.appendField("vp_formats_supported", makeVpFormatsSupported());
         return metadata;
     }
 
@@ -155,11 +189,13 @@ public class OID4VPRequestService {
             jwkList.add(new RSAKey.Builder(keyProvider.rsaPublicKey())
                     .keyUse(KeyUse.ENCRYPTION)
                     .keyIDFromThumbprint()
+
                     .build());
         } else {
             jwkList.add(new ECKey.Builder(ECUtils.curveFromKey(keyProvider), keyProvider.ecPublicKey())
                     .keyUse(KeyUse.ENCRYPTION)
                     .keyIDFromThumbprint()
+                    .algorithm(JWEAlgorithm.ECDH_ES)
                     .build());
         }
         return new JWKSet(jwkList);
