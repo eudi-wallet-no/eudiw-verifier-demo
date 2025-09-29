@@ -12,9 +12,12 @@ vcverifier:
   siop2ClientId: abr.vc.local
   client-identifier-scheme: x509_san_dns
   externalBaseUrl: http://abr.vc.local:8080
+#  externalBaseUrl: http://localhost:8080
+#  externalBaseUrl: http://10.0.2.2:8080
+
   keystores:
     - type: JKS
       location: base64:${VERIFIER_KEYSTORE}
       password: changeit
-      key-alias: verifier
+      key-alias: rp-access
       key-password: changeit
