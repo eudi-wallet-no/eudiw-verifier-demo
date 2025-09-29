@@ -21,6 +21,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -40,20 +41,26 @@ class ResponseController {
 
 
     @ResponseBody
-    @PostMapping("/response")
-    public String handleResponse(@ModelAttribute(name = "response") String response) throws ParseException, JOSEException, IOException {
-
+    @PostMapping("/response/{id}")
+    public String handleResponse(@PathVariable(name = "id") String id, @ModelAttribute(name = "response") String response) throws ParseException, JOSEException, IOException {
         List<ProtocolTrace> traces = new ArrayList<>();
         traces.add(new StringTrace("walletResponse", "Wallet response", response));
-
 
         // TODO samle opp her, legge i cache?
         Map<String, Object> claimsFromJwePayload = decryptAndDeserializeJweResponse(response);
         traces.add(new JsonTrace("jweClaims", "Decrypted JWE payload", claimsFromJwePayload));
         String nonce = (String) claimsFromJwePayload.get("nonce");
         String state = (String) claimsFromJwePayload.get("state");
-        String vpToken = (String) claimsFromJwePayload.get("vp_token");
-        traces.add(new CBORTrace("vpTokenCbort", "vp_token CBOR pretty", vpToken));
+        String vpToken = null;
+        if (claimsFromJwePayload.get("vp_token") instanceof String) {
+            vpToken = (String) claimsFromJwePayload.get("vp_token");
+        } else {
+            Map<String, List<String>> credentialsMap = (Map<String, List<String>>) claimsFromJwePayload.get("vp_token");
+            List<String> credentials = credentialsMap.get(id);
+            vpToken = credentials.getFirst();
+        }
+
+        traces.add(new CBORTrace("vpTokenCbor", "vp_token CBOR pretty", vpToken));
 
         MultiValueMap<String, String> elementsFromPidDocumentInMDoc = retrieveElementsFromPidDocumentInMDoc(vpToken);
         traces.add(new MapTrace("pidDocumentElements", "Elements from PID-document in MDoc", elementsFromPidDocumentInMDoc));

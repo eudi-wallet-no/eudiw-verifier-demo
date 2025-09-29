@@ -30,8 +30,8 @@ public class ConfigProvider implements InitializingBean {
     @NotEmpty
     private List<CredentialConfig> credentialTypes = new ArrayList<>();
 
-    public CredentialConfig getCredentialConfig(String type) {
-        return credentialTypes.stream().filter(c -> c.getId().equals(type)).findFirst().orElse(null);
+    public CredentialConfig getCredentialConfig(String id) {
+        return credentialTypes.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
     }
 
     @NotEmpty
