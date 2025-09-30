@@ -179,6 +179,7 @@ public class OID4VPRequestService {
         encryptedResponseAlgs.add(EncryptionMethod.A128GCM.getName());
         metadata.appendField("encrypted_response_enc_values_supported", encryptedResponseAlgs);
         metadata.appendField("vp_formats_supported", makeVpFormatsSupported());
+        metadata.appendField("vp_formats", makeVpFormatsSupported()); // Android
         return metadata;
     }
 
