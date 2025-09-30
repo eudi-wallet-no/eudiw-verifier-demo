@@ -49,6 +49,7 @@ class ResponseController {
         // TODO samle opp her, legge i cache?
         Map<String, Object> claimsFromJwePayload = decryptAndDeserializeJweResponse(response);
         traces.add(new JsonTrace("jweClaims", "Decrypted JWE payload", claimsFromJwePayload));
+        log.warn("XXX claims from jwe payload: {}",  claimsFromJwePayload);
         String nonce = (String) claimsFromJwePayload.get("nonce");
         String state = (String) claimsFromJwePayload.get("state");
         String vpToken = null;
