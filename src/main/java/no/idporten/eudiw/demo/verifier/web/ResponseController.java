@@ -56,9 +56,13 @@ class ResponseController {
         if (claimsFromJwePayload.get("vp_token") instanceof String) {
             vpToken = (String) claimsFromJwePayload.get("vp_token");
         } else {
-            Map<String, List<String>> credentialsMap = (Map<String, List<String>>) claimsFromJwePayload.get("vp_token");
-            List<String> credentials = credentialsMap.get(id);
-            vpToken = credentials.getFirst();
+            Map<String, Object> credentialsMap = (Map<String, Object>) claimsFromJwePayload.get("vp_token");
+            Object vpTokenObject = credentialsMap.get(id);
+            if (vpTokenObject instanceof String) {
+                vpToken = (String) vpTokenObject;
+            } else {
+                vpToken = ((List<String>) vpTokenObject).getFirst();
+            }
         }
 
         traces.add(new CBORTrace("vpTokenCbor", "vp_token CBOR pretty", vpToken));
