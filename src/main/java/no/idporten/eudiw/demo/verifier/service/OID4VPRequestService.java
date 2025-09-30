@@ -153,17 +153,20 @@ public class OID4VPRequestService {
         return path;
     }
 
-    public JSONObject makeVpFormatsSupported() {
-//        JSONArray algs = new JSONArray(2);
-//
-//
-//        algs.add(JWSAlgorithm.RS256.getName());
-//        algs.add(JWSAlgorithm.ES256.getName());
-//        algs.add(JWSAlgorithm.ES384.getName());
-
+    public JSONObject makeVpFormats() {
+        JSONArray algs = new JSONArray();
+        algs.add(JWSAlgorithm.RS256.getName());
+        algs.add(JWSAlgorithm.ES256.getName());
+        algs.add(JWSAlgorithm.ES384.getName());
         JSONObject mdoc = new JSONObject();
-//        mdoc.appendField("alg", algs);
+        mdoc.appendField("alg", algs);
+        JSONObject format = new JSONObject();
+        format.appendField("mso_mdoc", mdoc);
+        return format;
+    }
 
+    public JSONObject makeVpFormatsSupported() {
+        JSONObject mdoc = new JSONObject();
         JSONObject format = new JSONObject();
         format.appendField("mso_mdoc", mdoc);
         return format;
@@ -181,7 +184,7 @@ public class OID4VPRequestService {
         metadata.appendField("encrypted_response_enc_values_supported", encryptedResponseAlgs);
         metadata.appendField("vp_formats_supported", makeVpFormatsSupported());
         // VP formats Android v24
-        metadata.appendField("vp_formats", makeVpFormatsSupported());
+        metadata.appendField("vp_formats", makeVpFormats());
         return metadata;
     }
 
