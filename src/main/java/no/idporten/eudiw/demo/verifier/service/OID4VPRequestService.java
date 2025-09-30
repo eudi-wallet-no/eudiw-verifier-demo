@@ -178,7 +178,7 @@ public class OID4VPRequestService {
         // JARM Android v24
         metadata.appendField("id_token_signed_response_alg", JWSAlgorithm.RS256.getName());
         metadata.appendField("authorization_encrypted_response_alg", JWEAlgorithm.ECDH_ES.getName());
-        metadata.appendField("authorization_encrypted_response_enc", EncryptionMethod.A128GCM.getName());
+        metadata.appendField("authorization_encrypted_response_enc", EncryptionMethod.A128CBC_HS256.getName());
         JSONArray encryptedResponseAlgs = new JSONArray();
         encryptedResponseAlgs.add(EncryptionMethod.A128GCM.getName());
         metadata.appendField("encrypted_response_enc_values_supported", encryptedResponseAlgs);
