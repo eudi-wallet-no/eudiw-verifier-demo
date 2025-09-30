@@ -172,14 +172,16 @@ public class OID4VPRequestService {
     public JSONObject makeClientMetadata() {
         JSONObject metadata = new JSONObject();
         metadata.appendField("jwks", makeJwks().toPublicJWKSet().toJSONObject());
-//        metadata.appendField("id_token_signed_response_alg", JWSAlgorithm.RS256.getName());
-//        metadata.appendField("authorization_encrypted_response_alg", JWEAlgorithm.ECDH_ES.getName());
-//        metadata.appendField("authorization_encrypted_response_enc", EncryptionMethod.A128GCM.getName());
+        // JARM Android v24
+        metadata.appendField("id_token_signed_response_alg", JWSAlgorithm.RS256.getName());
+        metadata.appendField("authorization_encrypted_response_alg", JWEAlgorithm.ECDH_ES.getName());
+        metadata.appendField("authorization_encrypted_response_enc", EncryptionMethod.A128GCM.getName());
         JSONArray encryptedResponseAlgs = new JSONArray();
         encryptedResponseAlgs.add(EncryptionMethod.A128GCM.getName());
         metadata.appendField("encrypted_response_enc_values_supported", encryptedResponseAlgs);
         metadata.appendField("vp_formats_supported", makeVpFormatsSupported());
-        metadata.appendField("vp_formats", makeVpFormatsSupported()); // Android
+        // VP formats Android v24
+        metadata.appendField("vp_formats", makeVpFormatsSupported());
         return metadata;
     }
 
