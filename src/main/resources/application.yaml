@@ -59,3 +59,13 @@ vcverifier:
       doc-type: "eu.europa.ec.eudi.pid.1"
       fields:
         - personal_administrative_number
+
+idporten-key-manager:
+  default-keystore: access
+  keystores:
+    access:
+      key-store-type: pkcs12
+      key-store-location: ${VERIFIER_KEYSTORE}
+      key-store-password: ${VERIFIER_KEYSTORE_PASSWORD}
+      key-alias: ${VERIFIER_KEY_ALIAS}
+      key-password: ${VERIFIER_KEY_PASSWORD}

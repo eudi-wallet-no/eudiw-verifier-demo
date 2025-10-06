@@ -3,7 +3,6 @@ package no.idporten.eudiw.demo.verifier.config;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
@@ -17,7 +16,7 @@ import java.util.List;
 @Configuration
 @ConfigurationProperties(prefix = "vcverifier")
 @Validated
-public class ConfigProvider implements InitializingBean {
+public class ConfigProvider {
 
     @NotNull
     private String siop2ClientId;
@@ -32,26 +31,6 @@ public class ConfigProvider implements InitializingBean {
 
     public CredentialConfig getCredentialConfig(String id) {
         return credentialTypes.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
-    }
-
-    @NotEmpty
-    private List<Keystore> keystores = new ArrayList<>();
-
-    public Keystore activeKeystore() {
-        return keystores.get(0);
-    }
-
-    @Data
-    public static class Keystore {
-        private String type;
-        private String location;
-        private String password;
-        private String keyAlias;
-        private String keyPassword;
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
     }
 
     public String getClientIdentifier() {

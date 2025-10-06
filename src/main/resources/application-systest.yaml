@@ -16,9 +16,3 @@ vcverifier:
   siop2ClientId: demo-brukersted.eidas2sandkasse.dev
   client-identifier-scheme: x509_san_dns
   externalBaseUrl: https://demo-brukersted.eidas2sandkasse.dev
-  keystores:
-    - type: pkcs12
-      location: ${VERIFIER_KEYSTORE}
-      password: ${VERIFIER_KEYSTORE_PASSWORD}
-      key-alias: ${VERIFIER_KEY_ALIAS}
-      key-password: ${VERIFIER_KEY_PASSWORD}
