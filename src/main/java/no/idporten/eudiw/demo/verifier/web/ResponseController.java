@@ -13,9 +13,9 @@ import id.walt.mdoc.doc.MDoc;
 import id.walt.mdoc.issuersigned.IssuerSigned;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.idporten.eudiw.demo.verifier.crypto.KeyProvider;
 import no.idporten.eudiw.demo.verifier.service.CacheService;
 import no.idporten.eudiw.demo.verifier.trace.*;
+import no.idporten.lib.keystore.KeystoreManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -36,9 +36,8 @@ import java.util.Map;
 @Slf4j
 class ResponseController {
 
-    private final KeyProvider keyProvider;
+    private final KeystoreManager keystoreManager;
     private final CacheService cacheService;
-
 
     @ResponseBody
     @PostMapping("/response/{id}")
@@ -90,7 +89,7 @@ class ResponseController {
 
     private Map<String, Object> decryptAndDeserializeJweResponse(String response) throws ParseException, JOSEException {
         JWEObject jwe = JWEObject.parse(response);
-        JWEDecrypter decrypter = new DefaultJWEDecrypterFactory().createJWEDecrypter(jwe.getHeader(), keyProvider.privateKey());
+        JWEDecrypter decrypter = new DefaultJWEDecrypterFactory().createJWEDecrypter(jwe.getHeader(), keystoreManager.getKeyProvider("access").privateKey());
         jwe.decrypt(decrypter);
         return jwe.getPayload().toJSONObject();
     }

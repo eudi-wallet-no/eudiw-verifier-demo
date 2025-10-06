@@ -25,9 +25,12 @@ vcverifier:
   siop2ClientId: abr.vc.local
   client-identifier-scheme: x509_san_dns
   externalBaseUrl: https://abr.vc.local:8082
+
+idporten-key-manager:
   keystores:
-    - type: JKS
-      location: base64:${VERIFIER_KEYSTORE}
-      password: changeit
-      key-alias: verifier
+    access:
+      key-store-type: pkcs12
+      key-store-location: base64:${VERIFIER_KEYSTORE}
+      key-store-password: changeit
+      key-alias: rp-access
       key-password: changeit

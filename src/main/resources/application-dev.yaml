@@ -15,9 +15,11 @@ vcverifier:
 #  externalBaseUrl: http://localhost:8080
 #  externalBaseUrl: http://10.0.2.2:8080
 
+idporten-key-manager:
   keystores:
-    - type: JKS
-      location: base64:${VERIFIER_KEYSTORE}
-      password: changeit
+    access:
+      key-store-type: pkcs12
+      key-store-location: base64:${VERIFIER_KEYSTORE}
+      key-store-password: changeit
       key-alias: rp-access
       key-password: changeit

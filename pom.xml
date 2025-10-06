@@ -17,6 +17,7 @@
 		<java.version>24</java.version>
 		<maven.compiler.proc>full</maven.compiler.proc>
 		<kotlin.version>2.2.20</kotlin.version>
+        <idporten.keystore.version>1.1.0</idporten.keystore.version>
 		<idporten-actuator.version>2.0.0</idporten-actuator.version>
 		<idporten-access-log.version>2.8.0</idporten-access-log.version>
 		<opentelemetry-instrumentation-api.version>1.54.1</opentelemetry-instrumentation-api.version>
@@ -65,7 +66,12 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 		</dependency>
-		<dependency>
+        <dependency>
+            <groupId>no.idporten</groupId>
+            <artifactId>idporten-lib-keystore-spring-boot</artifactId>
+            <version>${idporten.keystore.version}</version>
+        </dependency>
+        <dependency>
 			<groupId>no.idporten.logging</groupId>
 			<artifactId>idporten-access-log-spring-boot-3-starter</artifactId>
 			<version>${idporten-access-log.version}</version>
