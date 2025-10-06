@@ -50,15 +50,26 @@ digdir:
       debug-level: response
 
 vcverifier:
-  credential-types:
+  credential-configurations:
     - id: alder
+      title: Aldersbevis
+      description: Bevis at du er over 18 år
       doc-type: "eu.europa.ec.eudi.pid.1"
       fields:
         - age_over_18
     - id: pid
+      title: Innlogging
+      description: Logg inn med fnr/dnr
       doc-type: "eu.europa.ec.eudi.pid.1"
       fields:
         - personal_administrative_number
+    - id: advokatregisteret
+      title: Advokatbevilling
+      description: Kan du representere Peder Ås?
+      doc-type: "no.advokattilsynet.advokatregisteret.1"
+      fields:
+        - personidentifikator
+        - tittel
 
 idporten-key-manager:
   default-keystore: access
