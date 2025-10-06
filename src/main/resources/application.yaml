@@ -70,6 +70,10 @@ vcverifier:
       fields:
         - personidentifikator
         - tittel
+        - etternavn
+        - mellomnavn
+        - fornavn
+        - regnr
 
 idporten-key-manager:
   default-keystore: access

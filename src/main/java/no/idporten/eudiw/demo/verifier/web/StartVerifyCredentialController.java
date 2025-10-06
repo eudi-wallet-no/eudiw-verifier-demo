@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
+import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
+import no.idporten.eudiw.demo.verifier.config.CredentialConfig;
 import no.idporten.eudiw.demo.verifier.service.CacheService;
 import no.idporten.eudiw.demo.verifier.service.OID4VPRequestService;
 import no.idporten.eudiw.demo.verifier.trace.JsonTrace;
@@ -27,6 +29,7 @@ import java.util.UUID;
 @Controller
 public class StartVerifyCredentialController {
 
+    private final ConfigProvider configProvider;
     private final OID4VPRequestService oid4VPRequestService;
     private final CacheService cacheService;
 
@@ -35,6 +38,7 @@ public class StartVerifyCredentialController {
         log.info("Index headers: {}", headers);
         log.info("Server name: {}", request.getServerName());
         log.info("Request URL: {}", request.getRequestURL());
+        CredentialConfig credentialConfig = configProvider.getCredentialConfig(type);
         String state = UUID.randomUUID().toString();
         session.setAttribute("state", state);
         model.addAttribute("state", state);
@@ -46,11 +50,10 @@ public class StartVerifyCredentialController {
                 new JsonTrace("dcqlQuery", "DCQL query", (JSONObject) authRequestClaimsSet.get("dcql_query"))
         );
         model.addAttribute("traces", protocolTraceList);
-
-        // TODO enklest om kommer fra config!
         model.addAttribute(("responseStatusUri"), builPolldUri(request.getRequestURL().toString(), "response-status", type, state).toString());
         String responseResultUri = builPolldUri(request.getRequestURL().toString(), "response-result", type, state).toString();
         model.addAttribute(("responseResultUri"), responseResultUri);
+        model.addAttribute("credentialConfig", credentialConfig);
         cacheService.addRUri(state, responseResultUri);
         return type + "/index";
     }
