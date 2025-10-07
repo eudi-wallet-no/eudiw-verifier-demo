@@ -18,6 +18,10 @@ public class CredentialConfig {
     @NotNull
     private String id;
     @NotNull
+    private String title;
+    @NotNull
+    private String description;
+    @NotNull
     private String docType;
     @NotEmpty
     private List<String> fields;
