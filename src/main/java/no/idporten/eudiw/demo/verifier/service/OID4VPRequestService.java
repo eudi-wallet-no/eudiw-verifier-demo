@@ -83,12 +83,12 @@ public class OID4VPRequestService {
                 .appendField("format", "mso_mdoc")
                 .appendField("meta", new JSONObject().appendField("doctype_value", credentialConfig.getDocType()));
         JSONArray claims = new JSONArray();
-        for (String field : credentialConfig.getFields()) {
+        for (String claim : credentialConfig.getClaims()) {
             claims.appendElement(new JSONObject()
                     .appendField("path",
                             new JSONArray()
                                     .appendElement(credentialConfig.getDocType())
-                                    .appendElement(field)));
+                                    .appendElement(claim)));
         }
         credential.put("claims", claims);
         JSONObject dcql = new JSONObject().appendField("credentials", new JSONArray().appendElement(credential));

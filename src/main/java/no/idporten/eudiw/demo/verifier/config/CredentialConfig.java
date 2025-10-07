@@ -24,6 +24,6 @@ public class CredentialConfig {
     @NotNull
     private String docType;
     @NotEmpty
-    private List<String> fields;
+    private List<String> claims;
 
 }

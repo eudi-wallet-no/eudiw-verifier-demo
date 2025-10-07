@@ -19,7 +19,7 @@
         <div class="box__body">
             <div class="notification notification--success">
                 <h1>Vellykket verifisering</h1>
-                <p th:each="field: ${credentialConfig.fields}"><span th:text="${field}" th:remove="tag">...</span><span th:text="${claims.get(field)}" th:remove="tag">...</span></p>
+                <p th:each="claim: ${credentialConfig.claims}"><span th:text="${claim}" th:remove="tag">...</span><span th:text="${claims.get(claim)}" th:remove="tag">...</span></p>
                 <div class="btn-group">
                     <a th:href="@{/}">
                         <button class="button ">Prøv igjen</button>
