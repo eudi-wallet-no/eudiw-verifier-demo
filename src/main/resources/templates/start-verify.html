@@ -19,13 +19,14 @@
         <div class="box__body">
             <div class="notification notification--warning">
                 <h1 th:text="${credentialConfig.title}">...</h1>
-                <p>Scan qr-koden eller trykk på knappen for å åpne på mobilen.</p>
+                <p th:text="${credentialConfig.description}">...</p>
+                <p>Scan qr-koden eller trykk på knappen for å åpne i lommebok.</p>
             </div>
             <div>
                 <img th:src="@{/qrcode/{id}/{state}(id=${credentialConfig.id}, state=${state})}" alt="QR code" style="width:100%;"/>
             </div>
             <div class="btn-group">
-                <a th:href="${authzRequest}"><button class="button ">Åpne på mobilen</button></a>
+                <a th:href="${authzRequest}"><button class="button ">Åpne i lommebok</button></a>
             </div>
             <div th:replace="~{fragments/traces :: traces}">...</div>
         </div>

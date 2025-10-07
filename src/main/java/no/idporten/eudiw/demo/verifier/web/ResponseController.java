@@ -66,16 +66,15 @@ class ResponseController {
 
         traces.add(new CBORTrace("vpTokenCbor", "vp_token CBOR pretty", vpToken));
 
-        MultiValueMap<String, String> elementsFromPidDocumentInMDoc = retrieveElementsFromPidDocumentInMDoc(vpToken);
-        traces.add(new MapTrace("pidDocumentElements", "Elements from PID-document in MDoc", elementsFromPidDocumentInMDoc));
+        MultiValueMap<String, String> claimsFromCredential = retrieveClaimsFromMDocCredential(vpToken);
+        traces.add(new MapTrace("credentialClaims", "Claims from credential", claimsFromCredential));
 
         log.info("Received authorization response from wallet with nonce [%s] and state [%s]".formatted(nonce, state));
-        log.info("Got following elements from PID-document:");
-        elementsFromPidDocumentInMDoc.keySet().stream()
-                .forEach(k -> log.info(k + ": "+elementsFromPidDocumentInMDoc.get(k)));
+        log.info("Got following elements from mdoc:");
+        claimsFromCredential.keySet().forEach(k -> log.info(k + ": "+claimsFromCredential.get(k)));
         String cacheState = state.startsWith("CD:") ? state.substring(3) : state;
         cacheService.addCrossDevice(cacheState, !cacheState.equals(state));
-        cacheService.addState(cacheState, elementsFromPidDocumentInMDoc);
+        cacheService.addState(cacheState, claimsFromCredential);
 
         String responseBody = "{}";
         String redirectUri = cacheService.getRUri(cacheState);
@@ -94,7 +93,7 @@ class ResponseController {
         return jwe.getPayload().toJSONObject();
     }
 
-    protected MultiValueMap<String, String> retrieveElementsFromPidDocumentInMDoc(String vpToken) {
+    protected MultiValueMap<String, String> retrieveClaimsFromMDocCredential(String vpToken) {
         DeviceResponse deviceResponse = DeviceResponse.Companion.fromCBORBase64URL(vpToken);
         MultiValueMap<String, String> claims = new LinkedMultiValueMap<>();
         for (MDoc mDoc : deviceResponse.getDocuments()) {

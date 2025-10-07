@@ -55,7 +55,7 @@ public class StartVerifyCredentialController {
         model.addAttribute(("responseResultUri"), responseResultUri);
         model.addAttribute("credentialConfig", credentialConfig);
         cacheService.addRUri(state, responseResultUri);
-        return type + "/index";
+        return "start-verify";
     }
 
     URI builPolldUri(String requestURL, String... paths) {

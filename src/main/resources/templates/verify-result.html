@@ -19,7 +19,21 @@
         <div class="box__body">
             <div class="notification notification--success">
                 <h1>Vellykket verifisering</h1>
-                <p>Fnr/dnr: <span th:text="${personal_administrative_number.first}" th:remove="tag">...</span></p>
+                <p>Denne informasjonen ble delt fra lommebok<br/><i>* = ikke delt</i></p>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Attributt</th>
+                        <th>Verdi</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="claim: ${credentialConfig.claims}">
+                        <td th:text="${credentialConfig.claimDescriptions.get(claim)}">...</td>
+                        <td th:text="${claims.get(claim) ?: '*'}">...</td>
+                    </tr>
+                    </tbody>
+                </table>
                 <div class="btn-group">
                     <a th:href="@{/}">
                         <button class="button ">Prøv igjen</button>

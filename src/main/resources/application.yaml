@@ -53,27 +53,38 @@ vcverifier:
   credential-configurations:
     - id: alder
       title: Aldersbevis
-      description: Bevis at du er over 18 år
+      description: Du må være over 18 år for å bruke denne tjenesten
       doc-type: "eu.europa.ec.eudi.pid.1"
-      fields:
+      claims:
         - age_over_18
+      claim-descriptions:
+        age_over_18: Over 18 år
     - id: pid
       title: Innlogging
       description: Logg inn med fnr/dnr
       doc-type: "eu.europa.ec.eudi.pid.1"
-      fields:
+      claims:
         - personal_administrative_number
+      claim-descriptions:
+        personal_administrative_number: Personidentifikator
     - id: advokatregisteret
       title: Advokatbevilling
       description: Kan du representere Peder Ås?
       doc-type: "no.advokattilsynet.advokatregisteret.1"
-      fields:
+      claims:
         - personidentifikator
         - tittel
         - etternavn
         - mellomnavn
         - fornavn
         - regnr
+      claim-descriptions:
+        personidentifikator: Personidentifikator
+        tittel: Tittel
+        etternavn: Etternavn
+        mellomnavn: Mellomnavn
+        fornavn: Fornavn
+        regnr: Regnr
 
 idporten-key-manager:
   default-keystore: access

@@ -46,23 +46,25 @@ public class ResponseStatusPollController {
         }
     }
 
-    // TODO her må det bli mer generisk
     @GetMapping("/response-result/{type}/{state}")
-    public String pollComplete(@PathVariable("type") String type, @PathVariable("state") String state, HttpSession session, Model model) {
+    public String pollComplete(@PathVariable("type") String type, @PathVariable("state") String state, Model model) {
         MultiValueMap<String, String> claims = cacheService.getState(state);
         model.addAllAttributes(claims);
         model.addAttribute("traces", cacheService.getTrace(state));
         if ("alder".equals(type)) {
-            // TODO kanskje modellen skulle fikse dette selv
-            if (claims.containsKey("age_over_18") && "true".equalsIgnoreCase(claims.getFirst("age_over_18"))) {
-                return "alder/over18";
-            } else {
-                return "alder/under18";
-            }
+            return handleAlder(claims);
         }
         model.addAttribute("claims", claims);
         model.addAttribute("credentialConfig", configProvider.getCredentialConfig(type));
-        return type + "/result";
+        return "verify-result";
+    }
+
+    private static String handleAlder(MultiValueMap<String, String> claims) {
+        if (claims.containsKey("age_over_18") && "true".equalsIgnoreCase(claims.getFirst("age_over_18"))) {
+            return "alder/over18";
+        } else {
+            return "alder/under18";
+        }
     }
 
 }
