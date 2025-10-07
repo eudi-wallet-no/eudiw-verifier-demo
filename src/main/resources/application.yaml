@@ -57,12 +57,16 @@ vcverifier:
       doc-type: "eu.europa.ec.eudi.pid.1"
       claims:
         - age_over_18
+      claim-descriptions:
+        age_over_18: Over 18 år
     - id: pid
       title: Innlogging
       description: Logg inn med fnr/dnr
       doc-type: "eu.europa.ec.eudi.pid.1"
       claims:
         - personal_administrative_number
+      claim-descriptions:
+        personal_administrative_number: Personidentifikator
     - id: advokatregisteret
       title: Advokatbevilling
       description: Kan du representere Peder Ås?
@@ -74,6 +78,13 @@ vcverifier:
         - mellomnavn
         - fornavn
         - regnr
+      claim-descriptions:
+        personidentifikator: Personidentifikator
+        tittel: Tittel
+        etternavn: Etternavn
+        mellomnavn: Mellomnavn
+        fornavn: Fornavn
+        regnr: Regnr
 
 idporten-key-manager:
   default-keystore: access

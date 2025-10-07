@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Map;
 
 @Validated
 @Data
@@ -25,5 +26,7 @@ public class CredentialConfig {
     private String docType;
     @NotEmpty
     private List<String> claims;
+    @NotEmpty
+    private Map<String, String> claimDescriptions;
 
 }
