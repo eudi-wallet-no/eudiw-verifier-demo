@@ -3,6 +3,7 @@ package no.idporten.eudiw.demo.verifier.web;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
 import no.idporten.eudiw.demo.verifier.service.CacheService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class ResponseStatusPollController {
 
     private final CacheService cacheService;
+    private final ConfigProvider configProvider;
 
     @RequestMapping(method = RequestMethod.GET, path = "/response-status/{type}/{state}")
     public ResponseEntity<String> pollStatus(@PathVariable("type") String type, @PathVariable("state") String state, HttpSession session) {
@@ -58,7 +60,9 @@ public class ResponseStatusPollController {
                 return "alder/under18";
             }
         }
-        return "pid/result";
+        model.addAttribute("claims", claims);
+        model.addAttribute("credentialConfig", configProvider.getCredentialConfig(type));
+        return type + "/result";
     }
 
 }

@@ -27,10 +27,10 @@ public class ConfigProvider {
     @NotNull
     private String externalBaseUrl;
     @NotEmpty
-    private List<CredentialConfig> credentialTypes = new ArrayList<>();
+    private List<CredentialConfig> credentialConfigurations = new ArrayList<>();
 
     public CredentialConfig getCredentialConfig(String id) {
-        return credentialTypes.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
+        return credentialConfigurations.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
     }
 
     public String getClientIdentifier() {

@@ -26,31 +26,18 @@
             </h1>
         </div>
         <div class="box__body">
-            <ul class="providers">
+            <ul class="providers" th:each="credentialConfig: ${credentialTypes}">
                 <li class="providers__item">
-                    <a th:href="@{/verify/alder}">
+                    <a th:href="@{/verify/{id}(id = ${credentialConfig.id})}">
                         <div class="providers__logo-container">
                             <img class="providers__logo" src="img/providers/idporten.svg" alt>
                         </div>
                         <div class="providers__container">
-                            <h2 class="providers__title">Aldersbevis</h2>
-                            <p class="providers__desc">Bevis at du er over 18 år</p>
+                            <h2 class="providers__title" th:text="${credentialConfig.title}">...</h2>
+                            <p class="providers__desc" th:text="${credentialConfig.description}">...</p>
                         </div>
                     </a>
                 </li>
-                <li class="providers__item">
-                    <a th:href="@{/verify/pid}">
-                        <div class="providers__logo-container">
-                            <img class="providers__logo" src="img/providers/idporten.svg" alt>
-                        </div>
-                        <div class="providers__container">
-                            <h2 class="providers__title">Fødselsnummer/D-nummer</h2>
-                            <p class="providers__desc">Logg inn med fnr/dnr</p>
-                        </div>
-                    </a>
-                </li>
-
-
             </ul>
         </div>
     </div>
