@@ -14,7 +14,7 @@
 	<name>eudiw-verifier-demo</name>
 	<description>EUDIW demo verifier</description>
 	<properties>
-		<java.version>24</java.version>
+		<java.version>25</java.version>
 		<maven.compiler.proc>full</maven.compiler.proc>
 		<kotlin.version>2.2.20</kotlin.version>
         <idporten.keystore.version>1.1.0</idporten.keystore.version>
