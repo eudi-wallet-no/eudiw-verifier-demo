@@ -55,6 +55,7 @@ vcverifier:
       title: Aldersbevis
       description: Du må være over 18 år for å bruke denne tjenesten
       doc-type: "eu.europa.ec.eudi.pid.1"
+      format: mso_mdoc
       claims:
         - age_over_18
       claim-descriptions:
@@ -63,6 +64,7 @@ vcverifier:
       title: Innlogging
       description: Logg inn med fnr/dnr
       doc-type: "eu.europa.ec.eudi.pid.1"
+      format: mso_mdoc
       claims:
         - personal_administrative_number
       claim-descriptions:
@@ -71,6 +73,7 @@ vcverifier:
       title: Advokatbevilling
       description: Kan du representere Peder Ås?
       doc-type: "no.advokattilsynet.advokatregisteret.1"
+      format: mso_mdoc
       claims:
         - personidentifikator
         - tittel
@@ -85,6 +88,19 @@ vcverifier:
         mellomnavn: Mellomnavn
         fornavn: Fornavn
         regnr: Regnr
+    - id: kontaktregisteret
+      title: Kontaktinformasjon
+      description: Del din digitale kontaktinformasjon
+      doc-type: "no:kontaktregisteret:kontaktinformasjon:1"
+      format: dc+sd-jwt
+      claims:
+        - personidentifikator
+        - epostadresse
+        - mobiltelefonnummer
+      claim-descriptions:
+        personidentifikator: Personidentifikator
+        epostadresse: Epost
+        mobiltelefonnummer: Telefonnummer
 
 idporten-key-manager:
   default-keystore: access

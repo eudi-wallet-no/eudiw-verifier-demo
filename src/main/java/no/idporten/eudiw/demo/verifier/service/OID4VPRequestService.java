@@ -58,7 +58,7 @@ public class OID4VPRequestService {
                 .claim("nonce", UUID.randomUUID().toString())
                 .claim("state", state)
                 .claim("client_id", configProvider.getClientIdentifier())
-                .claim("dcql_query", makeDCQL(credentialConfig))
+                .claim("dcql_query", "mso_mdoc".equals(credentialConfig.getFormat()) ? makeDCQLmDoc(credentialConfig) : makeDCQLSDJwt(credentialConfig))
                 .claim("client_metadata", makeClientMetadata())
                 .jwtID(UUID.randomUUID().toString()) // Must be unique for each grant
                 .issueTime(new Date(Clock.systemUTC().millis())) // Use UTC time!
@@ -77,7 +77,26 @@ public class OID4VPRequestService {
     }
 
     @SneakyThrows
-    public JSONObject makeDCQL(CredentialConfig credentialConfig) {
+    public JSONObject makeDCQLSDJwt(CredentialConfig credentialConfig) {
+        JSONObject credential = new JSONObject()
+                .appendField("id", credentialConfig.getId())
+                .appendField("format", credentialConfig.getFormat())
+                .appendField("meta", new JSONObject().appendField(
+                        "vct_values", List.of(credentialConfig.getDocType())));
+        JSONArray claims = new JSONArray();
+        for (String claim : credentialConfig.getClaims()) {
+            claims.appendElement(new JSONObject()
+                    .appendField("path",
+                            new JSONArray()
+                                    .appendElement(claim)));
+        }
+        credential.put("claims", claims);
+        JSONObject dcql = new JSONObject().appendField("credentials", new JSONArray().appendElement(credential));
+        return dcql;
+    }
+
+
+    public JSONObject makeDCQLmDoc(CredentialConfig credentialConfig) {
         JSONObject credential = new JSONObject()
                 .appendField("id", credentialConfig.getId())
                 .appendField("format", "mso_mdoc")
