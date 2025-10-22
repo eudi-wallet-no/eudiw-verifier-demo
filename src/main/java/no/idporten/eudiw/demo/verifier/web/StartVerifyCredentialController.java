@@ -55,6 +55,7 @@ public class StartVerifyCredentialController {
         model.addAttribute(("responseResultUri"), responseResultUri);
         model.addAttribute("credentialConfig", credentialConfig);
         cacheService.addRUri(state, responseResultUri);
+        cacheService.addTrace(state, protocolTraceList);
         return "start-verify";
     }
 

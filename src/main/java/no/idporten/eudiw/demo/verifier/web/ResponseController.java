@@ -34,10 +34,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPublicKey;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 @RequiredArgsConstructor
@@ -58,6 +57,7 @@ class ResponseController {
         traces.add(new JsonTrace("jweClaims", "Decrypted JWE payload", claimsFromJwePayload));
         String nonce = (String) claimsFromJwePayload.get("nonce");
         String state = (String) claimsFromJwePayload.get("state");
+        String cacheState = state.startsWith("CD:") ? state.substring(3) : state;
         final String vpToken;
         if (claimsFromJwePayload.get("vp_token") instanceof String) {
             vpToken = (String) claimsFromJwePayload.get("vp_token");
@@ -83,7 +83,6 @@ class ResponseController {
 
         log.info("Got following elements from mdoc:");
         claimsFromCredential.keySet().forEach(k -> log.info(k + ": "+claimsFromCredential.get(k)));
-        String cacheState = state.startsWith("CD:") ? state.substring(3) : state;
         cacheService.addCrossDevice(cacheState, !cacheState.equals(state));
         cacheService.addState(cacheState, claimsFromCredential);
 
@@ -93,7 +92,7 @@ class ResponseController {
             responseBody = "{ \"redirect_uri\" : \"" + redirectUri + "\"}";
         }
         traces.add(new StringTrace("walletResponseResponse", "Response to wallet response", responseBody));
-        cacheService.addTrace(cacheState, traces);
+        cacheService.addTrace(cacheState, Stream.of(cacheService.getTrace(cacheState), traces).flatMap(Collection::stream).toList());
         return responseBody;
     }
 
