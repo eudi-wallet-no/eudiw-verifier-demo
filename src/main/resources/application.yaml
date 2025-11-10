@@ -52,9 +52,9 @@ digdir:
 vcverifier:
   credential-configurations:
     - id: alder
-      title: Aldersbevis
+      title: Aldersverifisering
       description: Du må være over 18 år for å bruke denne tjenesten
-      doc-type: "eu.europa.ec.eudi.pid.1"
+      doc-type: "eu.europa.ec.av.1"
       format: mso_mdoc
       claims:
         - age_over_18
