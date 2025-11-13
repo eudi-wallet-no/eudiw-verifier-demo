@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
 import no.idporten.eudiw.demo.verifier.config.CredentialConfig;
+import no.idporten.eudiw.demo.verifier.crypto.ECUtils;
 import no.idporten.eudiw.demo.verifier.service.CacheService;
 import no.idporten.eudiw.demo.verifier.trace.*;
 import no.idporten.lib.keystore.KeystoreManager;
@@ -108,7 +109,7 @@ class ResponseController {
         JWSHeader jwsHeader = JWSHeader.parse(unverifiedSDJwt.getHeader().toString());
         X509Certificate cert = X509CertUtils.parse(jwsHeader.getX509CertChain().getFirst().decode());
         JWSVerifier jwsVerifier = new ECDSAVerifier((ECPublicKey) cert.getPublicKey());
-        JWSAlgorithm jwsAlgorithm = JWSAlgorithm.parse(cert.getPublicKey().getAlgorithm());
+        JWSAlgorithm jwsAlgorithm = ECUtils.jwsAlgorithmFromKey(cert.getPublicKey());
         SimpleJWTCryptoProvider cryptoProvider = new SimpleJWTCryptoProvider(jwsAlgorithm, null, jwsVerifier);
         VerificationResult<SDJwt> verificationResult = unverifiedSDJwt.verify(cryptoProvider, null);
         SDJwt verifiedSDJwt = verificationResult.getSdJwt();
