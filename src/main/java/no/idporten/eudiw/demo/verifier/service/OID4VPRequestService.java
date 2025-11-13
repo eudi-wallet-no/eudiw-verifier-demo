@@ -124,13 +124,17 @@ public class OID4VPRequestService {
         mdoc.appendField("alg", algs);
         JSONObject format = new JSONObject();
         format.appendField("mso_mdoc", mdoc);
-        return format;
+return format;
     }
 
     private JSONObject makeVpFormatsSupported() {
         JSONObject mdoc = new JSONObject();
         JSONObject format = new JSONObject();
         format.appendField("mso_mdoc", mdoc);
+        JSONObject sdJwt = new JSONObject();
+        sdJwt.appendField("sd-jwt_alg_values", List.of("ES256", "ES384"));
+        sdJwt.appendField("kb-jwt_alg_values", List.of("ES256", "ES384"));
+        format.appendField("dc+sd-jwt", sdJwt);
         return format;
     }
 

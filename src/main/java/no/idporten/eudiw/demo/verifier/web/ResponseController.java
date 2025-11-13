@@ -108,7 +108,8 @@ class ResponseController {
         JWSHeader jwsHeader = JWSHeader.parse(unverifiedSDJwt.getHeader().toString());
         X509Certificate cert = X509CertUtils.parse(jwsHeader.getX509CertChain().getFirst().decode());
         JWSVerifier jwsVerifier = new ECDSAVerifier((ECPublicKey) cert.getPublicKey());
-        SimpleJWTCryptoProvider cryptoProvider = new SimpleJWTCryptoProvider(JWSAlgorithm.ES256, null, jwsVerifier);
+        JWSAlgorithm jwsAlgorithm = JWSAlgorithm.parse(cert.getPublicKey().getAlgorithm());
+        SimpleJWTCryptoProvider cryptoProvider = new SimpleJWTCryptoProvider(jwsAlgorithm, null, jwsVerifier);
         VerificationResult<SDJwt> verificationResult = unverifiedSDJwt.verify(cryptoProvider, null);
         SDJwt verifiedSDJwt = verificationResult.getSdJwt();
         Map<String, List<String>> extractedClaims = verifiedSDJwt
