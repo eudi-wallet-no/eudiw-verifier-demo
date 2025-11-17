@@ -101,6 +101,21 @@ vcverifier:
         personidentifikator: Personidentifikator
         epostadresse: Epost
         mobiltelefonnummer: Telefonnummer
+    - id: forerkor
+      title: Norsk førerkort
+      description: Del ditt førerkort for å leie bil
+      doc-type: "org.iso.18013.5.1.mDL:1"
+      format: mso_mdoc
+      claims:
+        - family_name
+        - given_name
+        - driving_privileges
+        - portrait
+      claim-descriptions:
+        family_name: Etternavn
+        given_name: Fornavn
+        driving_privileges: Førerkortklasser
+        portrait: Portrettbilde
 
 idporten-key-manager:
   default-keystore: access
