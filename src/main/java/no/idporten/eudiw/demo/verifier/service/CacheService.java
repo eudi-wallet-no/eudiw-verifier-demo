@@ -26,7 +26,7 @@ public class CacheService {
         return applicationName + ":state:" + state;
     }
 
-    public void addState(String state, MultiValueMap<String, String> claims) {
+    public void addState(String state, MultiValueMap<String, Object> claims) {
         cache.set(stateCacheKey(state), claims, Duration.of(30, ChronoUnit.MINUTES));
     }
 
