@@ -48,7 +48,7 @@ public class ResponseStatusPollController {
 
     @GetMapping("/response-result/{type}/{state}")
     public String pollComplete(@PathVariable("type") String type, @PathVariable("state") String state, Model model) {
-        MultiValueMap<String, String> claims = cacheService.getState(state);
+        MultiValueMap<String, Object> claims = cacheService.getState(state);
         model.addAllAttributes(claims);
         model.addAttribute("traces", cacheService.getTrace(state));
         if ("alder".equals(type)) {
@@ -62,8 +62,8 @@ public class ResponseStatusPollController {
         return "verify-result";
     }
 
-    private static String handleAlder(MultiValueMap<String, String> claims) {
-        if (claims.containsKey("age_over_18") && "true".equalsIgnoreCase(claims.getFirst("age_over_18"))) {
+    private static String handleAlder(MultiValueMap<String, Object> claims) {
+        if (claims.containsKey("age_over_18") && (Boolean) claims.getFirst("age_over_18")) {
             return "alder/over18";
         } else {
             return "alder/under18";

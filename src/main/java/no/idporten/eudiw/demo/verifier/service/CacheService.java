@@ -34,8 +34,8 @@ public class CacheService {
         return cache.get(stateCacheKey(state)) != null;
     }
 
-    public MultiValueMap<String, String> getState(String state) {
-        return (MultiValueMap<String, String>) cache.remove(stateCacheKey(state));
+    public MultiValueMap<String, Object> getState(String state) {
+        return (MultiValueMap<String, Object>) cache.remove(stateCacheKey(state));
     }
 
     protected String resultUriCacheKey(String state) {
