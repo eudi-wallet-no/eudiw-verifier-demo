@@ -9,7 +9,7 @@ on:
 
 jobs:
   call-workflow-maven-build:
-    uses: felleslosninger/github-workflows/.github/workflows/ci-maven-build.yml@main
+    uses: felleslosninger/github-workflows/.github/workflows/ci-maven-build.yml@PF-2108-test-cloudflare-outage-workaround
     with:
       java-version: 25
     secrets: inherit
