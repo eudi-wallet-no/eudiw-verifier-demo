@@ -12,6 +12,7 @@ jobs:
     uses: felleslosninger/github-workflows/.github/workflows/ci-maven-build.yml@PF-2108-test-cloudflare-outage-workaround
     with:
       java-version: 25
+      java-distribution: temurin
     secrets: inherit
   call-container-scan:
     uses: felleslosninger/github-workflows/.github/workflows/ci-spring-boot-container-scan.yml@main
