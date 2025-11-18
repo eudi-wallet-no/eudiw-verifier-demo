@@ -101,7 +101,7 @@ vcverifier:
         personidentifikator: Personidentifikator
         epostadresse: Epost
         mobiltelefonnummer: Telefonnummer
-    - id: forerkor
+    - id: forerkort
       title: Norsk førerkort
       description: Del ditt førerkort for å leie bil
       doc-type: "org.iso.18013.5.1.mDL:1"

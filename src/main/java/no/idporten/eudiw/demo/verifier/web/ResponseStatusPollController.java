@@ -54,6 +54,9 @@ public class ResponseStatusPollController {
         if ("alder".equals(type)) {
             return handleAlder(claims);
         }
+        if ("forerkort".equals(type)) {
+            return "forerkort/verify-result";
+        }
         model.addAttribute("claims", claims);
         model.addAttribute("credentialConfig", configProvider.getCredentialConfig(type));
         return "verify-result";
