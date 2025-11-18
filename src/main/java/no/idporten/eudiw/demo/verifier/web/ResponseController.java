@@ -3,16 +3,13 @@ package no.idporten.eudiw.demo.verifier.web;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.ECDSAVerifier;
 import com.nimbusds.jose.crypto.factories.DefaultJWEDecrypterFactory;
+import com.nimbusds.jose.util.JSONArrayUtils;
 import com.nimbusds.jose.util.X509CertUtils;
-import id.walt.mdoc.dataelement.DataElement;
-import id.walt.mdoc.dataelement.EncodedCBORElement;
-import id.walt.mdoc.dataelement.MapElement;
-import id.walt.mdoc.dataelement.MapKey;
+import id.walt.mdoc.dataelement.*;
 import id.walt.mdoc.dataretrieval.DeviceResponse;
 import id.walt.mdoc.doc.MDoc;
 import id.walt.mdoc.issuersigned.IssuerSigned;
 import id.walt.sdjwt.SDJwt;
-import id.walt.sdjwt.SDisclosure;
 import id.walt.sdjwt.SimpleJWTCryptoProvider;
 import id.walt.sdjwt.VerificationResult;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +69,7 @@ class ResponseController {
             }
         }
         log.info("Received authorization response from wallet with nonce [%s] and state [%s]".formatted(nonce, state));
-        final MultiValueMap<String, String> claimsFromCredential;
+        final MultiValueMap<String, Object> claimsFromCredential;
         if ("mso_mdoc".equals(credentialConfig.getFormat())) {
             traces.add(new CBORTrace("vpTokenCbor", "mdoc CBOR", vpToken));
             claimsFromCredential = retrieveClaimsFromMDocCredential(vpToken);
@@ -104,7 +101,7 @@ class ResponseController {
         return jwe.getPayload().toJSONObject();
     }
 
-    protected MultiValueMap<String, String> retrieveClaimsFromSDJwtCredential(String vpToken) throws Exception{
+    protected MultiValueMap<String, Object> retrieveClaimsFromSDJwtCredential(String vpToken) throws Exception{
         SDJwt unverifiedSDJwt = SDJwt.Companion.parse(vpToken);
         JWSHeader jwsHeader = JWSHeader.parse(unverifiedSDJwt.getHeader().toString());
         X509Certificate cert = X509CertUtils.parse(jwsHeader.getX509CertChain().getFirst().decode());
@@ -112,18 +109,20 @@ class ResponseController {
         JWSAlgorithm jwsAlgorithm = ECUtils.jwsAlgorithmFromKey(cert.getPublicKey());
         SimpleJWTCryptoProvider cryptoProvider = new SimpleJWTCryptoProvider(jwsAlgorithm, null, jwsVerifier);
         VerificationResult<SDJwt> verificationResult = unverifiedSDJwt.verify(cryptoProvider, null);
-        SDJwt verifiedSDJwt = verificationResult.getSdJwt();
-        Map<String, List<String>> extractedClaims = verifiedSDJwt
-                .getDisclosureObjects()
-                .stream()
-                .collect(Collectors.toMap(SDisclosure::getKey, sDisclosure -> List.of(sDisclosure.getValue().toString())));
-
-        return new LinkedMultiValueMap<>(extractedClaims);
+        if (!verificationResult.getVerified()) {
+            throw new IllegalArgumentException("Invalid vp_token signature or unverified disclosures");
+        }
+        MultiValueMap<String, Object> claims = new LinkedMultiValueMap<>();
+        for (String disclosure : verificationResult.getSdJwt().getDisclosures()) {
+            List<Object> parsedDisclosure = JSONArrayUtils.parse(new String(Base64.getUrlDecoder().decode(disclosure)));
+            claims.add((String) parsedDisclosure.get(1), parsedDisclosure.get(2));
+        }
+        return claims;
     }
 
-    protected MultiValueMap<String, String> retrieveClaimsFromMDocCredential(String vpToken) {
+    protected MultiValueMap<String, Object> retrieveClaimsFromMDocCredential(String vpToken) {
         DeviceResponse deviceResponse = DeviceResponse.Companion.fromCBORBase64URL(vpToken);
-        MultiValueMap<String, String> claims = new LinkedMultiValueMap<>();
+        MultiValueMap<String, Object> claims = new LinkedMultiValueMap<>();
         for (MDoc mDoc : deviceResponse.getDocuments()) {
             mDoc.getMSO(); // TODO verify med hvilke nøkler?
             mDoc.verifyDocType();
@@ -135,13 +134,13 @@ class ResponseController {
                 for (EncodedCBORElement element : elements) {
                     Map<MapKey, DataElement> elementMap = ((MapElement) element.decode()).getValue();
                     String elementIdentifier = null;
-                    String elementValue = null;
+                    Object elementValue = null;
                     for (MapKey mapKey : elementMap.keySet()) {
                         if (mapKey.getStr().equals("elementIdentifier")) {
                             elementIdentifier = String.valueOf(elementMap.get(mapKey).getInternalValue());
                         }
                         if (mapKey.getStr().equals("elementValue")) {
-                            elementValue = String.valueOf(elementMap.get(mapKey).getInternalValue());
+                            elementValue = extractValue(elementMap.get(mapKey));
                         }
                         log.info(mapKey.toString() + "=" + elementMap.get(mapKey).getInternalValue());
                     }
@@ -151,5 +150,33 @@ class ResponseController {
         }
         return claims;
     }
+
+    protected Object extractValue(DataElement dataElement) {
+        if (dataElement == null) {
+            return null;
+        }
+        if (dataElement instanceof BooleanElement) {
+            return ((BooleanElement) dataElement).getValue();
+        }
+        return switch (dataElement.getType()) {
+            case number -> ((NumberElement) dataElement).getValue();
+            case textString -> ((StringElement) dataElement).getValue();
+            case dateTime ->  ((DateTimeElement) dataElement).getValue().toString();
+            case fullDate ->  ((FullDateElement) dataElement).getValue().toString();
+            case nil -> null;
+            case map ->  ((MapElement) dataElement).getValue().entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(
+                            e -> String.valueOf(e.getKey()),
+                            e -> extractValue(e.getValue())));
+            case list ->  ((ListElement) dataElement).getValue()
+                    .stream()
+                    .map(this::extractValue)
+                    .toList();
+            case byteString -> new String(Base64.getEncoder().encode(((ByteStringElement) dataElement).getValue()));
+            default -> String.valueOf(dataElement.getInternalValue());
+        };
+    }
+
 
 }
