@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.Comparator;
+import java.util.Map;
+import java.util.TreeMap;
+
 @RequiredArgsConstructor
 @Slf4j
 @Controller
@@ -57,6 +61,9 @@ public class ResponseStatusPollController {
         if ("forerkort".equals(type)) {
             return "forerkort/verify-result";
         }
+        if ("inntekt".equals(type)) {
+            return handleInntekt(claims, model);
+        }
         model.addAttribute("claims", claims);
         model.addAttribute("credentialConfig", configProvider.getCredentialConfig(type));
         return "verify-result";
@@ -67,6 +74,17 @@ public class ResponseStatusPollController {
             return "alder/over18";
         } else {
             return "alder/under18";
+        }
+    }
+
+    private String handleInntekt(MultiValueMap<String, Object> claims, Model model) {
+        if (claims.containsKey("fastlonn")) {
+            Map<String, Object> fastlonn = new TreeMap<>(Comparator.reverseOrder());
+            fastlonn.putAll((Map) claims.get("fastlonn").getFirst());
+            model.addAttribute("fastlonn", fastlonn);
+            return "inntekt/verify-result";
+        } else {
+            return "/"; // ingenting delt, vis forside
         }
     }
 

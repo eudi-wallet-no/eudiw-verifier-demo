@@ -116,6 +116,15 @@ vcverifier:
         given_name: Fornavn
         driving_privileges: Førerkortklasser
         portrait: Portrettbilde
+    - id: inntekt
+      title: Inntektsbevis
+      description: Del oversikt over fastlønn
+      doc-type: "no.skatteetaten.inntekt.1"
+      format: dc+sd-jwt
+      claims:
+        - fastlonn
+      claim-descriptions:
+        fastlonn: Fastlønn
 
 idporten-key-manager:
   default-keystore: access
