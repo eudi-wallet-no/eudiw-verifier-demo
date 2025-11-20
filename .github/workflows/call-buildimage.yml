@@ -17,7 +17,6 @@ jobs:
     with:
       image-name: digital-lommebok-verifier-demo
       java-version: 25
-      java-distribution: temurin
     secrets: inherit
 
   update-image-version:
