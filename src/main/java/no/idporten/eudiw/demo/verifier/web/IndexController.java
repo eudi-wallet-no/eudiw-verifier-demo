@@ -9,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import java.net.MalformedURLException;
 import java.util.Map;
 
 @Slf4j
@@ -21,15 +20,8 @@ public class IndexController {
 
     @GetMapping(value = "/")
     public String index(Model model, @RequestHeader Map<String, String> headers, HttpServletRequest request) {
-        log.info("Index headers: {}", headers);
-        log.info("Server name: {}", request.getServerName());
         model.addAttribute("credentialTypes", configProvider.getCredentialConfigurations());
         return "index";
-    }
-
-    @GetMapping(value = "/crl")
-    public  String crl(@RequestHeader Map<String, String> headers, HttpServletRequest request) throws MalformedURLException {
-        return "redirect:/files/root.crl.pem";
     }
 
 }
