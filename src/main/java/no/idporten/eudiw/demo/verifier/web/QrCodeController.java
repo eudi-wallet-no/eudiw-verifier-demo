@@ -5,7 +5,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.RequiredArgsConstructor;
-import no.idporten.eudiw.demo.verifier.service.OID4VPRequestService;
+import no.idporten.eudiw.demo.verifier.openid4vp.OpenID4VPRequestService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,11 +19,11 @@ import java.awt.image.BufferedImage;
 @Controller
 public class QrCodeController {
 
-    private final OID4VPRequestService OID4VPRequestService;
+    private final OpenID4VPRequestService openID4VPRequestService;
 
-    @GetMapping(value = "/qrcode/{type}/{state}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<BufferedImage> getQrCodeImage(@PathVariable("type") String type, @PathVariable("state") String state) throws Exception {
-        return ResponseEntity.ok(generateQRCodeImage(type, state));
+    @GetMapping(value = "/qrcode/{type}/{verifierTransactionId}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<BufferedImage> getQrCodeImage(@PathVariable("type") String type, @PathVariable("verifierTransactionId") String verifierTransactionId) throws Exception {
+        return ResponseEntity.ok(generateQRCodeImage(type, verifierTransactionId));
     }
 
     @ExceptionHandler
@@ -32,10 +32,10 @@ public class QrCodeController {
         return "error";
     }
 
-    private BufferedImage generateQRCodeImage(String type, String state) throws Exception {
+    private BufferedImage generateQRCodeImage(String type, String verifierTransactionId) throws Exception {
         QRCodeWriter barcodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix =
-                barcodeWriter.encode(OID4VPRequestService.getAuthorizationRequest(type, "CD:"+state), BarcodeFormat.QR_CODE, 200, 200);
+                barcodeWriter.encode(openID4VPRequestService.createAuthorizationRequest(verifierTransactionId, "cross-device").toString(), BarcodeFormat.QR_CODE, 200, 200);
         return MatrixToImageWriter.toBufferedImage(bitMatrix);
     }
 
