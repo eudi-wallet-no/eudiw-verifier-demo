@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class VerificationTransactionService {
 
-    public static String STATUS_UNKNOWN = "UNKNOWN";
-    public static String STATUS_WAIT = "WAIT";
-    public static String STATUS_AVAILABLE = "AVAILABLE";
+    public static final String STATUS_UNKNOWN = "UNKNOWN";
+    public static final String STATUS_WAIT = "WAIT";
+    public static final String STATUS_AVAILABLE = "AVAILABLE";
 
     private final CacheService cacheService;
 
