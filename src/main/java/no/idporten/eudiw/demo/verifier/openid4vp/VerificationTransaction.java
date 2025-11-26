@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 public class VerificationTransaction implements Serializable {
 
-    private String status;
+    private String status = "WAIT";
     private CredentialConfig credentialConfiguration;
     private String flow;
     private String state;
@@ -20,6 +20,13 @@ public class VerificationTransaction implements Serializable {
     private JWK encryptionKey;
     private VerifiedCredentials verifiedCredentials;
     private List<ProtocolTrace>  protocolTraces = new ArrayList<>();
+
+    public void setVerifiedCredentials(VerifiedCredentials verifiedCredentials) {
+        this.verifiedCredentials = verifiedCredentials;
+        if (verifiedCredentials != null) {
+            setStatus("AVAILABLE");
+        }
+    }
 
     public void addProtocolTrace(ProtocolTrace protocolTrace) {
         protocolTraces.add(protocolTrace);

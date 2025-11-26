@@ -35,8 +35,8 @@ public class ResponseStatusPollController {
         this.verificationTransactionService = verificationTransactionService;
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/response-status/{type}/{verifierTransactionId}")
-    public ResponseEntity<String> pollStatus(@PathVariable("type") String type, @PathVariable("verifierTransactionId") String verifierTransactionId, HttpSession session) {
+    @RequestMapping(method = RequestMethod.GET, path = "/response-status/{verifierTransactionId}")
+    public ResponseEntity<String> pollStatus(@PathVariable("verifierTransactionId") String verifierTransactionId, HttpSession session) {
 //        String state = (String) session.getAttribute("state");
         if (verifierTransactionId == null) {
             log.warn("No state in session {}", session.getId());
@@ -47,7 +47,9 @@ public class ResponseStatusPollController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("WAIT");
         }
         if ("AVAILABLE".equals(verificationTransaction.getStatus())) {
-            // same device = CLOSE???
+            if ("same-device".equals(verificationTransaction.getFlow())) {
+                return ResponseEntity.status(HttpStatus.OK).body("CLOSE");
+            }
             return ResponseEntity.status(HttpStatus.OK).body("OK");
         } else {
             log.info("Continue polling for state {} in session {}", verifierTransactionId, session.getId());
@@ -55,25 +57,26 @@ public class ResponseStatusPollController {
         }
     }
 
-    @GetMapping("/response-result/{type}/{verifierTransactionId}")
-    public String pollComplete(@PathVariable("type") String type, @PathVariable("verifierTransactionId") String verifierTransactionId, Model model) {
+    @GetMapping("/response-result/{verifierTransactionId}")
+    public String pollComplete(@PathVariable("verifierTransactionId") String verifierTransactionId, Model model) {
         VerificationTransaction verificationTransaction = verificationTransactionService.getVerificationTransaction(verifierTransactionId);
         VerifiedCredentials verifiedCredentials = verificationTransactionService.retrieveVerifiedCredentials(verifierTransactionId);
         MultiValueMap<String, Object> claims = new LinkedMultiValueMap<>();
         verifiedCredentials.credentials().forEach(claims::add);
         model.addAllAttributes(claims);
         model.addAttribute("traces", verificationTransaction.getProtocolTraces());
-        if ("alder".equals(type)) {
+        String credentialConfigurationId = verificationTransaction.getCredentialConfiguration().getId();
+        if ("alder".equals(credentialConfigurationId)) {
             return handleAlder(claims);
         }
-        if ("forerkort".equals(type)) {
+        if ("forerkort".equals(credentialConfigurationId)) {
             return "forerkort/verify-result";
         }
-        if ("inntekt".equals(type)) {
+        if ("inntekt".equals(credentialConfigurationId)) {
             return handleInntekt(claims, model);
         }
         model.addAttribute("claims", claims);
-        model.addAttribute("credentialConfig", configProvider.getCredentialConfig(type));
+        model.addAttribute("credentialConfig", configProvider.getCredentialConfig(credentialConfigurationId));
         return "verify-result";
     }
 

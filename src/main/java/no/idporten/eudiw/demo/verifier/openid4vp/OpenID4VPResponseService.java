@@ -65,11 +65,11 @@ public class OpenID4VPResponseService {
         verificationTransaction.addProtocolTrace(new MapTrace("credentialClaims", "Claims from credential", claims));
 
         VerifiedCredentials verifiedCredentials = new VerifiedCredentials(vpToken, claims);
-        verificationTransactionService.addVerifiedCredentials(verifierTransactionId, verifiedCredentials);
+        verificationTransaction.setVerifiedCredentials(verifiedCredentials);
         String responseBody = "{}";
         if ("same-device".equals(verificationTransaction.getFlow())) {
-            URI redirectURI = UriComponentsBuilder.fromUriString(configProvider.getExternalBaseUrl()).pathSegment("response-result", verificationTransaction.getCredentialConfiguration().getId(), verifierTransactionId).build().toUri();
-            responseBody = "{ \"redirect_uri\" : \"" + redirectURI.toString() + "\"}";
+            URI redirectURI = UriComponentsBuilder.fromUriString(configProvider.getExternalBaseUrl()).pathSegment("response-result", verifierTransactionId).build().toUri();
+            responseBody = "{ \"redirect_uri\" : \"" + redirectURI + "\"}";
         }
         verificationTransaction.addProtocolTrace(new StringTrace("walletResponseResponse", "Response to wallet response", responseBody));
         verificationTransactionService.updateVerificationTransaction(verifierTransactionId, verificationTransaction);

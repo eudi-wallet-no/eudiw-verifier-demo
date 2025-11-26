@@ -40,8 +40,8 @@ public class StartVerifyCredentialController {
         model.addAttribute("verifierTransactionId", verifierTransactionId);
         model.addAttribute("authorizationRequest", openID4VPRequestService.createAuthorizationRequest(verifierTransactionId, "same-device"));
         model.addAttribute("traces", protocolTraceList);
-        model.addAttribute(("responseStatusUri"), builPolldUri(request.getRequestURL().toString(), "response-status", type, verifierTransactionId).toString());
-        String responseResultUri = builPolldUri(request.getRequestURL().toString(), "response-result", type, verifierTransactionId).toString();
+        model.addAttribute(("responseStatusUri"), builPolldUri(request.getRequestURL().toString(), "response-status", verifierTransactionId).toString());
+        String responseResultUri = builPolldUri(request.getRequestURL().toString(), "response-result", verifierTransactionId).toString();
         model.addAttribute(("responseResultUri"), responseResultUri);
         model.addAttribute("credentialConfig", credentialConfig);
         verificationTransactionService.initTransaction(verifierTransactionId, credentialConfig);
