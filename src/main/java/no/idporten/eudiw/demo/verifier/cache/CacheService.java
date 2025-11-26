@@ -1,4 +1,4 @@
-package no.idporten.eudiw.demo.verifier.service;
+package no.idporten.eudiw.demo.verifier.cache;
 
 import no.idporten.eudiw.demo.verifier.openid4vp.VerificationTransaction;
 import org.springframework.beans.factory.annotation.Value;

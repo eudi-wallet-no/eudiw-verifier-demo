@@ -1,4 +1,4 @@
-package no.idporten.eudiw.demo.verifier.service;
+package no.idporten.eudiw.demo.verifier.cache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
