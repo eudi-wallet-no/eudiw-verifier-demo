@@ -1,6 +1,7 @@
-package no.idporten.eudiw.demo.verifier.service;
+package no.idporten.eudiw.demo.verifier.cache;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.interceptor.CacheErrorHandler;
@@ -12,9 +13,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-@Slf4j
 @Configuration
 public class RedisConfig extends CachingConfigurerSupport {
+
+    private static final Logger log = LoggerFactory.getLogger(RedisConfig.class);
 
     @Override
     public CacheErrorHandler errorHandler() {

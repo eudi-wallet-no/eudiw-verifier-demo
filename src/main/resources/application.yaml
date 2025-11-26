@@ -19,7 +19,7 @@ spring:
   session:
     store-type: redis
     redis:
-      namespace: "${spring.application.name}:session"
+      namespace: "${spring.application.name}"
   data:
     redis:
       timeout: 3s

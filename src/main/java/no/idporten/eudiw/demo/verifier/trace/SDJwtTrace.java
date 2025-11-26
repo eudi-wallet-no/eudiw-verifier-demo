@@ -4,30 +4,37 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import id.walt.sdjwt.SDJwt;
-import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 public record SDJwtTrace(String id, String description, String sdJwt) implements ProtocolTrace {
 
-    @SneakyThrows
+    private static final Logger logger = LoggerFactory.getLogger(SDJwtTrace.class);
+
     @Override
     public String formatted() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectWriter writer =objectMapper.writerWithDefaultPrettyPrinter();
-        ObjectReader reader = objectMapper.readerFor(Map.class);
-        SDJwt parsedSDJwt = SDJwt.Companion.parse(sdJwt);
-        return """
-                %s
-                .
-                %s
-                .
-                <signature>
-                .
-                %s~
-                """.formatted(writer.writeValueAsString(reader.readValue(parsedSDJwt.getHeader().toString())),
-                writer.writeValueAsString(reader.readValue(parsedSDJwt.getSdPayload().getUndisclosedPayload().toString())),
-                String.join("~", parsedSDJwt.getDisclosures()));
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            ObjectWriter writer = objectMapper.writerWithDefaultPrettyPrinter();
+            ObjectReader reader = objectMapper.readerFor(Map.class);
+            SDJwt parsedSDJwt = SDJwt.Companion.parse(sdJwt);
+            return """
+                    %s
+                    .
+                    %s
+                    .
+                    <signature>
+                    .
+                    %s~
+                    """.formatted(writer.writeValueAsString(reader.readValue(parsedSDJwt.getHeader().toString())),
+                    writer.writeValueAsString(reader.readValue(parsedSDJwt.getSdPayload().getUndisclosedPayload().toString())),
+                    String.join("~", parsedSDJwt.getDisclosures()));
+        } catch (Exception e) {
+            logger.error("Failed to format SD-JWT", e);
+            return sdJwt;
+        }
     }
 
 }

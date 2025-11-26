@@ -1,4 +1,4 @@
-package no.idporten.eudiw.demo.verifier.service;
+package no.idporten.eudiw.demo.verifier.cache;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;

@@ -1,16 +1,18 @@
 package no.idporten.eudiw.demo.verifier.trace;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
 
 import java.util.Map;
 
 public record JsonTrace (String id, String description, Map<String, Object> json) implements ProtocolTrace {
 
-    @SneakyThrows
     @Override
     public String formatted() {
-        return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(json);
+        try {
+            return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(json);
+        } catch (Exception e) {
+            return json.toString();
+        }
     }
 
 }

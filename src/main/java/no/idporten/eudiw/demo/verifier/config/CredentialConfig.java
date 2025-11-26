@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CredentialConfig {
+public class CredentialConfig implements Serializable {
 
     @NotNull
     private String id;

@@ -1,4 +1,4 @@
-package no.idporten.eudiw.demo.verifier.service;
+package no.idporten.eudiw.demo.verifier.cache;
 
 import java.time.Duration;
 
