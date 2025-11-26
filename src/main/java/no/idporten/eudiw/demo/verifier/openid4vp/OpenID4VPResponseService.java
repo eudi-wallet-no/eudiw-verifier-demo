@@ -169,7 +169,6 @@ public class OpenID4VPResponseService {
             case byteString -> new String(Base64.getEncoder().encode(((ByteStringElement) dataElement).getValue()));
             default -> String.valueOf(dataElement.getInternalValue());
         };
-
     }
     
 
