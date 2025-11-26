@@ -1,8 +1,5 @@
 package no.idporten.eudiw.demo.verifier;
 
-import lombok.Getter;
-
-@Getter
 public class VerificationException extends RuntimeException {
 
     private String error;
@@ -14,4 +11,11 @@ public class VerificationException extends RuntimeException {
         this.errorDescription = errorMessage;
     }
 
+    public String getError() {
+        return error;
+    }
+
+    public String getErrorDescription() {
+        return errorDescription;
+    }
 }

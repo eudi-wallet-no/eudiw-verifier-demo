@@ -1,7 +1,6 @@
 package no.idporten.eudiw.demo.verifier.openid4vp;
 
 import com.nimbusds.jose.jwk.JWK;
-import lombok.Builder;
 import lombok.Data;
 import no.idporten.eudiw.demo.verifier.config.CredentialConfig;
 import no.idporten.eudiw.demo.verifier.trace.ProtocolTrace;

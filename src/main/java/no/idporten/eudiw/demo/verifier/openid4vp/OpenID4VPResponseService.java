@@ -44,8 +44,8 @@ public class OpenID4VPResponseService {
         if (verificationTransaction == null) {
             throw new VerificationException("invalid_request", "Unknown verification transaction id");
         }
-        verificationTransaction.addProtocolTrace(new StringTrace("walletResponse", "Wallet response", encryptedAuthorizationResponse.getResponse()));
-        Map<String, Object> claimsFromJwePayload = decryptAndDeserializeJweResponse(encryptedAuthorizationResponse.getResponse(), verificationTransaction.getEncryptionKey());
+        verificationTransaction.addProtocolTrace(new StringTrace("walletResponse", "Wallet response", encryptedAuthorizationResponse.response()));
+        Map<String, Object> claimsFromJwePayload = decryptAndDeserializeJweResponse(encryptedAuthorizationResponse.response(), verificationTransaction.getEncryptionKey());
         verificationTransaction.addProtocolTrace(new JsonTrace("jweClaims", "Decrypted JWE payload", claimsFromJwePayload));
 
         String nonce = (String) claimsFromJwePayload.get("nonce");

@@ -1,8 +1,6 @@
 package no.idporten.eudiw.demo.verifier.web;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
 import no.idporten.eudiw.demo.verifier.config.CredentialConfig;
 import no.idporten.eudiw.demo.verifier.openid4vp.OpenID4VPRequestService;
@@ -19,14 +17,18 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-@Slf4j
-@RequiredArgsConstructor
 @Controller
 public class StartVerifyCredentialController {
 
     private final ConfigProvider configProvider;
     private final OpenID4VPRequestService openID4VPRequestService;
     private final VerificationTransactionService verificationTransactionService;
+
+    public StartVerifyCredentialController(ConfigProvider configProvider, OpenID4VPRequestService openID4VPRequestService, VerificationTransactionService verificationTransactionService) {
+        this.configProvider = configProvider;
+        this.openID4VPRequestService = openID4VPRequestService;
+        this.verificationTransactionService = verificationTransactionService;
+    }
 
     @GetMapping(value = "/verify/{credentialConfigurationId}")
     public String startVerify(Model model, @PathVariable("credentialConfigurationId") String type, HttpServletRequest request) throws Exception {

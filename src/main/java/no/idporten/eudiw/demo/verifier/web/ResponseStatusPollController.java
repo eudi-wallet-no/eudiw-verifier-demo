@@ -1,12 +1,12 @@
 package no.idporten.eudiw.demo.verifier.web;
 
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
 import no.idporten.eudiw.demo.verifier.openid4vp.VerificationTransaction;
 import no.idporten.eudiw.demo.verifier.openid4vp.VerificationTransactionService;
 import no.idporten.eudiw.demo.verifier.openid4vp.VerifiedCredentials;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,13 +22,18 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
-@RequiredArgsConstructor
-@Slf4j
 @Controller
 public class ResponseStatusPollController {
 
+    private static Logger log = LoggerFactory.getLogger(ResponseStatusPollController.class);
+
     private final ConfigProvider configProvider;
     private final VerificationTransactionService verificationTransactionService;
+
+    public ResponseStatusPollController(ConfigProvider configProvider, VerificationTransactionService verificationTransactionService) {
+        this.configProvider = configProvider;
+        this.verificationTransactionService = verificationTransactionService;
+    }
 
     @RequestMapping(method = RequestMethod.GET, path = "/response-status/{type}/{verifierTransactionId}")
     public ResponseEntity<String> pollStatus(@PathVariable("type") String type, @PathVariable("verifierTransactionId") String verifierTransactionId, HttpSession session) {
@@ -55,7 +60,7 @@ public class ResponseStatusPollController {
         VerificationTransaction verificationTransaction = verificationTransactionService.getVerificationTransaction(verifierTransactionId);
         VerifiedCredentials verifiedCredentials = verificationTransactionService.retrieveVerifiedCredentials(verifierTransactionId);
         MultiValueMap<String, Object> claims = new LinkedMultiValueMap<>();
-        verifiedCredentials.getCredentials().forEach(claims::add);
+        verifiedCredentials.credentials().forEach(claims::add);
         model.addAllAttributes(claims);
         model.addAttribute("traces", verificationTransaction.getProtocolTraces());
         if ("alder".equals(type)) {

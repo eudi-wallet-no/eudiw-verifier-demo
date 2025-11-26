@@ -1,6 +1,5 @@
 package no.idporten.eudiw.demo.verifier.service;
 
-import lombok.RequiredArgsConstructor;
 import no.idporten.eudiw.demo.verifier.openid4vp.VerificationTransaction;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -8,7 +7,6 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
-@RequiredArgsConstructor
 @Service
 public class CacheService {
 
@@ -16,6 +14,10 @@ public class CacheService {
     private String applicationName;
 
     private final Cache cache;
+
+    public CacheService(Cache cache) {
+        this.cache = cache;
+    }
 
     protected String verificationTransactionKey(String verificationTransactionId) {
         return applicationName + ":verification-transactions:" + verificationTransactionId;

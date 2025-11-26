@@ -41,7 +41,7 @@ public class OpenID4VPController {
                                                   EncryptedAuthorizationResponse encryptedAuthorizationResponse,
                                                   HttpServletRequest request
                                                   ) throws Exception {
-        if (encryptedAuthorizationResponse.getResponse() == null) {
+        if (encryptedAuthorizationResponse.response() == null) {
             throw new VerificationException("invalid_request", "Empty authorization response");
         }
         return ResponseEntity.ok(openID4VPResponseService.receiveResponse(verifierTransactionId, encryptedAuthorizationResponse));
