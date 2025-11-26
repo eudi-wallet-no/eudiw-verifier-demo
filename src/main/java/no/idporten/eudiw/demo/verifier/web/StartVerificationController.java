@@ -47,7 +47,7 @@ public class StartVerificationController {
         String responseResultUri = builPolldUri(request.getRequestURL().toString(), "response-result", verifierTransactionId).toString();
         model.addAttribute(("responseResultUri"), responseResultUri);
         model.addAttribute("credentialConfig", credentialConfig);
-        verificationTransactionService.initTransaction(verifierTransactionId, credentialConfig);
+        verificationTransactionService.initVerificationTransaction(verifierTransactionId, credentialConfig);
         return "start-verify";
     }
 

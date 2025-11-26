@@ -18,7 +18,7 @@ public class VerificationTransactionService {
         this.cacheService = cacheService;
     }
 
-    public void initTransaction(String verifierTransactionId, CredentialConfig credentialConfiguration) {
+    public void initVerificationTransaction(String verifierTransactionId, CredentialConfig credentialConfiguration) {
         VerificationTransaction verificationTransaction = new VerificationTransaction();
         verificationTransaction.setStatus(STATUS_WAIT);
         verificationTransaction.setCredentialConfiguration(credentialConfiguration);
@@ -27,16 +27,6 @@ public class VerificationTransactionService {
 
     public VerificationTransaction getVerificationTransaction(String verifierTransactionId) {
         return cacheService.getVerificationTransaction(verifierTransactionId);
-    }
-
-    public void addVerifiedCredentials(String verifierTransactionId, VerifiedCredentials verifiedCredentials) {
-        VerificationTransaction verificationTransaction = cacheService.getVerificationTransaction(verifierTransactionId);
-        if (verificationTransaction == null) {
-            throw new VerificationException("invalid_request", "Unknown verifier transaction");
-        }
-        verificationTransaction.setStatus(STATUS_AVAILABLE);
-        verificationTransaction.setVerifiedCredentials(verifiedCredentials);
-        updateVerificationTransaction(verifierTransactionId, verificationTransaction);
     }
 
     public void updateVerificationTransaction(String verifierTransactionId, VerificationTransaction verificationTransaction) {

@@ -9,16 +9,30 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data store for verification transaction attributes.
+ */
 @Data
 public class VerificationTransaction implements Serializable {
 
-    private String status = "WAIT";
+    // the config base for authz request
     private CredentialConfig credentialConfiguration;
+
+    // transaction status
+    private String status = "WAIT";
+
+    // transaction features
     private String flow;
+
+    // transaction protocol verifiers
     private String state;
     private String nonce;
     private JWK encryptionKey;
+
+    // transaction result
     private VerifiedCredentials verifiedCredentials;
+
+    // traced protocol interactions
     private List<ProtocolTrace>  protocolTraces = new ArrayList<>();
 
     public void setVerifiedCredentials(VerifiedCredentials verifiedCredentials) {

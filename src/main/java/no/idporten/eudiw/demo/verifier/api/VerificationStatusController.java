@@ -25,6 +25,12 @@ public class VerificationStatusController {
         this.verificationTransactionService = verificationTransactionService;
     }
 
+    /**
+     * Check status.
+     * 204 - WAIT - keep checking
+     * 200 - OK - stop checking, fetch result (cross device)
+     * 200 - CLOSE - stop checking, fetch result (same device)
+     */
     @RequestMapping(method = RequestMethod.GET, path = "/verification/status/{verifierTransactionId}")
     public ResponseEntity<String> verificationStatus(@PathVariable("verifierTransactionId") String verifierTransactionId) {
         VerificationTransaction verificationTransaction = verificationTransactionService.getVerificationTransaction(verifierTransactionId);
