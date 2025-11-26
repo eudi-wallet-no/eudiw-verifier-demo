@@ -35,4 +35,16 @@ public class CacheService {
         return (VerificationTransaction) cache.get(verificationTransactionKey(verificationTransactionId));
     }
 
+    protected String authorizationRequestKey(String requestId) {
+        return applicationName + ":authorization-requests:" + requestId;
+    }
+
+    public void putAuthorizationRequest(String requestId, String verificationTransactionId) {
+        cache.set(authorizationRequestKey(requestId), verificationTransactionId, Duration.of(2, ChronoUnit.MINUTES));
+    }
+
+    public String retrieveAuthorizationRequest(String requestId) {
+        return (String) cache.remove(authorizationRequestKey(requestId));
+    }
+
 }

@@ -18,6 +18,7 @@ import no.idporten.eudiw.demo.verifier.VerificationException;
 import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
 import no.idporten.eudiw.demo.verifier.config.CredentialConfig;
 import no.idporten.eudiw.demo.verifier.crypto.ECUtils;
+import no.idporten.eudiw.demo.verifier.service.CacheService;
 import no.idporten.eudiw.demo.verifier.trace.JsonTrace;
 import no.idporten.lib.keystore.KeyProvider;
 import no.idporten.lib.keystore.KeystoreManager;
@@ -36,14 +37,13 @@ public class OpenID4VPRequestService {
     private final ConfigProvider configProvider;
     private final KeystoreManager keystoreManager;
     private final VerificationTransactionService verificationTransactionService;
+    private final CacheService cacheService;
 
-    // Cache request_id -> verification_transaction_id
-    private Map<String, String> requestId2verificationTransactionId = new HashMap<>();
-
-    public OpenID4VPRequestService(ConfigProvider configProvider, KeystoreManager keystoreManager, VerificationTransactionService verificationTransactionService) {
+    public OpenID4VPRequestService(ConfigProvider configProvider, KeystoreManager keystoreManager, VerificationTransactionService verificationTransactionService, CacheService cacheService) {
         this.configProvider = configProvider;
         this.keystoreManager = keystoreManager;
         this.verificationTransactionService = verificationTransactionService;
+        this.cacheService = cacheService;
     }
 
     protected URI createRequestUri(String requestId, String flow) {
@@ -79,7 +79,7 @@ public class OpenID4VPRequestService {
     @SneakyThrows
     public URI createAuthorizationRequest(String verifierTransactionId, String flow) {
         String requestId = UUID.randomUUID().toString();
-        requestId2verificationTransactionId.put(requestId, verifierTransactionId);
+        cacheService.putAuthorizationRequest(requestId, verifierTransactionId);
         return UriComponentsBuilder.newInstance()
                 .scheme("eudi-openid4vp")
                 .host(configProvider.getSiop2ClientId())
@@ -91,7 +91,7 @@ public class OpenID4VPRequestService {
 
     @SneakyThrows
     public String retrieveAuthorizationRequest(String requestId, String flow) {
-        String verificationTransactionId = requestId2verificationTransactionId.remove(requestId);
+        String verificationTransactionId = cacheService.retrieveAuthorizationRequest(requestId);
         if (verificationTransactionId == null) {
             throw new VerificationException("invalid_request", "Unknown authorization request");
         }
@@ -205,36 +205,5 @@ public class OpenID4VPRequestService {
         JSONObject dcql = new JSONObject().appendField("credentials", new JSONArray().appendElement(credential));
         return dcql;
     }
-
-
-//    @Deprecated
-//    @SneakyThrows
-//    public JSONObject makeDCQLQuery(CredentialConfiguration credentialConfiguration, String id) {
-//        JSONObject credential = new JSONObject()
-//                .appendField("id", id)
-//                .appendField("format", credentialConfiguration.getFormat())
-//                .appendField("meta",
-//                        "dc+sd-jwt".equals(credentialConfiguration.getFormat())
-//                                ?
-//                                new JSONObject().appendField("vct_values", List.of(credentialConfiguration.getVct()))
-//                                :
-//                                new JSONObject().appendField("doctype_value", credentialConfiguration.getDoctype()))
-//                .appendField("claims",
-//                        credentialConfiguration.getCredentialMetadata().getClaimsDescriptions().stream()
-//                                .map(cd -> new JSONObject().appendField("path", calculatePath(credentialConfiguration.getFormat(), cd)))
-//                                .toList());
-//        return new JSONObject().appendField("credentials", new JSONArray().appendElement(credential));
-//    }
-
-//    protected List<String> calculatePath(String credentialFormat, ClaimsDescription claimsDescription) {
-//        if ("dc+sd-jwt".equals(credentialFormat)) {
-//            return claimsDescription.getPath();
-//        }
-//        // do not ask for map or list elements in mdoc credentials
-//        if (claimsDescription.getPath().size() == 2) {
-//            return claimsDescription.getPath();
-//        }
-//        return claimsDescription.getPath().subList(0, 2);
-//    }
 
 }
