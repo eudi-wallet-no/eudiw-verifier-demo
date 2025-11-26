@@ -23,9 +23,9 @@ public class QrCodeController {
         this.openID4VPRequestService = openID4VPRequestService;
     }
 
-    @GetMapping(value = "/qrcode/{type}/{verifierTransactionId}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<BufferedImage> getQrCodeImage(@PathVariable("type") String type, @PathVariable("verifierTransactionId") String verifierTransactionId) throws Exception {
-        return ResponseEntity.ok(generateQRCodeImage(type, verifierTransactionId));
+    @GetMapping(value = "/qrcode/{verifierTransactionId}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<BufferedImage> getQrCodeImage(@PathVariable("verifierTransactionId") String verifierTransactionId) throws Exception {
+        return ResponseEntity.ok(generateQRCodeImage(verifierTransactionId));
     }
 
     @ExceptionHandler
@@ -34,7 +34,7 @@ public class QrCodeController {
         return "error";
     }
 
-    private BufferedImage generateQRCodeImage(String type, String verifierTransactionId) throws Exception {
+    private BufferedImage generateQRCodeImage(String verifierTransactionId) throws Exception {
         QRCodeWriter barcodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix =
                 barcodeWriter.encode(openID4VPRequestService.createAuthorizationRequest(verifierTransactionId, "cross-device").toString(), BarcodeFormat.QR_CODE, 200, 200);

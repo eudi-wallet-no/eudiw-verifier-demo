@@ -23,7 +23,7 @@
                 <p>Scan qr-koden eller åpne i lommebok.</p>
             </div>
             <div>
-                <img th:src="@{/qrcode/{id}/{verifierTransactionId}(id=${credentialConfig.id}, verifierTransactionId=${verifierTransactionId})}" alt="QR code" style="width:100%;"/>
+                <img th:src="@{/qrcode/{verifierTransactionId}(verifierTransactionId=${verifierTransactionId})}" alt="QR code" style="width:100%;"/>
             </div>
             <div class="btn-group">
                 <a th:href="${authorizationRequest}"><button class="button ">Åpne i lommebok</button></a>
