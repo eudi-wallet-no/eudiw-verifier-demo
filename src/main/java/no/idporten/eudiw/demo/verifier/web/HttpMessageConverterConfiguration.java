@@ -1,4 +1,4 @@
-package no.idporten.eudiw.demo.verifier.config;
+package no.idporten.eudiw.demo.verifier.web;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
