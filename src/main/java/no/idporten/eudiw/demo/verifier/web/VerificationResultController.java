@@ -1,64 +1,33 @@
 package no.idporten.eudiw.demo.verifier.web;
 
-import jakarta.servlet.http.HttpSession;
 import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
 import no.idporten.eudiw.demo.verifier.openid4vp.VerificationTransaction;
 import no.idporten.eudiw.demo.verifier.openid4vp.VerificationTransactionService;
 import no.idporten.eudiw.demo.verifier.openid4vp.VerifiedCredentials;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
 @Controller
-public class ResponseStatusPollController {
-
-    private static Logger log = LoggerFactory.getLogger(ResponseStatusPollController.class);
+public class VerificationResultController {
 
     private final ConfigProvider configProvider;
     private final VerificationTransactionService verificationTransactionService;
 
-    public ResponseStatusPollController(ConfigProvider configProvider, VerificationTransactionService verificationTransactionService) {
+    public VerificationResultController(ConfigProvider configProvider, VerificationTransactionService verificationTransactionService) {
         this.configProvider = configProvider;
         this.verificationTransactionService = verificationTransactionService;
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/response-status/{verifierTransactionId}")
-    public ResponseEntity<String> pollStatus(@PathVariable("verifierTransactionId") String verifierTransactionId, HttpSession session) {
-//        String state = (String) session.getAttribute("state");
-        if (verifierTransactionId == null) {
-            log.warn("No state in session {}", session.getId());
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("WAIT");
-        }
-        VerificationTransaction verificationTransaction = verificationTransactionService.getVerificationTransaction(verifierTransactionId);
-        if (verificationTransaction == null) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("WAIT");
-        }
-        if ("AVAILABLE".equals(verificationTransaction.getStatus())) {
-            if ("same-device".equals(verificationTransaction.getFlow())) {
-                return ResponseEntity.status(HttpStatus.OK).body("CLOSE");
-            }
-            return ResponseEntity.status(HttpStatus.OK).body("OK");
-        } else {
-            log.info("Continue polling for state {} in session {}", verifierTransactionId, session.getId());
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("WAIT");
-        }
-    }
-
     @GetMapping("/response-result/{verifierTransactionId}")
-    public String pollComplete(@PathVariable("verifierTransactionId") String verifierTransactionId, Model model) {
+    public String verificationResult(@PathVariable("verifierTransactionId") String verifierTransactionId, Model model) {
         VerificationTransaction verificationTransaction = verificationTransactionService.getVerificationTransaction(verifierTransactionId);
         VerifiedCredentials verifiedCredentials = verificationTransactionService.retrieveVerifiedCredentials(verifierTransactionId);
         MultiValueMap<String, Object> claims = new LinkedMultiValueMap<>();

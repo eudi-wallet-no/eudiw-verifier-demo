@@ -17,14 +17,17 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Start the verification process.
+ */
 @Controller
-public class StartVerifyCredentialController {
+public class StartVerificationController {
 
     private final ConfigProvider configProvider;
     private final OpenID4VPRequestService openID4VPRequestService;
     private final VerificationTransactionService verificationTransactionService;
 
-    public StartVerifyCredentialController(ConfigProvider configProvider, OpenID4VPRequestService openID4VPRequestService, VerificationTransactionService verificationTransactionService) {
+    public StartVerificationController(ConfigProvider configProvider, OpenID4VPRequestService openID4VPRequestService, VerificationTransactionService verificationTransactionService) {
         this.configProvider = configProvider;
         this.openID4VPRequestService = openID4VPRequestService;
         this.verificationTransactionService = verificationTransactionService;
@@ -40,7 +43,7 @@ public class StartVerifyCredentialController {
         model.addAttribute("verifierTransactionId", verifierTransactionId);
         model.addAttribute("authorizationRequest", openID4VPRequestService.createAuthorizationRequest(verifierTransactionId, "same-device"));
         model.addAttribute("traces", protocolTraceList);
-        model.addAttribute(("responseStatusUri"), builPolldUri(request.getRequestURL().toString(), "response-status", verifierTransactionId).toString());
+        model.addAttribute(("responseStatusUri"), builPolldUri(request.getRequestURL().toString(), "verification", "status", verifierTransactionId).toString());
         String responseResultUri = builPolldUri(request.getRequestURL().toString(), "response-result", verifierTransactionId).toString();
         model.addAttribute(("responseResultUri"), responseResultUri);
         model.addAttribute("credentialConfig", credentialConfig);
