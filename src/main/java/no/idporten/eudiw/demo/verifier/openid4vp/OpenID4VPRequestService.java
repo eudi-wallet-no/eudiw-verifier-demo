@@ -17,7 +17,6 @@ import net.minidev.json.JSONObject;
 import no.idporten.eudiw.demo.verifier.VerificationException;
 import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
 import no.idporten.eudiw.demo.verifier.config.CredentialConfig;
-import no.idporten.eudiw.demo.verifier.crypto.ECUtils;
 import no.idporten.eudiw.demo.verifier.service.CacheService;
 import no.idporten.eudiw.demo.verifier.trace.JsonTrace;
 import no.idporten.lib.keystore.KeyProvider;

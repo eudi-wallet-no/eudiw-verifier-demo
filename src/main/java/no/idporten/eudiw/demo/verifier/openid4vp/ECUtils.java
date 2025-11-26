@@ -1,4 +1,4 @@
-package no.idporten.eudiw.demo.verifier.crypto;
+package no.idporten.eudiw.demo.verifier.openid4vp;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.Curve;

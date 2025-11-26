@@ -16,7 +16,6 @@ import id.walt.sdjwt.VerificationResult;
 import no.idporten.eudiw.demo.verifier.VerificationException;
 import no.idporten.eudiw.demo.verifier.api.EncryptedAuthorizationResponse;
 import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
-import no.idporten.eudiw.demo.verifier.crypto.ECUtils;
 import no.idporten.eudiw.demo.verifier.trace.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
