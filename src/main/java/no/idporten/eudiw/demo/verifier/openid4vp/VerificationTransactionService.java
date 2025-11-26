@@ -2,7 +2,7 @@ package no.idporten.eudiw.demo.verifier.openid4vp;
 
 import no.idporten.eudiw.demo.verifier.VerificationException;
 import no.idporten.eudiw.demo.verifier.config.CredentialConfig;
-import no.idporten.eudiw.demo.verifier.service.CacheService;
+import no.idporten.eudiw.demo.verifier.cache.CacheService;
 import org.springframework.stereotype.Service;
 
 @Service
