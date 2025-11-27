@@ -8,6 +8,7 @@ vcverifier:
   siop2ClientId: junit.idporten.dev
   client-identifier-scheme: x509_san_dns
   externalBaseUrl: https://junit.idporten.dev
+  authorization-request-url-scheme: haip-vp
 idporten-key-manager:
   keystores:
     access:

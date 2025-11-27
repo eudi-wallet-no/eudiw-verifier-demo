@@ -10,8 +10,9 @@ spring:
 
 vcverifier:
   siop2ClientId: abr.vc.local
-  client-identifier-scheme: x509_san_dns
+  client-identifier-scheme: x509_hash
   externalBaseUrl: http://abr.vc.local:8080
+  authorization-request-url-scheme: eudi-openid4vp
 #  externalBaseUrl: http://localhost:8080
 #  externalBaseUrl: http://10.0.2.2:8080
 

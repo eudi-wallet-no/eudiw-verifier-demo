@@ -25,6 +25,9 @@ public class ConfigProvider {
     private String clientIdentifierScheme;
 
     @NotNull
+    private String authorizationRequestUrlScheme;
+
+    @NotNull
     private String externalBaseUrl;
     @NotEmpty
     private List<CredentialConfig> credentialConfigurations = new ArrayList<>();

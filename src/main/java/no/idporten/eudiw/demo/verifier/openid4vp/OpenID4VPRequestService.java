@@ -80,7 +80,7 @@ public class OpenID4VPRequestService {
         String requestId = UUID.randomUUID().toString();
         cacheService.putAuthorizationRequest(requestId, verifierTransactionId);
         return UriComponentsBuilder.newInstance()
-                .scheme("eudi-openid4vp")
+                .scheme(configProvider.getAuthorizationRequestUrlScheme())
                 .host(configProvider.getSiop2ClientId())
                 .queryParam("client_id", makeClientId())
                 .queryParam("request_uri", createRequestUri(requestId, flow).toString())
