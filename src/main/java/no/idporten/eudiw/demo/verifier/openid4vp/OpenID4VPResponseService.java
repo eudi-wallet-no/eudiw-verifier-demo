@@ -17,6 +17,8 @@ import no.idporten.eudiw.demo.verifier.VerificationException;
 import no.idporten.eudiw.demo.verifier.api.EncryptedAuthorizationResponse;
 import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
 import no.idporten.eudiw.demo.verifier.trace.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -29,6 +31,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class OpenID4VPResponseService {
+
+    private final static Logger log = LoggerFactory.getLogger(OpenID4VPResponseService.class);
 
     private final VerificationTransactionService verificationTransactionService;
     private final ConfigProvider configProvider;
@@ -45,6 +49,7 @@ public class OpenID4VPResponseService {
         }
         verificationTransaction.addProtocolTrace(new StringTrace("walletResponse", "Wallet response", encryptedAuthorizationResponse.response()));
         Map<String, Object> claimsFromJwePayload = decryptAndDeserializeJweResponse(encryptedAuthorizationResponse.response(), verificationTransaction.getEncryptionKey());
+        log.info("Decrypted response claims: {}", claimsFromJwePayload);
         verificationTransaction.addProtocolTrace(new JsonTrace("jweClaims", "Decrypted JWE payload", claimsFromJwePayload));
 
         String nonce = (String) claimsFromJwePayload.get("nonce");
@@ -80,7 +85,11 @@ public class OpenID4VPResponseService {
         final String vpToken;
         Map<String, Object> credentialsMap = (Map<String, Object>) claimsFromJwePayload.get("vp_token");
         Object vpTokenObject = credentialsMap.get(credentialId);
-        vpToken = ((List<String>) vpTokenObject).getFirst();
+        if (vpTokenObject instanceof String) {
+            vpToken = (String) vpTokenObject;
+        } else {
+            vpToken = ((List<String>) vpTokenObject).getFirst();
+        }
         return vpToken;
     }
 
