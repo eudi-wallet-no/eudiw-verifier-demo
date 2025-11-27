@@ -125,6 +125,29 @@ vcverifier:
         - fastlonn
       claim-descriptions:
         fastlonn: Fastlønn
+    - id: eudi-pid-mdoc
+      title: EUDI PID mdoc
+      description: Share your European identity
+      doc-type: "eu.europa.ec.eudi.pid.1"
+      format: mso_mdoc
+      claims:
+        - family_name
+        - given_name
+      claim-descriptions:
+        family_name: Etternavn
+        given_name: Fornavn
+    - id: eudi-pid-sd-jwt-vc
+      title: EUDI PID SD-JWT VC
+      description: Share your European identity
+      doc-type: "urn:eudi:pid:1"
+      format: dc+sd-jwt
+      claims:
+        - family_name
+        - given_name
+      claim-descriptions:
+        family_name: Etternavn
+        given_name: Fornavn
+
 
 idporten-key-manager:
   default-keystore: access
