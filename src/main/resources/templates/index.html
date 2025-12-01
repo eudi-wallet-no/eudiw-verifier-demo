@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link th:href="@{/css/idp-style-0.7.33.css}" rel="stylesheet">
     <script th:src="@{/js/idp-script-0.7.33.js}" defer></script>
-    <title>Demo verifisering av digitale bevis</title>
+    <title th:text="#{title}"></title>
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}">...</header>
@@ -18,11 +18,11 @@
     <div class="box">
         <div class="box__header">
             <div class="service-provider">
-                <div class="service-provider__name">Demo verifisering av digitale bevis</div>
+                <div class="service-provider__name" th:text="#{index.title}"></div>
                 <img class="service-provider__logo" src="img/logo/logo-emblem-blue.svg" alt="Logo">
             </div>
             <h1 class="title-bar">
-                <span class="title-bar__name">Hva vil du verifisere?</span>
+                <span class="title-bar__name" th:text="#{index.title.text}"></span>
             </h1>
         </div>
         <div class="box__body">
@@ -33,8 +33,8 @@
                             <img class="providers__logo" src="img/providers/idporten.svg" alt>
                         </div>
                         <div class="providers__container">
-                            <h2 class="providers__title" th:text="${credentialConfig.title}">...</h2>
-                            <p class="providers__desc" th:text="${credentialConfig.description}">...</p>
+                            <h2 class="providers__title" th:text="#{${credentialConfig.id + '.title'}}">...</h2>
+                            <p class="providers__desc" th:text="#{${credentialConfig.id + '.description'}}">...</p>
                         </div>
                     </a>
                 </li>

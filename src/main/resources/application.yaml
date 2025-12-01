@@ -51,27 +51,37 @@ digdir:
 
 vcverifier:
   credential-configurations:
-    - id: alder
-      title: Aldersverifisering
-      description: Du må være over 18 år for å bruke denne tjenesten
-      doc-type: "eu.europa.ec.av.1"
+    - id: eudi-pid-mdoc
+      doc-type: "eu.europa.ec.eudi.pid.1"
       format: mso_mdoc
       claims:
-        - age_over_18
-      claim-descriptions:
-        age_over_18: Over 18 år
+        - family_name
+        - given_name
+    - id: eudi-pid-sd-jwt-vc
+      doc-type: "urn:eudi:pid:1"
+      format: dc+sd-jwt
+      claims:
+        - family_name
+        - given_name
     - id: pid
-      title: Innlogging
-      description: Logg inn med fnr/dnr
       doc-type: "eu.europa.ec.eudi.pid.1"
       format: mso_mdoc
       claims:
         - personal_administrative_number
-      claim-descriptions:
-        personal_administrative_number: Personidentifikator
+    - id: alder
+      doc-type: "eu.europa.ec.av.1"
+      format: mso_mdoc
+      claims:
+        - age_over_18
+    - id: forerkort
+      doc-type: "org.iso.18013.5.1.mDL:1"
+      format: mso_mdoc
+      claims:
+        - family_name
+        - given_name
+        - driving_privileges
+        - portrait
     - id: advokatregisteret
-      title: Advokatbevilling
-      description: Kan du representere Peder Ås?
       doc-type: "no.advokattilsynet.advokatregisteret.1"
       format: mso_mdoc
       claims:
@@ -81,73 +91,18 @@ vcverifier:
         - mellomnavn
         - fornavn
         - regnr
-      claim-descriptions:
-        personidentifikator: Personidentifikator
-        tittel: Tittel
-        etternavn: Etternavn
-        mellomnavn: Mellomnavn
-        fornavn: Fornavn
-        regnr: Regnr
     - id: kontaktregisteret
-      title: Kontaktinformasjon
-      description: Del din digitale kontaktinformasjon
       doc-type: "no:kontaktregisteret:kontaktinformasjon:1"
       format: dc+sd-jwt
       claims:
         - personidentifikator
         - epostadresse
         - mobiltelefonnummer
-      claim-descriptions:
-        personidentifikator: Personidentifikator
-        epostadresse: Epost
-        mobiltelefonnummer: Telefonnummer
-    - id: forerkort
-      title: Norsk førerkort
-      description: Del ditt førerkort for å leie bil
-      doc-type: "org.iso.18013.5.1.mDL:1"
-      format: mso_mdoc
-      claims:
-        - family_name
-        - given_name
-        - driving_privileges
-        - portrait
-      claim-descriptions:
-        family_name: Etternavn
-        given_name: Fornavn
-        driving_privileges: Førerkortklasser
-        portrait: Portrettbilde
     - id: inntekt
-      title: Inntektsbevis
-      description: Del oversikt over fastlønn
       doc-type: "no.skatteetaten.inntekt.1"
       format: dc+sd-jwt
       claims:
         - fastlonn
-      claim-descriptions:
-        fastlonn: Fastlønn
-    - id: eudi-pid-mdoc
-      title: EUDI PID mdoc
-      description: Share your European identity
-      doc-type: "eu.europa.ec.eudi.pid.1"
-      format: mso_mdoc
-      claims:
-        - family_name
-        - given_name
-      claim-descriptions:
-        family_name: Etternavn
-        given_name: Fornavn
-    - id: eudi-pid-sd-jwt-vc
-      title: EUDI PID SD-JWT VC
-      description: Share your European identity
-      doc-type: "urn:eudi:pid:1"
-      format: dc+sd-jwt
-      claims:
-        - family_name
-        - given_name
-      claim-descriptions:
-        family_name: Etternavn
-        given_name: Fornavn
-
 
 idporten-key-manager:
   default-keystore: access

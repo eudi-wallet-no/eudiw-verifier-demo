@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link th:href="@{/css/idp-style-0.7.33.css}" rel="stylesheet">
     <script th:src="@{/js/idp-script-0.7.33.js}" defer></script>
-    <title>Demo verifisering av digitale bevis</title>
+    <title th:text="#{title}"></title>
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}">...</header>
@@ -18,25 +18,25 @@
     <div class="box">
         <div class="box__body">
             <div class="notification notification--success">
-                <h1>Vellykket verifisering</h1>
-                <p>Denne informasjonen ble delt fra lommebok<br/><i>* = ikke delt</i></p>
+                <h1 th:text="#{result.header}"></h1>
+                <p th:text="#{result.text.shared}"></p>
                 <table>
                     <thead>
                     <tr>
-                        <th>Attributt</th>
-                        <th>Verdi</th>
+                        <th th:text="#{result.table.attribute}"></th>
+                        <th th:text="#{result.table.value}"></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="claim: ${credentialConfig.claims}">
-                        <td th:text="${credentialConfig.claimDescriptions.get(claim)}">...</td>
+                        <td th:text="#{${credentialConfig.id + '.claim.' + claim}}">...</td>
                         <td th:text="${claims.get(claim) ?: '*'}">...</td>
                     </tr>
                     </tbody>
                 </table>
                 <div class="btn-group">
                     <a th:href="@{/}">
-                        <button class="button ">Prøv igjen</button>
+                        <button class="button" th:text="#{result.button.back}"></button>
                     </a>
                 </div>
             </div>
