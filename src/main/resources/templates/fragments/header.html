@@ -10,9 +10,36 @@
                 <img class="top-bar__logo--mobile" th:src="@{/img/logo/logo-idporten-bare.svg}" alt="Logo">
             </div>
             <div class="top-bar__middle">
-                <div class="top-bar__service-provider">Demo verifisering av bevis</div>
+                <div class="top-bar__service-provider" th:text="#{header.top_bar.text}"></div>
             </div>
             <div class="top-bar__right">
+                <div class="dropdowns">
+                    <div class="dropdowns__opacity"></div>
+                    <button class="dropdowns__toggle" aria-label="Meny"></button>
+                    <div class="dropdowns__container">
+                        <div class="dropdowns__title" th:text="#{header.lang.menu}"></div>
+
+                        <nav class="dropdown dropdown--language">
+                            <button
+                                    class="dropdown__toggle"
+                                    aria-haspopup="true"
+                                    aria-expanded="false"
+                                    id="list"
+                                    data-idp-toggle="dropdown"
+                                    th:text="#{header.lang.title}"
+                            >
+                            </button>
+                            <ul aria-labelledby="list" class="dropdown__list">
+                                <li class="dropdown__item">
+                                    <a href="/?lang=no" th:text="#{header.lang.no}"></a>
+                                </li>
+                                <li class="dropdown__item">
+                                    <a href="/?lang=en" th:text="#{header.lang.en}"></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
