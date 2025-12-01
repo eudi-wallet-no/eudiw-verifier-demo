@@ -22,7 +22,7 @@
                 <p th:text="#{result.alder.success.text}"></p>
             </div>
             <div class="btn-group">
-                <a th:href="@{/}"><button class="button ">Prøv igjen</button></a>
+                <a th:href="@{/}"><button class="button " th:text="#{result.button.back}"></button></a>
             </div>
             <div th:replace="~{fragments/traces :: traces}">...</div>
         </div>
