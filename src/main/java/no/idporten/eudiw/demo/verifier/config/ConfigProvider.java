@@ -1,5 +1,6 @@
 package no.idporten.eudiw.demo.verifier.config;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -30,7 +31,7 @@ public class ConfigProvider {
     @NotNull
     private String externalBaseUrl;
     @NotEmpty
-    private List<CredentialConfig> credentialConfigurations = new ArrayList<>();
+    private List<@Valid CredentialConfig> credentialConfigurations = new ArrayList<>();
 
     public CredentialConfig getCredentialConfig(String id) {
         return credentialConfigurations.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);

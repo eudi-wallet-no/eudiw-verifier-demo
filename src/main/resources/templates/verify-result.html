@@ -29,7 +29,7 @@
                     </thead>
                     <tbody>
                     <tr th:each="claim: ${credentialConfig.claims}">
-                        <td th:text="${credentialConfig.claimDescriptions.get(claim)}">...</td>
+                        <td th:text="#{${credentialConfig.id + '.claim.' + claim}}">...</td>
                         <td th:text="${claims.get(claim) ?: '*'}">...</td>
                     </tr>
                     </tbody>

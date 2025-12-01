@@ -18,8 +18,8 @@
     <div class="box">
         <div class="box__body">
             <div class="notification notification--warning">
-                <h1 th:text="${credentialConfig.title}">...</h1>
-                <p th:text="${credentialConfig.description}">...</p>
+                <h1 th:text="#{${credentialConfig.id + '.title'}}">...</h1>
+                <p th:text="#{${credentialConfig.id + '.description'}}">...</p>
                 <p>Scan qr-koden eller åpne i lommebok.</p>
             </div>
             <div>

@@ -9,7 +9,6 @@ import org.springframework.validation.annotation.Validated;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 @Validated
 @Data
@@ -20,16 +19,10 @@ public class CredentialConfig implements Serializable {
     @NotNull
     private String id;
     @NotNull
-    private String title;
-    @NotNull
-    private String description;
-    @NotNull
     private String docType;
     @NotNull
     private String format;
     @NotEmpty
     private List<String> claims;
-    @NotEmpty
-    private Map<String, String> claimDescriptions;
 
 }
