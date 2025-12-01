@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link th:href="@{/css/idp-style-0.7.33.css}" rel="stylesheet">
     <script th:src="@{/js/idp-script-0.7.33.js}" defer></script>
-    <title>Demo verifisering av digitale bevis</title>
+    <title th:text="#{title}"></title>
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}">...</header>
@@ -18,11 +18,11 @@
     <div class="box">
         <div class="box__body">
             <div class="notification notification--error">
-                <h1>Mislykket verifisering</h1>
-                <p>Du er under 18 år og kan ikke bruke denne tjenesten.</p>
+                <h1 th:text="#{result.header.failed}"></h1>
+                <p th:text="#{result.alder.failed.text}"></p>
             </div>
             <div class="btn-group">
-                <a th:href="@{/}"><button class="button ">Prøv igjen</button></a>
+                <a th:href="@{/}"><button class="button" th:text="#{result.button.back}"></button></a>
             </div>
             <div th:replace="~{fragments/traces :: traces}">...</div>
         </div>

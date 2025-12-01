@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link th:href="@{/css/idp-style-0.7.33.css}" rel="stylesheet">
     <script th:src="@{/js/idp-script-0.7.33.js}" defer></script>
-    <title>Demo verifisering av digitale bevis</title>
+    <title th:text="#{title}"></title>
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}">...</header>
@@ -18,13 +18,13 @@
     <div class="box">
         <div class="box__body">
             <div class="notification notification--success">
-                <h1>Vellykket verifisering</h1>
-                <p>Oversikt over din fastlønn:</p>
+                <h1 th:text="#{result.header}"></h1>
+                <p th:text="#{result.inntekt.text}"></p>
                 <table>
                     <thead>
                     <tr>
-                        <th>Kalendermåned</th>
-                        <th>Fastlønn</th>
+                        <th th:text="#{result.inntekt.table.month}"></th>
+                        <th th:text="#{result.inntekt.table.income}"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -36,7 +36,7 @@
                 </table>
                 <div class="btn-group">
                     <a th:href="@{/}">
-                        <button class="button ">Prøv igjen</button>
+                        <button class="button" th:text="#{result.button.back}"></button>
                     </a>
                 </div>
             </div>

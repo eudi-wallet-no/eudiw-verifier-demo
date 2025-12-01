@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link th:href="@{/css/idp-style-0.7.33.css}" rel="stylesheet">
     <script th:src="@{/js/idp-script-0.7.33.js}" defer></script>
-    <title>Demo verifisering av digitale bevis</title>
+    <title th:text="#{title}"></title>
 </head>
 <body onload="doPoll()">
 <header th:replace="~{fragments/header :: header}">...</header>
@@ -20,13 +20,13 @@
             <div class="notification notification--warning">
                 <h1 th:text="#{${credentialConfig.id + '.title'}}">...</h1>
                 <p th:text="#{${credentialConfig.id + '.description'}}">...</p>
-                <p>Scan qr-koden eller åpne i lommebok.</p>
+                <p th:text="#{start.instructions}"></p>
             </div>
             <div>
                 <img th:src="@{/qrcode/{verifierTransactionId}(verifierTransactionId=${verifierTransactionId})}" alt="QR code" style="width:100%;"/>
             </div>
             <div class="btn-group">
-                <a th:href="${authorizationRequest}"><button class="button ">Åpne i lommebok</button></a>
+                <a th:href="${authorizationRequest}"><button class="button" th:text="#{start.button.open}"></button></a>
             </div>
             <div th:replace="~{fragments/traces :: traces}">...</div>
         </div>
