@@ -51,16 +51,36 @@ digdir:
 
 vcverifier:
   credential-configurations:
-    - id: alder
-      doc-type: "eu.europa.ec.av.1"
+    - id: eudi-pid-mdoc
+      doc-type: "eu.europa.ec.eudi.pid.1"
       format: mso_mdoc
       claims:
-        - age_over_18
+        - family_name
+        - given_name
+    - id: eudi-pid-sd-jwt-vc
+      doc-type: "urn:eudi:pid:1"
+      format: dc+sd-jwt
+      claims:
+        - family_name
+        - given_name
     - id: pid
       doc-type: "eu.europa.ec.eudi.pid.1"
       format: mso_mdoc
       claims:
         - personal_administrative_number
+    - id: alder
+      doc-type: "eu.europa.ec.av.1"
+      format: mso_mdoc
+      claims:
+        - age_over_18
+    - id: forerkort
+      doc-type: "org.iso.18013.5.1.mDL:1"
+      format: mso_mdoc
+      claims:
+        - family_name
+        - given_name
+        - driving_privileges
+        - portrait
     - id: advokatregisteret
       doc-type: "no.advokattilsynet.advokatregisteret.1"
       format: mso_mdoc
@@ -78,31 +98,11 @@ vcverifier:
         - personidentifikator
         - epostadresse
         - mobiltelefonnummer
-    - id: forerkort
-      doc-type: "org.iso.18013.5.1.mDL:1"
-      format: mso_mdoc
-      claims:
-        - family_name
-        - given_name
-        - driving_privileges
-        - portrait
     - id: inntekt
       doc-type: "no.skatteetaten.inntekt.1"
       format: dc+sd-jwt
       claims:
         - fastlonn
-    - id: eudi-pid-mdoc
-      doc-type: "eu.europa.ec.eudi.pid.1"
-      format: mso_mdoc
-      claims:
-        - family_name
-        - given_name
-    - id: eudi-pid-sd-jwt-vc
-      doc-type: "urn:eudi:pid:1"
-      format: dc+sd-jwt
-      claims:
-        - family_name
-        - given_name
 
 idporten-key-manager:
   default-keystore: access
