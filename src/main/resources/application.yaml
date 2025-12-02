@@ -6,6 +6,7 @@ server:
       tracking-modes:
         - cookie
       cookie:
+        path: /
         same-site: lax
         secure: true
         name: ${spring.application.name}-session
