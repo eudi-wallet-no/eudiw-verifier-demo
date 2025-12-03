@@ -3,9 +3,9 @@ package no.idporten.eudiw.demo.verifier.web;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
+import no.idporten.eudiw.demo.verifier.config.LanguageSupportConfig;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.LocaleResolver;
@@ -24,10 +24,9 @@ public class IndexController {
     }
 
     @GetMapping(value = "/")
-    public String index(@RequestParam(name = "lang", required = false) String lang, Model model, HttpServletRequest request, HttpServletResponse response) {
-
-        if (StringUtils.hasText(lang)) {
-            localeResolver.setLocale(request, response, Locale.of(lang));
+    public String index(@RequestParam(name = "lang", required = false) Locale lang, Model model, HttpServletRequest request, HttpServletResponse response) {
+        if (lang != null) {
+            localeResolver.setLocale(request, response, LanguageSupportConfig.SUPPORTED_LOCALES.contains(lang) ? lang : LanguageSupportConfig.DEFAULT_LOCALE);
         }
         model.addAttribute("credentialTypes", configProvider.getCredentialConfigurations());
         return "index";
