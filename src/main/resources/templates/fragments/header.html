@@ -31,10 +31,10 @@
                             </button>
                             <ul aria-labelledby="list" class="dropdown__list">
                                 <li class="dropdown__item">
-                                    <a href="/?lang=no" th:text="#{header.lang.no}"></a>
+                                    <a th:href="@{/?lang=no}" th:lang="no" th:text="#{header.lang.no}"></a>
                                 </li>
                                 <li class="dropdown__item">
-                                    <a href="/?lang=en" th:text="#{header.lang.en}"></a>
+                                    <a th:href="@{/?lang=en}" th:lang="en" th:text="#{header.lang.en}"></a>
                                 </li>
                             </ul>
                         </nav>
