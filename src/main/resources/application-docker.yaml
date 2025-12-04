@@ -4,8 +4,8 @@ spring:
     environment: docker
   data:
     redis:
-      port: 9282
-      host: localhost
+      host: redis
+      port: 6379
 
 server:
   port: 8443
