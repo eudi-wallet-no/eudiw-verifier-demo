@@ -24,9 +24,10 @@ public class IndexController {
     }
 
     @GetMapping(value = "/")
-    public String index(@RequestParam(name = "lang", required = false) Locale lang, Model model, HttpServletRequest request, HttpServletResponse response) {
+    public String index(@RequestParam(name = "lang", required = false) String lang, Model model, HttpServletRequest request, HttpServletResponse response) {
         if (lang != null) {
-            localeResolver.setLocale(request, response, LanguageSupportConfig.SUPPORTED_LOCALES.contains(lang) ? lang : LanguageSupportConfig.DEFAULT_LOCALE);
+            Locale locale = Locale.of(lang);
+            localeResolver.setLocale(request, response, LanguageSupportConfig.SUPPORTED_LOCALES.contains(locale) ? locale : LanguageSupportConfig.DEFAULT_LOCALE);
         }
         model.addAttribute("credentialTypes", configProvider.getCredentialConfigurations());
         return "index";
