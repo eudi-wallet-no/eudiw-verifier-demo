@@ -27,7 +27,6 @@ services:
         GIT_PACKAGE_TOKEN: ${GIT_PACKAGE_TOKEN}
         GIT_PACKAGE_USERNAME: ${GIT_PACKAGE_USERNAME}
     environment:
-#      _JAVA_OPTIONS: "-XX:UseSVE=0"
       spring_profiles_active: docker
     env_file:
       - .env
