@@ -18,12 +18,11 @@ import java.util.Locale;
 public class LanguageSupportConfig implements WebMvcConfigurer {
 
     public static final Locale DEFAULT_LOCALE = Locale.of("no");
-    public static final List<Locale> SUPPORTED_LOCALES = Arrays.asList(DEFAULT_LOCALE, Locale.ENGLISH);
 
     @Bean
     public MessageSource messageSource() {
         final ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasenames("classpath:messages/messages");
+        messageSource.setBasenames("classpath:/messages/messages");
         messageSource.setUseCodeAsDefaultMessage(true);
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
@@ -36,6 +35,7 @@ public class LanguageSupportConfig implements WebMvcConfigurer {
         return slr;
     }
 
+    @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
         lci.setParamName("lang");
