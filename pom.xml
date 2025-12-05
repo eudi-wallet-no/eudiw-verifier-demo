@@ -27,7 +27,7 @@
         <waltid-sdjwt-jvm.version>0.16.0</waltid-sdjwt-jvm.version>
 		<cose-java.version>1.1.1-SNAPSHOT</cose-java.version>
 		<cbor.version>1.20</cbor.version>
-		<bcprov-lts8on.version>2.73.9</bcprov-lts8on.version>
+		<bcprov-lts8on.version>2.73.10</bcprov-lts8on.version>
 		<zxing.javase.version>3.5.4</zxing.javase.version>
 		<lombok.version>1.18.42</lombok.version>
 	</properties>
