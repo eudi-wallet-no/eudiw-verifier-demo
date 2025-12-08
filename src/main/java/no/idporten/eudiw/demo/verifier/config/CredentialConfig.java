@@ -25,4 +25,6 @@ public class CredentialConfig implements Serializable {
     @NotEmpty
     private List<String> claims;
 
+    // Alternativ for conformance - poc
+    private String authorizationEndpointUri;
 }

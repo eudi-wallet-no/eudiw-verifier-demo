@@ -120,6 +120,7 @@ vcverifier:
         - place_of_birth
         - nationality
     - id: conformance-pid-sd-jwt-vc
+      authorization-endpoint-uri: https://demo.certification.openid.net/test/a/demo-verifier-1/authorize
       doc-type: "urn:eudi:pid:1"
       format: dc+sd-jwt
       claims:
