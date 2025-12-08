@@ -110,6 +110,24 @@ vcverifier:
       format: dc+sd-jwt
       claims:
         - fastlonn
+    - id: conformance-pid-mdoc
+      doc-type: "eu.europa.ec.eudi.pid.1"
+      format: mso_mdoc
+      claims:
+        - family_name
+        - given_name
+        - birth_date
+        - place_of_birth
+        - nationality
+    - id: conformance-pid-sd-jwt-vc
+      doc-type: "urn:eudi:pid:1"
+      format: dc+sd-jwt
+      claims:
+        - family_name
+        - given_name
+        - birthdate
+        - place_of_birth
+        - nationalities
 
 idporten-key-manager:
   default-keystore: access
