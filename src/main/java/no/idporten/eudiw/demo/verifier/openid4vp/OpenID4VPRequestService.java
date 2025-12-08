@@ -24,6 +24,7 @@ import no.idporten.lib.keystore.KeystoreManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -79,11 +80,21 @@ public class OpenID4VPRequestService {
         throw new IllegalStateException("Unknown client identifier scheme: " + configProvider.getClientIdentifierScheme());
     }
 
-    public URI createAuthorizationRequest(String verifierTransactionId, String flow) {
+    public URI createAuthorizationRequest(CredentialConfig credentialConfig, String verifierTransactionId, String flow) {
         String requestId = UUID.randomUUID().toString();
         cacheService.putAuthorizationRequest(requestId, verifierTransactionId);
+        if (StringUtils.hasText(credentialConfig.getAuthorizationEndpointUri())) {
+            return UriComponentsBuilder.fromUriString(credentialConfig.getAuthorizationEndpointUri())
+                    .queryParam("client_id", makeClientId())
+                    .queryParam("request_uri", createRequestUri(requestId, flow).toString())
+                    .build()
+                    .toUri();
+        }
         return UriComponentsBuilder.newInstance()
-                .scheme(configProvider.getAuthorizationRequestUrlScheme())
+                .scheme(StringUtils.hasText(credentialConfig.getAuthorizationRequestUrlScheme()) ?
+                        credentialConfig.getAuthorizationRequestUrlScheme()
+                        :
+                        configProvider.getAuthorizationRequestUrlScheme())
                 .host(configProvider.getSiop2ClientId())
                 .queryParam("client_id", makeClientId())
                 .queryParam("request_uri", createRequestUri(requestId, flow).toString())
