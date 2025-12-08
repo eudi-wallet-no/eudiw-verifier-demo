@@ -79,13 +79,22 @@ public class OpenID4VPRequestService {
         throw new IllegalStateException("Unknown client identifier scheme: " + configProvider.getClientIdentifierScheme());
     }
 
-    @SneakyThrows
     public URI createAuthorizationRequest(String verifierTransactionId, String flow) {
         String requestId = UUID.randomUUID().toString();
         cacheService.putAuthorizationRequest(requestId, verifierTransactionId);
         return UriComponentsBuilder.newInstance()
                 .scheme(configProvider.getAuthorizationRequestUrlScheme())
                 .host(configProvider.getSiop2ClientId())
+                .queryParam("client_id", makeClientId())
+                .queryParam("request_uri", createRequestUri(requestId, flow).toString())
+                .build()
+                .toUri();
+    }
+
+    public URI createAuthorizationRequestConformance(CredentialConfig credentialConfig, String verifierTransactionId, String flow) {
+        String requestId = UUID.randomUUID().toString();
+        cacheService.putAuthorizationRequest(requestId, verifierTransactionId);
+        return UriComponentsBuilder.fromUriString(credentialConfig.getAuthorizationEndpointUri())
                 .queryParam("client_id", makeClientId())
                 .queryParam("request_uri", createRequestUri(requestId, flow).toString())
                 .build()
@@ -173,7 +182,6 @@ public class OpenID4VPRequestService {
         return "mso_mdoc".equals(credentialConfig.getFormat()) ? makeDCQLmDoc(credentialConfig) : makeDCQLSDJwt(credentialConfig);
     }
 
-    @SneakyThrows
     public JSONObject makeDCQLSDJwt(CredentialConfig credentialConfig) {
         JSONObject credential = new JSONObject()
                 .appendField("id", credentialConfig.getId())
