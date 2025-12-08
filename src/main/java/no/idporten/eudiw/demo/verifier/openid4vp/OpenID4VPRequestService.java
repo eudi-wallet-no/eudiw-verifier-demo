@@ -21,6 +21,8 @@ import no.idporten.eudiw.demo.verifier.cache.CacheService;
 import no.idporten.eudiw.demo.verifier.trace.JsonTrace;
 import no.idporten.lib.keystore.KeyProvider;
 import no.idporten.lib.keystore.KeystoreManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -32,6 +34,8 @@ import java.util.*;
 
 @Service
 public class OpenID4VPRequestService {
+
+    private static final Logger log = LoggerFactory.getLogger(OpenID4VPRequestService.class);
 
     private final ConfigProvider configProvider;
     private final KeystoreManager keystoreManager;
@@ -106,7 +110,9 @@ public class OpenID4VPRequestService {
         JWT authorizationRequest = makeRequestJwt(verificationTransaction.getCredentialConfiguration(), verificationTransactionId, encryptionKey, state);
         verificationTransaction.addProtocolTrace(new JsonTrace("jwtAuthzRequest", "JWT-Secured Authorization Request Body", authorizationRequest.getJWTClaimsSet().toJSONObject()));
         verificationTransactionService.updateVerificationTransaction(verificationTransactionId, verificationTransaction);
-        return authorizationRequest.serialize();
+        String serializedAuthorizationRequest = authorizationRequest.serialize();
+        log.info("Serialized authorization request {}: {}", requestId, serializedAuthorizationRequest);
+        return serializedAuthorizationRequest;
     }
 
     public JWT makeRequestJwt(CredentialConfig credentialConfiguration, String verifierTransactionId, JWK encryptionKey, String state) throws Exception {
