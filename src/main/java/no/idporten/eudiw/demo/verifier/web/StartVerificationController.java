@@ -41,7 +41,6 @@ public class StartVerificationController {
                 new JsonTrace("dcqlQuery", "DCQL Query", openID4VPRequestService.makeDCQLQuery(credentialConfig))
         );
         model.addAttribute("verifierTransactionId", verifierTransactionId);
-        // hook experiment conformance
         model.addAttribute("authorizationRequest", openID4VPRequestService.createAuthorizationRequest(credentialConfig, verifierTransactionId, "same-device"));
         model.addAttribute("traces", protocolTraceList);
         model.addAttribute(("responseStatusUri"), builPolldUri(request.getRequestURL().toString(), "verification", "status", verifierTransactionId).toString());
