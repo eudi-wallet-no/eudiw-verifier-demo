@@ -4,6 +4,8 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
+import no.idporten.eudiw.demo.verifier.config.CredentialConfig;
 import no.idporten.eudiw.demo.verifier.openid4vp.OpenID4VPRequestService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,14 +20,18 @@ import java.awt.image.BufferedImage;
 public class QrCodeController {
 
     private final OpenID4VPRequestService openID4VPRequestService;
+    private final ConfigProvider configProvider;
 
-    public QrCodeController(OpenID4VPRequestService openID4VPRequestService) {
+    public QrCodeController(OpenID4VPRequestService openID4VPRequestService, ConfigProvider configProvider) {
         this.openID4VPRequestService = openID4VPRequestService;
+        this.configProvider = configProvider;
     }
 
-    @GetMapping(value = "/qrcode/{verifierTransactionId}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<BufferedImage> getQrCodeImage(@PathVariable("verifierTransactionId") String verifierTransactionId) throws Exception {
-        return ResponseEntity.ok(generateQRCodeImage(verifierTransactionId));
+    @GetMapping(value = "/qrcode/{credentialConfigId}/{verifierTransactionId}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<BufferedImage> getQrCodeImage(
+            @PathVariable("credentialConfigId") String credentialConfigId,
+            @PathVariable("verifierTransactionId") String verifierTransactionId) throws Exception {
+        return ResponseEntity.ok(generateQRCodeImage(configProvider.getCredentialConfig(credentialConfigId), verifierTransactionId));
     }
 
     @ExceptionHandler
@@ -34,10 +40,10 @@ public class QrCodeController {
         return "error";
     }
 
-    private BufferedImage generateQRCodeImage(String verifierTransactionId) throws Exception {
+    private BufferedImage generateQRCodeImage(CredentialConfig credentialConfig, String verifierTransactionId) throws Exception {
         QRCodeWriter barcodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix =
-                barcodeWriter.encode(openID4VPRequestService.createAuthorizationRequest(verifierTransactionId, "cross-device").toString(), BarcodeFormat.QR_CODE, 200, 200);
+                barcodeWriter.encode(openID4VPRequestService.createAuthorizationRequest(credentialConfig, verifierTransactionId, "cross-device").toString(), BarcodeFormat.QR_CODE, 200, 200);
         return MatrixToImageWriter.toBufferedImage(bitMatrix);
     }
 

@@ -70,6 +70,26 @@ vcverifier:
         - birthdate
         - place_of_birth
         - nationalities
+    - id: haip-eudi-pid-mdoc
+      authorization-request-url-scheme: haip-vp
+      doc-type: "eu.europa.ec.eudi.pid.1"
+      format: mso_mdoc
+      claims:
+        - family_name
+        - given_name
+        - birth_date
+        - place_of_birth
+        - nationality
+    - id: haip-eudi-pid-sd-jwt-vc
+      authorization-request-url-scheme: haip-vp
+      doc-type: "urn:eudi:pid:1"
+      format: dc+sd-jwt
+      claims:
+        - family_name
+        - given_name
+        - birthdate
+        - place_of_birth
+        - nationalities
     - id: pid
       doc-type: "eu.europa.ec.eudi.pid.1"
       format: mso_mdoc

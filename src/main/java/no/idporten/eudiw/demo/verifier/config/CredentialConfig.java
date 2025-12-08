@@ -27,4 +27,7 @@ public class CredentialConfig implements Serializable {
 
     // Alternativ for conformance - poc
     private String authorizationEndpointUri;
+    // Override authorization request uri scheme
+    private String authorizationRequestUrlScheme;
+
 }

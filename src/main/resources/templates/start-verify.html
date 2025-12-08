@@ -23,7 +23,7 @@
                 <p th:text="#{start.instructions}"></p>
             </div>
             <div>
-                <img th:src="@{/qrcode/{verifierTransactionId}(verifierTransactionId=${verifierTransactionId})}" alt="QR code" style="width:100%;"/>
+                <img th:src="@{/qrcode/{credentialConfigId}/{verifierTransactionId}(credentialConfigId=${credentialConfig.id}, verifierTransactionId=${verifierTransactionId})}" alt="QR code" style="width:100%;"/>
             </div>
             <div class="btn-group">
                 <a th:href="${authorizationRequest}"><button class="button" th:text="#{start.button.open}"></button></a>
