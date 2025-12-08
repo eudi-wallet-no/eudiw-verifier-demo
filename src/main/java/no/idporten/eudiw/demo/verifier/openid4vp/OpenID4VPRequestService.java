@@ -21,6 +21,8 @@ import no.idporten.eudiw.demo.verifier.cache.CacheService;
 import no.idporten.eudiw.demo.verifier.trace.JsonTrace;
 import no.idporten.lib.keystore.KeyProvider;
 import no.idporten.lib.keystore.KeystoreManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -32,6 +34,8 @@ import java.util.*;
 
 @Service
 public class OpenID4VPRequestService {
+
+    private static final Logger log = LoggerFactory.getLogger(OpenID4VPRequestService.class);
 
     private final ConfigProvider configProvider;
     private final KeystoreManager keystoreManager;
@@ -75,13 +79,22 @@ public class OpenID4VPRequestService {
         throw new IllegalStateException("Unknown client identifier scheme: " + configProvider.getClientIdentifierScheme());
     }
 
-    @SneakyThrows
     public URI createAuthorizationRequest(String verifierTransactionId, String flow) {
         String requestId = UUID.randomUUID().toString();
         cacheService.putAuthorizationRequest(requestId, verifierTransactionId);
         return UriComponentsBuilder.newInstance()
                 .scheme(configProvider.getAuthorizationRequestUrlScheme())
                 .host(configProvider.getSiop2ClientId())
+                .queryParam("client_id", makeClientId())
+                .queryParam("request_uri", createRequestUri(requestId, flow).toString())
+                .build()
+                .toUri();
+    }
+
+    public URI createAuthorizationRequestConformance(CredentialConfig credentialConfig, String verifierTransactionId, String flow) {
+        String requestId = UUID.randomUUID().toString();
+        cacheService.putAuthorizationRequest(requestId, verifierTransactionId);
+        return UriComponentsBuilder.fromUriString(credentialConfig.getAuthorizationEndpointUri())
                 .queryParam("client_id", makeClientId())
                 .queryParam("request_uri", createRequestUri(requestId, flow).toString())
                 .build()
@@ -106,7 +119,9 @@ public class OpenID4VPRequestService {
         JWT authorizationRequest = makeRequestJwt(verificationTransaction.getCredentialConfiguration(), verificationTransactionId, encryptionKey, state);
         verificationTransaction.addProtocolTrace(new JsonTrace("jwtAuthzRequest", "JWT-Secured Authorization Request Body", authorizationRequest.getJWTClaimsSet().toJSONObject()));
         verificationTransactionService.updateVerificationTransaction(verificationTransactionId, verificationTransaction);
-        return authorizationRequest.serialize();
+        String serializedAuthorizationRequest = authorizationRequest.serialize();
+        log.info("Serialized authorization request {}: {}", requestId, serializedAuthorizationRequest);
+        return serializedAuthorizationRequest;
     }
 
     public JWT makeRequestJwt(CredentialConfig credentialConfiguration, String verifierTransactionId, JWK encryptionKey, String state) throws Exception {
@@ -167,7 +182,6 @@ public class OpenID4VPRequestService {
         return "mso_mdoc".equals(credentialConfig.getFormat()) ? makeDCQLmDoc(credentialConfig) : makeDCQLSDJwt(credentialConfig);
     }
 
-    @SneakyThrows
     public JSONObject makeDCQLSDJwt(CredentialConfig credentialConfig) {
         JSONObject credential = new JSONObject()
                 .appendField("id", credentialConfig.getId())
