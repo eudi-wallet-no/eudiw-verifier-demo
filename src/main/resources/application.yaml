@@ -111,6 +111,7 @@ vcverifier:
       claims:
         - fastlonn
     - id: conformance-pid-mdoc
+      authorization-endpoint-uri: https://demo.certification.openid.net/test/a/demo-verifier-1/authorize
       doc-type: "eu.europa.ec.eudi.pid.1"
       format: mso_mdoc
       claims:
