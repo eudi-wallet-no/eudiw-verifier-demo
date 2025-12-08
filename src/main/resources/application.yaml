@@ -128,8 +128,8 @@ vcverifier:
         - family_name
         - given_name
         - birthdate
-        - place_of_birth
-        - nationalities
+#        - place_of_birth
+#        - nationalities
 
 idporten-key-manager:
   default-keystore: access
