@@ -101,7 +101,7 @@ vcverifier:
       claims:
         - age_over_18
     - id: forerkort
-      doc-type: "org.iso.18013.5.1.mDL:1"
+      doc-type: "org.iso.18013.5.1.mDL"
       format: mso_mdoc
       claims:
         - family_name
