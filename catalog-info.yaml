@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: digital-lommebok-verifier-demo
+  description: EUDIWs verifier-demo
+  annotations:
+    github.com/project-slug: eudi-wallet-no/eudiw-verifier-demo
+spec:
+  type: application
+  lifecycle: test
+  owner: team-digital-lommebok
+  system: digital-lommebok-verifier-demo
