@@ -5,7 +5,7 @@ Demo av verifisering verified credentials til digital lommebok.
 
 ## Kjøre lokalt
 
-Java 24
+Java 25
 Redis
 
 ### Dev

@@ -10,3 +10,5 @@ spec:
   lifecycle: test
   owner: team-digital-lommebok
   system: digital-lommebok-verifier-demo
+  dependsOn:
+    - resource:default/digital-lommebok-redis
