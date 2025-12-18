@@ -4,11 +4,12 @@ name: Publish Dev.Docker image
 
 on:
   push:
-    branches: main
+    branches: [main]
     paths-ignore:
       - 'src/test/**'
       - '*.md'
       - 'LICENSE'
+      - "catalog-info.yaml"
 
 jobs:
   build-publish-image:

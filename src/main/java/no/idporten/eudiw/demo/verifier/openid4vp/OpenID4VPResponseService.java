@@ -109,7 +109,7 @@ public class OpenID4VPResponseService {
         SimpleJWTCryptoProvider cryptoProvider = new SimpleJWTCryptoProvider(jwsAlgorithm, null, jwsVerifier);
         VerificationResult<SDJwt> verificationResult = unverifiedSDJwt.verify(cryptoProvider, null);
         if (!verificationResult.getVerified()) {
-            throw new VerificationException("invalid_request", "Invalid vp_token signature or unverified disclosures");
+            throw new VerificationException("invalid_request", "Invalid vp_token. Signature verified: %s, disclosures verified: %s".formatted(verificationResult.getSignatureVerified(), verificationResult.getDisclosuresVerified()));
         }
         Map<String, Object> claims = new HashMap<>();
         for (String disclosure : verificationResult.getSdJwt().getDisclosures()) {
