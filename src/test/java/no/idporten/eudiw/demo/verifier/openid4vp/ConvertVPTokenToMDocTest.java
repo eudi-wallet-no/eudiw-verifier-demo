@@ -72,7 +72,7 @@ class ConvertVPTokenToMDocTest {
             assertNotNull(pidMapElements);
             Map<MapKey, DataElement> pidClaimsMap = pidMapElements.getValue();
             assertNotNull(pidClaimsMap);
-            assertTrue(pidClaimsMap.size() == 9);
+            assertEquals(9, pidClaimsMap.size());
             boolean allMatch = pidClaimsMap.values().stream().allMatch(v -> v instanceof ByteStringElement); // this fails with Ukraina vp-token (vpToken6)
             assertTrue(allMatch);
         }
