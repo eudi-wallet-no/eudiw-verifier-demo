@@ -23,7 +23,7 @@ management:
 
 vcverifier:
   siop2ClientId: abr.vc.local
-  client-identifier-scheme: x509_san_dns
+  client-identifier-scheme: x509_hash
   authorization-request-url-scheme: eudi-openid4vp
   externalBaseUrl: https://abr.vc.local:8082
 
