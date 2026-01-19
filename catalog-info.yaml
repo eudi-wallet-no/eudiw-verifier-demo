@@ -2,7 +2,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: digital-lommebok-verifier-demo
-  description: EUDIWs verifier-demo
+  description: Digdir demo brukarstad
   annotations:
     github.com/project-slug: eudi-wallet-no/eudiw-verifier-demo
 spec:
