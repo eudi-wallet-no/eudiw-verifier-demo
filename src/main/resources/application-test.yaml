@@ -14,6 +14,6 @@ spring:
 
 vcverifier:
   siop2ClientId: demo-brukersted.test.eidas2sandkasse.net
-  client-identifier-scheme: x509_san_dns
+  client-identifier-scheme: x509_hash
   authorization-request-url-scheme: eudi-openid4vp
   externalBaseUrl: https://demo-brukersted.test.eidas2sandkasse.net
