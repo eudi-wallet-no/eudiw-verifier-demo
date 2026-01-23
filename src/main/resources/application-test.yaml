@@ -8,9 +8,9 @@ spring:
         master: mymaster
         password: ${REDIS_PASSWORD}
         nodes:
-          - digital-lommebok-redis-sentinel-node-0.digital-lommebok-redis-sentinel-headless:26379
-          - digital-lommebok-redis-sentinel-node-1.digital-lommebok-redis-sentinel-headless:26379
-          - digital-lommebok-redis-sentinel-node-2.digital-lommebok-redis-sentinel-headless:26379
+          - digital-lommebok-redis-ha-server-0.digital-lommebok-redis-ha:26379
+          - digital-lommebok-redis-ha-server-1.digital-lommebok-redis-ha:26379
+          - digital-lommebok-redis-ha-server-2.digital-lommebok-redis-ha:26379
 
 vcverifier:
   siop2ClientId: demo-brukersted.test.eidas2sandkasse.net
