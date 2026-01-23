@@ -1,14 +1,20 @@
-# eudiw-verifier-demo
+# eudiw-verifier-demo / Digdir demo brukarstad
 
-Demo av verifisering verified credentials til digital lommebok.
+> [!WARNING]
+> Disclaimer: Dette er ikke kode laget for produksjon, bruk er på eget ansvar.
 
+
+Digdir demo brukarstad for verifisering av verified credentials til digital lommebok. Denne applikasjonen er laget for å utforske spesifikasjonen for [OpenID for Verifiable Presentations](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html), men er ikke en komplett implementasjon av hele spesifikasjonen.
+
+Mer dokumentasjon om tjenestene i digital lommebok finner du her https://docs.digdir.no/docs/lommebok/lommebok_tjenester.html. 
 
 ## Kjøre lokalt
 
-Java 24
-Redis
+Krav:
+* Java 25
+* Redis
 
-### Dev
+### Maven (dev profil)
 Hosts-fil:
 ```
 127.0.0.1 abr.vc.local
@@ -21,8 +27,8 @@ Starte med spring boot, profilen `dev` er satt opp for å kjøre på https://abr
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-### Docker
-Dette oppsettet er pt ikke helt i orden for lokal utvikling...
+### Docker (docker profil)
+Dette oppsettet er pt. ikke helt i orden for lokal utvikling...
 
 Køyr kommandolinje:
 ```
