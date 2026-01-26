@@ -25,7 +25,7 @@
 		<nimbus-jose-jwt.version>10.7</nimbus-jose-jwt.version>
 		<waltid-mdoc-credentials-jvm.version>0.17.1</waltid-mdoc-credentials-jvm.version>
 		<waltid-sdjwt-jvm.version>0.17.1</waltid-sdjwt-jvm.version>
-		<cose-java.version>1.1.1-SNAPSHOT</cose-java.version>
+		<cose-java.version>1.1.1-WALT-SNAPSHOT</cose-java.version>
 		<cbor.version>1.21</cbor.version>
 		<bcprov-lts8on.version>2.73.10</bcprov-lts8on.version>
 		<zxing.javase.version>3.5.4</zxing.javase.version>
