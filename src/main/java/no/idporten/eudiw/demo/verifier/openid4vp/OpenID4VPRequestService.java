@@ -222,7 +222,10 @@ public class OpenID4VPRequestService {
             claims.appendElement(new JSONObject()
                     .appendField("path",
                             new JSONArray()
-                                    .appendElement(credentialConfig.getDocType())
+                                    .appendElement(credentialConfig.getNamespace() != null ?
+                                            credentialConfig.getNamespace()
+                                            :
+                                            credentialConfig.getDocType())
                                     .appendElement(claim)));
         }
         credential.put("claims", claims);
