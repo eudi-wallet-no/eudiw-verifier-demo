@@ -102,6 +102,7 @@ vcverifier:
         - age_over_18
     - id: forerkort
       doc-type: "org.iso.18013.5.1.mDL"
+      namespace: "org.iso.18013.5.1"
       format: mso_mdoc
       claims:
         - family_name

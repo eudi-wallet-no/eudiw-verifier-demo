@@ -20,6 +20,8 @@ public class CredentialConfig implements Serializable {
     private String id;
     @NotNull
     private String docType;
+    // hack for mdl ...
+    private String namespace;
     @NotNull
     private String format;
     @NotEmpty
