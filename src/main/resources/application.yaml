@@ -102,6 +102,7 @@ vcverifier:
         - age_over_18
     - id: forerkort
       doc-type: "org.iso.18013.5.1.mDL"
+      namespace: "org.iso.18013.5.1"
       format: mso_mdoc
       claims:
         - family_name
@@ -130,6 +131,17 @@ vcverifier:
       format: dc+sd-jwt
       claims:
         - fastlonn
+    - id: minid
+      doc-type: "no:minid:mpid:1"
+      format: dc+sd-jwt
+      claims:
+        - personal_administrative_number
+        - family_name
+        - given_name
+        - middle_name
+        - birth_date
+        - expiry_date
+        - issuance_date
     - id: conformance-pid-mdoc
       authorization-endpoint-uri: https://demo.certification.openid.net/test/a/demo-verifier-1/authorize
       doc-type: "eu.europa.ec.eudi.pid.1"
