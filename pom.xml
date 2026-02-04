@@ -18,7 +18,7 @@
 		<maven.compiler.proc>full</maven.compiler.proc>
 		<kotlin.version>2.3.0</kotlin.version>
 		<kotlinx-serialization-json-jvm.version>1.10.0</kotlinx-serialization-json-jvm.version>
-		<idporten.keystore.version>2.0.0-rc1</idporten.keystore.version>
+		<idporten.keystore.version>2.0.0</idporten.keystore.version>
 		<idporten-actuator.version>3.0.0</idporten-actuator.version>
 		<idporten-access-log.version>3.0.0</idporten-access-log.version>
 		<opentelemetry-instrumentation-api.version>1.58.0</opentelemetry-instrumentation-api.version>
