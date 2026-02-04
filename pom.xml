@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.7</version>
+		<version>4.0.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>no.idporten.eudiw</groupId>
@@ -18,7 +18,7 @@
 		<maven.compiler.proc>full</maven.compiler.proc>
 		<kotlin.version>2.3.0</kotlin.version>
 		<kotlinx-serialization-json-jvm.version>1.10.0</kotlinx-serialization-json-jvm.version>
-		<idporten.keystore.version>1.1.1</idporten.keystore.version>
+		<idporten.keystore.version>2.0.0-rc1</idporten.keystore.version>
 		<idporten-actuator.version>3.0.0</idporten-actuator.version>
 		<idporten-access-log.version>3.0.0</idporten-access-log.version>
 		<opentelemetry-instrumentation-api.version>1.58.0</opentelemetry-instrumentation-api.version>
@@ -42,7 +42,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<artifactId>spring-boot-starter-webmvc</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -70,12 +70,12 @@
 		</dependency>
         <dependency>
             <groupId>no.idporten</groupId>
-            <artifactId>idporten-lib-keystore-spring-boot</artifactId>
+            <artifactId>idporten-lib-keystore-spring-boot-4</artifactId>
             <version>${idporten.keystore.version}</version>
         </dependency>
         <dependency>
 			<groupId>no.idporten.logging</groupId>
-			<artifactId>idporten-access-log-spring-boot-3-starter</artifactId>
+			<artifactId>idporten-access-log-spring-boot-4-starter</artifactId>
 			<version>${idporten-access-log.version}</version>
 		</dependency>
 		<dependency>
@@ -105,7 +105,7 @@
 		</dependency>
 		<dependency>
 			<groupId>no.idporten.actuator</groupId>
-			<artifactId>idporten-actuator-starter</artifactId>
+			<artifactId>idporten-actuator-4-starter</artifactId>
 			<version>${idporten-actuator.version}</version>
 		</dependency>
 
@@ -181,7 +181,25 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.5.22</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>1.5.22</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback.access</groupId>
+                <artifactId>logback-access-common</artifactId>
+                <version>2.0.7</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 	<build>
 		<plugins>
 			<plugin>

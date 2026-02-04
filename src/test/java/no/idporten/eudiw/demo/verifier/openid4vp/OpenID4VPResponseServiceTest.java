@@ -5,20 +5,21 @@ import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("When processing OpenID4VP responses")
-@SpringBootTest(classes = {OpenID4VPResponseService.class, ConfigProvider.class})
+@ExtendWith(MockitoExtension.class)
 class OpenID4VPResponseServiceTest {
 
-    @MockitoBean
+    @Mock
     private VerificationTransactionService verificationTransactionService;
 
-    @MockitoBean
+    @Mock
     private ConfigProvider configProvider;
 
     @InjectMocks
