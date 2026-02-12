@@ -1,3 +1,4 @@
 # <CVE> # <package/affected code>. Fixed in <version>.
 CVE-2025-61728 #stdlib giolang zip
 CVE-2025-61726 #stdlib
+CVE-2025-68121 # stdlib handshake. Fixed 1.24.13, 1.25.7, 1.26.0-rc.3
