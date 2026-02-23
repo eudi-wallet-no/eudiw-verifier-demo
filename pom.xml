@@ -20,7 +20,7 @@
 		<kotlinx-serialization-json-jvm.version>1.10.0</kotlinx-serialization-json-jvm.version>
 		<idporten.keystore.version>2.0.0-rc1</idporten.keystore.version>
 		<idporten-actuator.version>3.0.0</idporten-actuator.version>
-		<idporten-access-log.version>3.0.1-rc4</idporten-access-log.version>
+		<idporten-access-log.version>4.0.0</idporten-access-log.version>
 		<opentelemetry-instrumentation-api.version>1.59.0</opentelemetry-instrumentation-api.version>
 		<nimbus-jose-jwt.version>10.8</nimbus-jose-jwt.version>
 		<waltid-mdoc-credentials-jvm.version>0.17.1</waltid-mdoc-credentials-jvm.version>
