@@ -33,7 +33,7 @@ class ConvertVPTokenToMDocTest {
         @DisplayName("with Hellas is correct with expected claims and verifications pass except for expired date")
         @ParameterizedTest
         @ValueSource(strings = { vpToken1_hellas, vpToken3_solvenia })
-        void testMDoc_ok(final String vpToken) throws Exception {
+        void testMDoc_okButExpired(final String vpToken) throws Exception {
            DeviceResponse deviceResponse = DeviceResponse.Companion.fromCBORBase64URL(vpToken);
             List<MDoc> documents = deviceResponse.getDocuments();
             assertNotNull(documents);
@@ -47,7 +47,7 @@ class ConvertVPTokenToMDocTest {
 
         @DisplayName("with Svovenia is correct with expected claims and verifications pass")
         @Test
-        void testMDoc_okSuccessfull() throws Exception {
+        void testMDoc_okNotExpired() throws Exception {
             DeviceResponse deviceResponse = DeviceResponse.Companion.fromCBORBase64URL(vpToken2_solvenia);
             List<MDoc> documents = deviceResponse.getDocuments();
             assertNotNull(documents);
