@@ -6,7 +6,6 @@ import id.walt.mdoc.dataelement.MapElement;
 import id.walt.mdoc.dataelement.MapKey;
 import id.walt.mdoc.dataretrieval.DeviceResponse;
 import id.walt.mdoc.doc.MDoc;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Slf4j
 @DisplayName("When convert vp-token of format mDoc to MDoc")
 class ConvertVPTokenToMDocTest {
 
@@ -71,7 +69,6 @@ class ConvertVPTokenToMDocTest {
             MDoc mDoc = documents.getFirst();
             assertNotNull(mDoc);
             assertNotNull(mDoc.getIssuerSigned());
-            log.warn("HER" + mDoc.getMSO().getValidityInfo().getValidUntil().getValue() + "HER ER RETT");
             assertTrue(mDoc.verifyValidity());
             assertTrue(mDoc.verifyDocType());
             assertNotNull(mDoc.getMSO());
