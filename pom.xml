@@ -21,7 +21,7 @@
 		<idporten.keystore.version>2.0.0-rc1</idporten.keystore.version>
 		<idporten-actuator.version>3.0.0</idporten-actuator.version>
 		<idporten-access-log.version>4.0.0</idporten-access-log.version>
-		<opentelemetry-instrumentation-api.version>1.59.0</opentelemetry-instrumentation-api.version>
+		<opentelemetry-instrumentation-api.version>1.60.1</opentelemetry-instrumentation-api.version>
 		<nimbus-jose-jwt.version>10.8</nimbus-jose-jwt.version>
 		<waltid-mdoc-credentials-jvm.version>0.17.1</waltid-mdoc-credentials-jvm.version>
 		<waltid-sdjwt-jvm.version>0.17.1</waltid-sdjwt-jvm.version>
@@ -29,7 +29,7 @@
 		<cbor.version>1.21</cbor.version>
 		<bcprov-lts8on.version>2.73.10</bcprov-lts8on.version>
 		<zxing.javase.version>3.5.4</zxing.javase.version>
-		<lombok.version>1.18.42</lombok.version>
+		<lombok.version>1.18.44</lombok.version>
 	</properties>
 	<dependencies>
 		<dependency>
