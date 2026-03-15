@@ -36,7 +36,10 @@ public class VerificationResultController {
         model.addAttribute("traces", verificationTransaction.getProtocolTraces());
         String credentialConfigurationId = verificationTransaction.getCredentialConfiguration().getId();
         if ("alder".equals(credentialConfigurationId)) {
-            return handleAlder(claims);
+            return handleAlder(claims, 18, model);
+        }
+        if ("alder16".equals(credentialConfigurationId)) {
+            return handleAlder(claims, 16, model);
         }
         if ("forerkort".equals(credentialConfigurationId)) {
             return "forerkort/verify-result";
@@ -49,11 +52,13 @@ public class VerificationResultController {
         return "verify-result";
     }
 
-    private static String handleAlder(MultiValueMap<String, Object> claims) {
-        if (claims.containsKey("age_over_18") && (Boolean) claims.getFirst("age_over_18")) {
-            return "alder/over18";
+    private static String handleAlder(MultiValueMap<String, Object> claims, int age, Model model) {
+        model.addAttribute("age", age);
+        String attribute = "age_over_" + age;
+        if (claims.containsKey(attribute) && (Boolean) claims.getFirst(attribute)) {
+            return "alder/over";
         } else {
-            return "alder/under18";
+            return "alder/under";
         }
     }
 
