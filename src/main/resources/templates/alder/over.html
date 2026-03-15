@@ -17,12 +17,13 @@
 <main>
     <div class="box">
         <div class="box__body">
-            <div class="notification notification--error">
-                <h1 th:text="#{result.header.failed}"></h1>
-                <p th:text="#{result.alder.failed.text}"></p>
+            <div class="notification notification--success">
+                <h1 th:text="#{result.header}"></h1>
+                <p th:text="#{result.alder.success.text(${age})}"></p>
+                <img th:if="${portrait}" width = "75%" th:src="'data:image/jpg;base64,' + ${portrait.get(0)}" th:alt="#{forerkort.claim.portrait}" />
             </div>
             <div class="btn-group">
-                <a th:href="@{/}"><button class="button" th:text="#{result.button.back}"></button></a>
+                <a th:href="@{/}"><button class="button " th:text="#{result.button.back}"></button></a>
             </div>
             <div th:replace="~{fragments/traces :: traces}">...</div>
         </div>

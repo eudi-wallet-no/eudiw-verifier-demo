@@ -95,6 +95,12 @@ vcverifier:
       format: mso_mdoc
       claims:
         - personal_administrative_number
+    - id: alder16
+      doc-type: "net.eidas2sandkasse.av.1"
+      format: mso_mdoc
+      claims:
+        - age_over_16
+        - portrait
     - id: alder
       doc-type: "eu.europa.ec.av.1"
       format: mso_mdoc
