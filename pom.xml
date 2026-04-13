@@ -17,14 +17,14 @@
 		<java.version>25</java.version>
 		<maven.compiler.proc>full</maven.compiler.proc>
 		<kotlin.version>2.3.20</kotlin.version>
-		<kotlinx-serialization-json-jvm.version>1.10.0</kotlinx-serialization-json-jvm.version>
+		<kotlinx-serialization-json-jvm.version>1.11.0</kotlinx-serialization-json-jvm.version>
 		<idporten.keystore.version>2.0.1</idporten.keystore.version>
 		<idporten-actuator.version>3.0.0</idporten-actuator.version>
 		<idporten-access-log.version>4.0.0</idporten-access-log.version>
 		<opentelemetry-instrumentation-api.version>1.61.0</opentelemetry-instrumentation-api.version>
 		<nimbus-jose-jwt.version>10.9</nimbus-jose-jwt.version>
-		<waltid-mdoc-credentials-jvm.version>0.18.2</waltid-mdoc-credentials-jvm.version>
-		<waltid-sdjwt-jvm.version>0.18.2</waltid-sdjwt-jvm.version>
+		<waltid-mdoc-credentials-jvm.version>0.19.0</waltid-mdoc-credentials-jvm.version>
+		<waltid-sdjwt-jvm.version>0.19.0</waltid-sdjwt-jvm.version>
 		<cose-java.version>1.1.1-WALT-SNAPSHOT</cose-java.version>
 		<cbor.version>1.21</cbor.version>
 		<bcprov-lts8on.version>2.73.10</bcprov-lts8on.version>
@@ -161,7 +161,7 @@
 		<dependency>
 			<groupId>org.jetbrains.kotlinx</groupId>
 			<artifactId>kotlinx-serialization-bom</artifactId>
-			<version>1.10.0</version>
+			<version>1.11.0</version>
 			<type>pom</type>
 		</dependency>
         <dependency>
