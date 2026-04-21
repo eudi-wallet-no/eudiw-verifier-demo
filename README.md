@@ -1,37 +1,45 @@
 # eudiw-verifier-demo / Digdir demo brukarstad
 
 > [!WARNING]
-> Disclaimer: Dette er ikke kode laget for produksjon, bruk er på eget ansvar.
+> This application is part of the National Sandbox for Digital Wallet.
+> See https://docs.digdir.no/docs/lommebok/lommebok_om.html for more information.
 
 
-Digdir demo brukarstad for verifisering av verified credentials til digital lommebok. Denne applikasjonen er laget for å utforske spesifikasjonen for [OpenID for Verifiable Presentations](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html), men er ikke en komplett implementasjon av hele spesifikasjonen.
+Digdir demo brukarstad for verification of verifiable credentials for the digital wallet. This application is built to explore the [OpenID for Verifiable Presentations](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html) specification, but it is not a complete implementation of the full specification.
 
-Mer dokumentasjon om tjenestene i digital lommebok finner du her https://docs.digdir.no/docs/lommebok/lommebok_tjenester.html. 
+More documentation about the digital wallet services is available here: https://docs.digdir.no/docs/lommebok/lommebok_tjenester.html.
 
-## Kjøre lokalt
+## Requirements
 
-Krav:
 * Java 25
 * Redis
+* Access to Digitaliseringsdirektoratet infrastructure is required to run the application.
 
-### Maven (dev profil)
-Hosts-fil:
+## Running the application locally
+
+### Maven (dev profile)
+
+The local hosts file should include:
 ```
 127.0.0.1 abr.vc.local
 ```
-Start redis lokalt ved å kjøre docker compose (se under).
 
-Starte med spring boot, profilen `dev` er satt opp for å kjøre på https://abr.vc.local:8082/ .
+Start Redis locally by running Docker compose (see below).
+
+The application can be started with Maven:
 
 ```
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-### Docker (docker profil)
-Dette oppsettet er pt. ikke helt i orden for lokal utvikling...
+The application will run on https://abr.vc.local:8082/ with the `dev` profile.
 
-Køyr kommandolinje:
+### Docker (docker profile)
+This setup is currently not fully working for local development...
+
+The application can be started with Docker compose:
 ```
 docker compose up --build
 ```
-Starter med profilen `docker`, og køyrer på url https://abr.vc.local:8082 
+
+The application will run on https://abr.vc.local:8082 with the `docker` profile.
