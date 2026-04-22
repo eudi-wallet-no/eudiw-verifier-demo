@@ -7,8 +7,6 @@
 
 Digdir demo brukarstad for verification of verifiable credentials for the digital wallet. This application is built to explore the [OpenID for Verifiable Presentations](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html) specification, but it is not a complete implementation of the full specification.
 
-More documentation about the digital wallet services is available here: https://docs.digdir.no/docs/lommebok/lommebok_tjenester.html.
-
 ## Requirements
 
 * Java 25
