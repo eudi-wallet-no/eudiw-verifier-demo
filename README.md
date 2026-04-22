@@ -1,6 +1,6 @@
 # eudiw-verifier-demo / Digdir demo brukarstad
 
-> [!WARNING]
+> [!NOTE]
 > This application is part of the National Sandbox for Digital Wallet.
 > See https://docs.digdir.no/docs/lommebok/lommebok_om.html for more information.
 
@@ -13,7 +13,9 @@ More documentation about the digital wallet services is available here: https://
 
 * Java 25
 * Redis
-* Access to Digitaliseringsdirektoratet infrastructure is required to run the application.
+
+> [!WARNING]
+> Access to Digitaliseringsdirektoratet infrastructure is required to run the application.
 
 ## Running the application locally
 
