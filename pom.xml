@@ -29,7 +29,7 @@
 		<cbor.version>1.21</cbor.version>
 		<bcprov-lts8on.version>2.73.10</bcprov-lts8on.version>
 		<zxing.javase.version>3.5.4</zxing.javase.version>
-		<lombok.version>1.18.44</lombok.version>
+		<lombok.version>1.18.46</lombok.version>
 	</properties>
 	<dependencies>
 		<dependency>
