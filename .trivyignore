@@ -1,10 +1,2 @@
 # <CVE> # <package/affected code>. Fixed in <version>.
-#CVE-2026-32282 # golang. Root.Chmod can follow symlinks out of the root. Fixed in 1.25.9, 1.26.2
-#CVE-2026-34483 # Apache Tomcat. Information disclosure vulnerability. Fixed in 9.0.116, 10.1.54, 11.0.21
-#CVE-2026-34487 # Apache Tomcat. Information disclosure vulnerability. Fixed in 9.0.117, 10.1.54, 11.0.21
-#CVE-2026-34486 # Apache Tomcat. Sensitive data not encrypted vulnerability. Fixed in 11.0.21, 10.1.54, 9.0.117
-#GHSA-2m67-wjpj-xhg9 # Jackson Core: Document length constraint bypass in blocking async. Fixed in 3.1.1
-#CVE-2026-40477 # Thmeleaf. Fixed in 3.1.4
-#CVE-2026-40478 # Thmeleaf. Fixed in 3.1.4
 CVE-2026-42579 # Netty. DNS Codec Input Validation Bypass (Encoder + Decoder). Fixed in 4.2.13.Final, 4.1.133.Final
-│                                                             │                │          │        │                   │                             │ Decoder)                                                 │
