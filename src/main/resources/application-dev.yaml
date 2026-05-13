@@ -1,6 +1,8 @@
 spring:
   application:
     environment: dev
+  thymeleaf:
+    cache: false
   data:
     redis:
       port: 9282

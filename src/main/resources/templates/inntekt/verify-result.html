@@ -3,46 +3,36 @@
       xmlns:th="http://www.thymeleaf.org"
       lang="nn">
 
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="description" content="Demo-brukersted Nasjonal sandkasse for digital lommebok">
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link th:href="@{/css/idp-style-0.7.33.css}" rel="stylesheet">
-    <script th:src="@{/js/idp-script-0.7.33.js}" defer></script>
-    <title th:text="#{title}"></title>
-</head>
+<head th:replace="~{fragments/head :: head}"></head>
 <body>
 <header th:replace="~{fragments/header :: header}">...</header>
 
 <main>
-    <div class="box">
-        <div class="box__body">
-            <div class="notification notification--success">
-                <h1 th:text="#{result.header}"></h1>
-                <p th:text="#{result.inntekt.text}"></p>
-                <table>
-                    <thead>
-                    <tr>
-                        <th th:text="#{result.inntekt.table.month}"></th>
-                        <th th:text="#{result.inntekt.table.income}"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="lonn: ${fastlonn.entrySet()}">
-                        <td th:text="${lonn.key}">...</td>
-                        <td th:text="${lonn.value}">...</td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div class="btn-group">
-                    <a th:href="@{/}">
-                        <button class="button" th:text="#{result.button.back}"></button>
-                    </a>
-                </div>
+    <th:block th:replace="~{fragments/verification-status :: result(${verificationStatus}, ~{::#result-content})}">
+        <th:block id="result-content">
+            <p th:text="#{result.inntekt.text}"></p>
+            <table>
+                <thead>
+                <tr>
+                    <th th:text="#{result.inntekt.table.month}"></th>
+                    <th th:text="#{result.inntekt.table.income}"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="lonn: ${fastlonn.entrySet()}">
+                    <td th:text="${lonn.key}">...</td>
+                    <td th:text="${lonn.value}">...</td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="btn-group">
+                <a th:href="@{/}">
+                    <button class="button" th:text="#{result.button.back}"></button>
+                </a>
             </div>
-            <div th:replace="~{fragments/traces :: traces}">...</div>
-        </div>
-    </div>
+        </th:block>
+    </th:block>
+    <div th:replace="~{fragments/traces :: traces}">...</div>
 </main>
 <footer th:replace="~{fragments/footer :: footer}">...</footer>
 </body>

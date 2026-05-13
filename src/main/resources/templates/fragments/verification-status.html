@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:fragment="result(status, body)">
+    <div class="box">
+        <div class="box__body">
+            <div th:class="|notification notification--${status.notificationVariant}|">
+                <h1 th:text="#{${status.headingKey}}"></h1>
+                <th:block th:insert="${body}"></th:block>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+</html>
