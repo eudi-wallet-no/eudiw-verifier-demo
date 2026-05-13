@@ -10,8 +10,10 @@
 <main>
     <th:block th:replace="~{fragments/verification-status :: result(${verificationStatus}, ~{::#result-content})}">
         <th:block id="result-content">
-            <p th:text="#{result.alder.success.text(${age})}"></p>
-            <img th:if="${portrait}" width="75%" th:src="|data:image/jpg;base64,${portrait.get(0)}|" th:alt="#{forerkort.claim.portrait}" />
+            <th:block th:if="${verificationStatus != null and verificationStatus.name() == 'VALID'}">
+                <p th:text="#{result.alder.success.text(${age})}"></p>
+                <img th:if="${portrait}" width="75%" th:src="|data:image/jpg;base64,${portrait.get(0)}|" th:alt="#{forerkort.claim.portrait}" />
+            </th:block>
             <div class="btn-group">
                 <a th:href="@{/}"><button class="button " th:text="#{result.button.back}"></button></a>
             </div>

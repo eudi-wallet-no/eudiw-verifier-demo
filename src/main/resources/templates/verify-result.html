@@ -10,21 +10,23 @@
 <main>
     <th:block th:replace="~{fragments/verification-status :: result(${verificationStatus}, ~{::#result-content})}">
         <th:block id="result-content">
-            <p th:text="#{result.text.shared}"></p>
-            <table>
-                <thead>
-                <tr>
-                    <th th:text="#{result.table.attribute}"></th>
-                    <th th:text="#{result.table.value}"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="claim: ${credentialConfig.claims}">
-                    <td th:text="#{|${credentialConfig.id}.claim.${claim}|}">...</td>
-                    <td th:text="${claims.get(claim) ?: '*'}">...</td>
-                </tr>
-                </tbody>
-            </table>
+            <th:block th:if="${verificationStatus != null and verificationStatus.name() == 'VALID'}">
+                <p th:text="#{result.text.shared}"></p>
+                <table>
+                    <thead>
+                    <tr>
+                        <th th:text="#{result.table.attribute}"></th>
+                        <th th:text="#{result.table.value}"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="claim: ${credentialConfig.claims}">
+                        <td th:text="#{|${credentialConfig.id}.claim.${claim}|}">...</td>
+                        <td th:text="${claims.get(claim) ?: '*'}">...</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </th:block>
             <div class="btn-group">
                 <a th:href="@{/}">
                     <button class="button" th:text="#{result.button.back}"></button>

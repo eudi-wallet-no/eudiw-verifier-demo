@@ -10,21 +10,23 @@
 <main>
     <th:block th:replace="~{fragments/verification-status :: result(${verificationStatus}, ~{::#result-content})}">
         <th:block id="result-content">
-            <p th:text="#{result.inntekt.text}"></p>
-            <table>
-                <thead>
-                <tr>
-                    <th th:text="#{result.inntekt.table.month}"></th>
-                    <th th:text="#{result.inntekt.table.income}"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="lonn: ${fastlonn.entrySet()}">
-                    <td th:text="${lonn.key}">...</td>
-                    <td th:text="${lonn.value}">...</td>
-                </tr>
-                </tbody>
-            </table>
+            <th:block th:if="${verificationStatus != null and verificationStatus.name() == 'VALID'}">
+                <p th:text="#{result.inntekt.text}"></p>
+                <table>
+                    <thead>
+                    <tr>
+                        <th th:text="#{result.inntekt.table.month}"></th>
+                        <th th:text="#{result.inntekt.table.income}"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="lonn: ${fastlonn.entrySet()}">
+                        <td th:text="${lonn.key}">...</td>
+                        <td th:text="${lonn.value}">...</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </th:block>
             <div class="btn-group">
                 <a th:href="@{/}">
                     <button class="button" th:text="#{result.button.back}"></button>
