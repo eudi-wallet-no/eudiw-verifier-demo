@@ -32,8 +32,13 @@ public class VerificationResultController {
         VerifiedCredentials verifiedCredentials = verificationTransactionService.retrieveVerifiedCredentials(verifierTransactionId);
         MultiValueMap<String, Object> claims = new LinkedMultiValueMap<>();
         verifiedCredentials.credentials().forEach(claims::add);
+
         model.addAllAttributes(claims);
+        // TODO: bytte ut med faktisk resultat fra statuslist når det er implementert
+        // TODO: Når statuslist er klar, håndter INVALID med early return (kun status + ev. traces), og hopp over claims.
+        model.addAttribute("verificationStatus", VerificationStatus.VALID);
         model.addAttribute("traces", verificationTransaction.getProtocolTraces());
+
         String credentialConfigurationId = verificationTransaction.getCredentialConfiguration().getId();
         if ("alder".equals(credentialConfigurationId)) {
             return handleAlder(claims, 18, model);
@@ -47,8 +52,10 @@ public class VerificationResultController {
         if ("inntekt".equals(credentialConfigurationId)) {
             return handleInntekt(claims, model);
         }
+
         model.addAttribute("claims", claims);
         model.addAttribute("credentialConfig", configProvider.getCredentialConfig(credentialConfigurationId));
+
         return "verify-result";
     }
 

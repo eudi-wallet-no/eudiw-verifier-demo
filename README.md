@@ -29,10 +29,16 @@ Start Redis locally by running Docker compose (see below).
 The application can be started with Maven:
 
 ```
+docker-compose up redis
+```
+
+Then run the application from IntelliJ (with `dev` profile) or with Maven:
+
+```
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-The application will run on https://abr.vc.local:8082/ with the `dev` profile.
+The application will run on https://abr.vc.local:8080/ with the `dev` profile.
 
 ### Docker (docker profile)
 This setup is currently not fully working for local development...
