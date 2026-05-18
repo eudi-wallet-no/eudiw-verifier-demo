@@ -17,6 +17,8 @@ import no.idporten.eudiw.demo.verifier.VerificationException;
 import no.idporten.eudiw.demo.verifier.api.EncryptedAuthorizationResponse;
 import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
 import no.idporten.eudiw.demo.verifier.trace.*;
+import no.idporten.eudiw.demo.verifier.tsl.Status;
+import no.idporten.eudiw.demo.verifier.tsl.TokenStatusListService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -36,10 +38,12 @@ public class OpenID4VPResponseService {
 
     private final VerificationTransactionService verificationTransactionService;
     private final ConfigProvider configProvider;
+    private final TokenStatusListService tokenStatusListService;
 
-    public OpenID4VPResponseService(VerificationTransactionService verificationTransactionService, ConfigProvider configProvider) {
+    public OpenID4VPResponseService(VerificationTransactionService verificationTransactionService, ConfigProvider configProvider, TokenStatusListService tokenStatusListService) {
         this.verificationTransactionService = verificationTransactionService;
         this.configProvider = configProvider;
+        this.tokenStatusListService = tokenStatusListService;
     }
 
     public String receiveResponse(String verifierTransactionId, EncryptedAuthorizationResponse encryptedAuthorizationResponse) throws Exception {
@@ -100,6 +104,18 @@ public class OpenID4VPResponseService {
         return jwe.getPayload().toJSONObject();
     }
 
+    private URI extractStatuslist(Map<String, Object> claims) {
+        return claims.keySet().stream()
+                .filter(key -> key.equals("status"))
+                .findFirst()
+                .map(key -> {
+                    Status status = (Status) claims.get(key);
+                    log.info("STATUSLIST: {}", status.statuslist().uri());
+                    return status.statuslist().uri();
+                })
+                .orElse(null);
+    }
+
     protected Map<String, Object> retrieveClaimsFromSDJwtCredential(String vpToken) throws Exception{
         SDJwt unverifiedSDJwt = SDJwt.Companion.parse(vpToken);
         JWSHeader jwsHeader = JWSHeader.parse(unverifiedSDJwt.getHeader().toString());
@@ -116,6 +132,7 @@ public class OpenID4VPResponseService {
             List<Object> parsedDisclosure = JSONArrayUtils.parse(new String(Base64.getUrlDecoder().decode(disclosure)));
             claims.put((String) parsedDisclosure.get(1), parsedDisclosure.get(2));
         }
+        tokenStatusListService.requestStatusList(extractStatuslist(claims));
         return claims;
     }
 
