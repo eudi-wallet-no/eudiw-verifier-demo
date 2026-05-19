@@ -117,7 +117,7 @@ public class OpenID4VPResponseService {
 
         Status status = objectMapper.convertValue(statusObj, Status.class);
 
-        if (status.statuslist() == null) {
+        if (status.statuslist().uri() == null) {
             return null;
         }
 
