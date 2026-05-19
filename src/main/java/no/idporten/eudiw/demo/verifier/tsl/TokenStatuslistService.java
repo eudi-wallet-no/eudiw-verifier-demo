@@ -17,12 +17,12 @@ import java.net.URI;
  */
 
 @Service
-public class TokenStatusListService {
+public class TokenStatuslistService {
 
     private final RestClient restClient;
-    private static final Logger logger = LoggerFactory.getLogger(TokenStatusListService.class);
+    private static final Logger logger = LoggerFactory.getLogger(TokenStatuslistService.class);
 
-    public TokenStatusListService(RestClient restClient) {
+    public TokenStatuslistService(RestClient restClient) {
         this.restClient = restClient;
     }
 

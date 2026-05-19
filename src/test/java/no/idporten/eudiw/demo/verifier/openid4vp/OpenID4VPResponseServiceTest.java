@@ -2,7 +2,7 @@ package no.idporten.eudiw.demo.verifier.openid4vp;
 
 import no.idporten.eudiw.demo.verifier.VerificationException;
 import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
-import no.idporten.eudiw.demo.verifier.tsl.TokenStatusListService;
+import no.idporten.eudiw.demo.verifier.tsl.TokenStatuslistService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class OpenID4VPResponseServiceTest {
     private OpenID4VPResponseService openID4VPResponseService;
 
     @Mock
-    private TokenStatusListService  tokenStatusListService;
+    private TokenStatuslistService tokenStatusListService;
 
     @DisplayName("with vp-token of type sd-jwt")
     @Nested
