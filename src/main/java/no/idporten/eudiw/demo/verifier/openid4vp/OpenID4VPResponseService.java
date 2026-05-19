@@ -22,6 +22,7 @@ import no.idporten.eudiw.demo.verifier.tsl.TokenStatusListService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -111,16 +112,15 @@ public class OpenID4VPResponseService {
 
         Object statusObj = sdjwt.getSdJwt().getFullPayload().get("status");
 
-        if (statusObj == null) {
+        if (Objects.isNull(statusObj) || !StringUtils.hasText(statusObj.toString())) {
             return null;
         }
 
         Status status = objectMapper.convertValue(statusObj, Status.class);
 
-        if (status.statuslist().uri() == null) {
+        if (status.statuslist().uri() == null || !StringUtils.hasText(status.statuslist().uri().content())) {
             return null;
         }
-
         return URI.create(status.statuslist().uri().content());
     }
 
