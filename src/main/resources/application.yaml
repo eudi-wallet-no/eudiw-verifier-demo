@@ -152,8 +152,6 @@ vcverifier:
 statuslist:
   read-timeout: 3s
   connect-timeout: 3s
-  api-key-header-id: X-API-KEY
-  api-key-value: ${STATUSLIST_SERVICE_API_KEY}
 
 idporten-key-manager:
   default-keystore: access

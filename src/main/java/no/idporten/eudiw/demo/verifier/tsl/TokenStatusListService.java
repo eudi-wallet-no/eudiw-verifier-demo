@@ -27,33 +27,21 @@ public class TokenStatusListService {
     }
 
     public JWT requestStatusList(URI url) {
-        // 1. prepare request with header specified in protocol
         JWT jwt;
-        try {
-            jwt = restClient.get()
-                    .uri(url)
-                    .retrieve()
-                    .body(JWT.class);
-        } catch (Exception e) {
-            logger.warn("Could not request status list for url {}", url, e);
+        if (url != null) {
+            try {
+                jwt = restClient.get()
+                        .uri(url)
+                        .retrieve()
+                        .body(JWT.class);
+            } catch (Exception e) {
+                logger.warn("Could not request status list for url {}", url, e);
+                return null;
+            }
+        } else {
             return null;
         }
-        // 2.  Receive response in form of jwt
-        logger.info("JWT requested for url {}", url);
-        logger.info("JWT {}", jwt);
         return jwt;
-    }
-
-    protected boolean validateStatusList(JWT statusList) {
-        // if valid, return true, else false
-        return false;
-    }
-
-    protected boolean checkRevocationStatus(JWT statusList, int index) {
-        // find the status on the given index
-
-        // if revoked, return 1, if not revoked return 0
-        return false;
     }
 
 }

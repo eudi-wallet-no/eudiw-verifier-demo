@@ -25,8 +25,6 @@ public class TokenStatuslistRestclient {
         return RestClient.builder()
                 .requestFactory(clientHttpRequestFactory)
                 .defaultHeader(HttpHeaders.ACCEPT, STATUSLISTJWT)
-                .defaultHeader(tokenStatuslistConfig.apiKeyHeaderId(), tokenStatuslistConfig.apiKeyValue())
-
                 .build();
     }
 }

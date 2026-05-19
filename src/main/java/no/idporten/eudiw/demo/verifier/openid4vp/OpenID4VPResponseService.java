@@ -23,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.net.URI;
 import java.security.cert.X509Certificate;
@@ -104,17 +106,25 @@ public class OpenID4VPResponseService {
         return jwe.getPayload().toJSONObject();
     }
 
-    private URI extractStatuslist(Map<String, Object> claims) {
-        return claims.keySet().stream()
-                .filter(key -> key.equals("status"))
-                .findFirst()
-                .map(key -> {
-                    Status status = (Status) claims.get(key);
-                    log.info("STATUSLIST: {}", status.statuslist().uri());
-                    return status.statuslist().uri();
-                })
-                .orElse(null);
+
+    private URI extractStatuslist(VerificationResult<SDJwt> sdjwt) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Object statusObj = sdjwt.getSdJwt().getFullPayload().get("status");
+
+        if (statusObj == null) {
+            return null;
+        }
+
+        Status status = objectMapper.convertValue(statusObj, Status.class);
+
+        if (status.statuslist() == null) {
+            return null;
+        }
+
+        return URI.create(status.statuslist().uri().content());
     }
+
+
 
     protected Map<String, Object> retrieveClaimsFromSDJwtCredential(String vpToken) throws Exception{
         SDJwt unverifiedSDJwt = SDJwt.Companion.parse(vpToken);
@@ -127,12 +137,14 @@ public class OpenID4VPResponseService {
         if (!verificationResult.getVerified()) {
             throw new VerificationException("invalid_request", "Invalid vp_token. Signature verified: %s, disclosures verified: %s".formatted(verificationResult.getSignatureVerified(), verificationResult.getDisclosuresVerified()));
         }
+
+        tokenStatusListService.requestStatusList(extractStatuslist(verificationResult));
+
         Map<String, Object> claims = new HashMap<>();
         for (String disclosure : verificationResult.getSdJwt().getDisclosures()) {
             List<Object> parsedDisclosure = JSONArrayUtils.parse(new String(Base64.getUrlDecoder().decode(disclosure)));
             claims.put((String) parsedDisclosure.get(1), parsedDisclosure.get(2));
         }
-        tokenStatusListService.requestStatusList(extractStatuslist(claims));
         return claims;
     }
 

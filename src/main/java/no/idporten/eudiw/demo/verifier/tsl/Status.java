@@ -2,7 +2,6 @@ package no.idporten.eudiw.demo.verifier.tsl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.net.URI;
 
 public record Status(
         @JsonProperty("status_list")
@@ -10,10 +9,17 @@ public record Status(
 ) {
     public record Statuslist(
             @JsonProperty("idx")
-            int idx,
+            ContentString idx,
             @JsonProperty("uri")
-            URI uri
-    ){
-    }
+            ContentString uri
+    ) {}
+
+    // Because of kotlin serialisation, everything is packed inside an object with
+    // content. therefore, this wrapper
+    public record ContentString(
+            @JsonProperty("content")
+            String content
+    ) {}
 }
+
 
