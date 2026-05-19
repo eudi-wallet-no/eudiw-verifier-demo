@@ -7,7 +7,7 @@ import java.time.Duration;
 
 @ConfigurationProperties(prefix = "statuslist")
 public record TokenStatuslistConfig (
-        @DefaultValue("5s") Duration readTimeout,
+        @DefaultValue("3s") Duration readTimeout,
         @DefaultValue("3s") Duration connectTimeout
 ){}
 
