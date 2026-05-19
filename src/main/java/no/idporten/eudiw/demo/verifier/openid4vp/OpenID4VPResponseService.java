@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.net.URI;
@@ -41,6 +40,7 @@ public class OpenID4VPResponseService {
     private final VerificationTransactionService verificationTransactionService;
     private final ConfigProvider configProvider;
     private final TokenStatusListService tokenStatusListService;
+    private static final JsonMapper objectMapper = new JsonMapper();
 
     public OpenID4VPResponseService(VerificationTransactionService verificationTransactionService, ConfigProvider configProvider, TokenStatusListService tokenStatusListService) {
         this.verificationTransactionService = verificationTransactionService;
@@ -108,7 +108,7 @@ public class OpenID4VPResponseService {
 
 
     private URI extractStatuslist(VerificationResult<SDJwt> sdjwt) {
-        ObjectMapper objectMapper = new ObjectMapper();
+
         Object statusObj = sdjwt.getSdJwt().getFullPayload().get("status");
 
         if (statusObj == null) {
