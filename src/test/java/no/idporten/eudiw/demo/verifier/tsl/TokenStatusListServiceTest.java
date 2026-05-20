@@ -23,10 +23,6 @@ private static final String STATUSLIST = "https://status.eidas2sandkasse.dev/lis
 
 @BeforeEach
 void setup() {
-    TokenStatuslistConfig config = new TokenStatuslistConfig(
-            Duration.of(3000, ChronoUnit.SECONDS),
-            Duration.of(3000, ChronoUnit.SECONDS));
-
     RestClient.Builder builder = RestClient.builder();
     mockServer = MockRestServiceServer.bindTo(builder).build();
     RestClient restClient = builder.build();
