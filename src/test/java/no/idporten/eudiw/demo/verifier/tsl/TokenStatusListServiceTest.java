@@ -1,6 +1,5 @@
 package no.idporten.eudiw.demo.verifier.tsl;
 
-import no.idporten.eudiw.demo.verifier.config.TokenStatuslistConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -9,8 +8,6 @@ import org.springframework.web.client.RestClient;
 
 
 import java.net.URI;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -40,13 +37,3 @@ void testRestClientCall() {
     mockServer.verify();
 }
 }
-
-
-
-    // MockRestServiceServer - > Bruk dette!
-
-
-
-    // Alternativt : MockWebServer  (Tyngre å lære )
-
-
