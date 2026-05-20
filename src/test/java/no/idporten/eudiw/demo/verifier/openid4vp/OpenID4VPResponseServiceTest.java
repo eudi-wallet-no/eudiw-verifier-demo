@@ -3,16 +3,21 @@ package no.idporten.eudiw.demo.verifier.openid4vp;
 import no.idporten.eudiw.demo.verifier.VerificationException;
 import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
 import no.idporten.eudiw.demo.verifier.tsl.TokenStatuslistService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.ObjectMapper;
 
+import java.net.URI;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,6 +38,8 @@ class OpenID4VPResponseServiceTest {
 
     @Mock
     private TokenStatuslistService tokenStatusListService;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @DisplayName("with vp-token of type sd-jwt")
     @Nested
@@ -65,5 +72,24 @@ class OpenID4VPResponseServiceTest {
             Map<String, Object> map = openID4VPResponseService.retrieveClaimsFromSDJwtCredential(vpToken);
             assertEquals("nullstilt@altinn.xyz", map.get("epostadresse"));
         }
+
+
+        @Test
+        void testExtractedStatusListUri() throws Exception {
+            final String vpToken = "eyJhbGciOiJFUzI1NiIsInR5cCI6ImRjK3NkLWp3dCIsIng1YyI6WyJNSUlEQ2pDQ0FyQ2dBd0lCQWdJSUtwR0xkTlp2T1RBd0NnWUlLb1pJemowRUF3SXdnWWN4SGpBY0JnTlZCR0VURlU1VVVrNVBMVTVQUms5U0xqazVNVGd5TlRneU56RUxNQWtHQTFVRUJoTUNUazh4SkRBaUJnTlZCQW9URzBSSlIwbFVRVXhKVTBWU1NVNUhVMFJKVWtWTFZFOVNRVlJGVkRFeU1EQUdBMVVFQXhNcFpXbGtZWE15YzJGdVpHdGhjM05sSUVWQlFTQlFjbTkyYVdSbGNpQkRRU0F5SUhONWMzUmxjM1F3SGhjTk1qWXdOREk0TVRFeE1UUXdXaGNOTWpjd05ESTRNVEV4TVRRd1dqQnBNUXN3Q1FZRFZRUUdFd0pPVHpFa01DSUdBMVVFQ2d3YlJFbEhTVlJCVEVsVFJWSkpUa2RUUkVsU1JVdFVUMUpCVkVWVU1SUXdFZ1lEVlFRRERBdENaWFpwYzNCdmNuUmxiakVlTUJ3R0ExVUVZUXdWVGxSU1RrOHRUazlHVDFJdU9Ua3hPREkxT0RJM01Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRWJEVmdHK2tuenpOT3Bxa2gyejJ3eTZXQkZ5MHRzRzUzOHIyMW9nbUVGeHdRaFg0Tnlta203U2ZCVmRhUyt6YXVjdERERER0czBhNnRyNWZZTlJwWmpLT0NBU0V3Z2dFZE1COEdBMVVkSXdRWU1CYUFGS1RaSzBLK3h1VXEwdSthdFpRRlV3Z2FoSGg0TUIwR0ExVWREZ1FXQkJURjE0cnltTTZYM1ZpZnNCa3V5bTAzdGpUUDdqQU1CZ05WSFJNQkFmOEVBakFBTUZnR0ExVWRId1JSTUU4d1RhQkxvRW1HUjJoMGRIQnpPaTh2WTJFdVpXbGtZWE15YzJGdVpHdGhjM05sTG1SbGRpOTJNUzlqWlhKMGN5OXBiblJsY20xbFpHbGhkR1Z6TDJWaFlWOXdjbTkyYVdSbGNqSXVZM0pzTUdNR0NDc0dBUVVGQndFQkJGY3dWVEJUQmdnckJnRUZCUWN3QW9aSGFIUjBjSE02THk5allTNWxhV1JoY3pKellXNWthMkZ6YzJVdVpHVjJMM1l4TDJObGNuUnpMMmx1ZEdWeWJXVmthV0YwWlhNdlpXRmhYM0J5YjNacFpHVnlNaTVqWlhJd0RnWURWUjBQQVFIL0JBUURBZ1dnTUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDSUNoWGgxcjRDbHgwY3YrckdDNkJaWUF5SXRXQVRVMUNsRDhJRVJ1VEM0czJBaUVBdDRtS0VUN1NYaHVNdlZZNHNoMWJaeTl5V2VnMHFHMGpuNUcvT2J3Y2Q1bz0iXX0.eyJfc2QiOlsicG8yWktrcmVwVmN4dmdXdDdLNjlscmdTQTltc2NJaWtpZ0hzYXY3aUdZZyIsImZ3bUVPQ2Z1X2QyRUE1VTdGcW5aeGg0Vzh6VHFqUUQzRVJscXhuMmJUd3MiLCJVQVktRzFoWFlPa3Y4NXp3OW1EeXl5VTBlejYxZnIwenVQcWRlVVd2dEtvIl0sInZjdCI6Im5vOmtvbnRha3RyZWdpc3RlcmV0OmtvbnRha3RpbmZvcm1hc2pvbjoxIiwiX3NkX2FsZyI6InNoYS0yNTYiLCJpc3MiOiJodHRwczovL3V0c3RlZGVyLmVpZGFzMnNhbmRrYXNzZS5kZXYvYmV2aXNnZW5lcmF0b3IiLCJjbmYiOnsiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiVDRGWVZJeS1vVVM1SWFZbHpwVE81TXZNdEVfVEhXQlFpeGtYZ2FOa0pscyIsInkiOiJpMGlMQi1iRUNBT090c1g0WWQ4Yk1VcXV1LUVqWkJQNjVTemx4a0xuRV93In19LCJleHAiOjE4MDk0MTM5NTgsImlhdCI6MTc3Nzg3Nzk1OCwic3RhdHVzIjp7InN0YXR1c19saXN0Ijp7ImlkeCI6MjY5MjQwLCJ1cmkiOiJodHRwczovL3N0YXR1cy5laWRhczJzYW5ka2Fzc2UuZGV2L2xpc3RzLzEifX19.B2S6ierAGIMMpF89DkhQDJTZWXVWXUyfZtAgHPAeN83jDFuXLsmzg0pLws2vEfkhW--dtewsSNOwVcphTqTAdQ~WyJGc2IxYm5objRUbV93aTFja2V6MnhRIiwiZXBvc3RhZHJlc3NlIiwibnVsbHN0aWx0QGFsdGlubi54eXoiXQ~WyIzU21wS2VWcEY0cG1fbGNKVkZiV0J3IiwicGVyc29uaWRlbnRpZmlrYXRvciIsIjE2OTAzMzQ5ODQ0Il0~WyIxY0lzZUpSSk85eENwZHRtMnAzSHRnIiwibW9iaWx0ZWxlZm9ubnVtbWVyIiwiKzQ3NDg5OTU4NTUiXQ~eyJ0eXAiOiJrYitqd3QiLCJhbGciOiJFUzI1NiJ9.eyJzZF9oYXNoIjoiQXl3a0pBTEdwUFQ2MC1zOElPa3BPZHpIMUpWcGNDeldZcFZLTkptd1JjNCIsImF1ZCI6Ing1MDlfaGFzaDpiQkFWeDRISFVEWXJCbW90WEZXMTFzMzdUaExwUV9xUnFSR2ZzQVlnLThnIiwibm9uY2UiOiJhYzkzYjY1Zi1hZTZjLTQ2MjYtOGEzOS0wNDQyYmZkNmEwY2IiLCJpYXQiOjE3NzkxODQ2NzF9.nm3DZGtHogv82wu22ySQiGutwGyngBB76TImnQ_MJLtQrBBDZMD673XSyuhpLiMdh6dAWxTmVyiTamS8N7uPEw";
+
+            ArgumentCaptor<URI> captor = ArgumentCaptor.forClass(URI.class);
+
+            Map<String, Object> map =
+                    openID4VPResponseService.retrieveClaimsFromSDJwtCredential(vpToken);
+
+            Mockito.verify(tokenStatusListService)
+                    .requestStatusList(captor.capture());
+
+            URI capturedUri = captor.getValue();
+
+            Assertions.assertEquals(URI.create("https://status.eidas2sandkasse.dev/lists/1"), capturedUri);
+        }
+
     }
 }

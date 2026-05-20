@@ -108,7 +108,7 @@ public class OpenID4VPResponseService {
     }
 
 
-    private URI extractStatuslist(VerificationResult<SDJwt> sdjwt) {
+    protected URI extractStatuslist(VerificationResult<SDJwt> sdjwt) {
 
         Object statusObj = sdjwt.getSdJwt().getFullPayload().get("status");
 
