@@ -2,9 +2,11 @@ package no.idporten.eudiw.demo.verifier;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 import java.security.Security;
 
+@ConfigurationPropertiesScan
 @SpringBootApplication
 public class VerifierDemoApplication {
 
