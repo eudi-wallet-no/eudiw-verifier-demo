@@ -17,10 +17,14 @@ import no.idporten.eudiw.demo.verifier.VerificationException;
 import no.idporten.eudiw.demo.verifier.api.EncryptedAuthorizationResponse;
 import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
 import no.idporten.eudiw.demo.verifier.trace.*;
+import no.idporten.eudiw.demo.verifier.tsl.Status;
+import no.idporten.eudiw.demo.verifier.tsl.TokenStatuslistService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.net.URI;
 import java.security.cert.X509Certificate;
@@ -36,10 +40,13 @@ public class OpenID4VPResponseService {
 
     private final VerificationTransactionService verificationTransactionService;
     private final ConfigProvider configProvider;
+    private final TokenStatuslistService tokenStatuslistService;
+    private static final JsonMapper objectMapper = new JsonMapper();
 
-    public OpenID4VPResponseService(VerificationTransactionService verificationTransactionService, ConfigProvider configProvider) {
+    public OpenID4VPResponseService(VerificationTransactionService verificationTransactionService, ConfigProvider configProvider, TokenStatuslistService tokenStatuslistService) {
         this.verificationTransactionService = verificationTransactionService;
         this.configProvider = configProvider;
+        this.tokenStatuslistService = tokenStatuslistService;
     }
 
     public String receiveResponse(String verifierTransactionId, EncryptedAuthorizationResponse encryptedAuthorizationResponse) throws Exception {
@@ -100,6 +107,25 @@ public class OpenID4VPResponseService {
         return jwe.getPayload().toJSONObject();
     }
 
+
+    protected URI extractStatuslist(VerificationResult<SDJwt> sdjwt) {
+
+        Object statusObj = sdjwt.getSdJwt().getFullPayload().get("status");
+
+        if (Objects.isNull(statusObj) || !StringUtils.hasText(statusObj.toString())) {
+            return null;
+        }
+
+        Status status = objectMapper.convertValue(statusObj, Status.class);
+
+        if (status.statuslist().uri() == null || !StringUtils.hasText(status.statuslist().uri().content())) {
+            return null;
+        }
+        return URI.create(status.statuslist().uri().content());
+    }
+
+
+
     protected Map<String, Object> retrieveClaimsFromSDJwtCredential(String vpToken) throws Exception{
         SDJwt unverifiedSDJwt = SDJwt.Companion.parse(vpToken);
         JWSHeader jwsHeader = JWSHeader.parse(unverifiedSDJwt.getHeader().toString());
@@ -111,6 +137,9 @@ public class OpenID4VPResponseService {
         if (!verificationResult.getVerified()) {
             throw new VerificationException("invalid_request", "Invalid vp_token. Signature verified: %s, disclosures verified: %s".formatted(verificationResult.getSignatureVerified(), verificationResult.getDisclosuresVerified()));
         }
+
+        tokenStatuslistService.requestStatusList(extractStatuslist(verificationResult));
+
         Map<String, Object> claims = new HashMap<>();
         for (String disclosure : verificationResult.getSdJwt().getDisclosures()) {
             List<Object> parsedDisclosure = JSONArrayUtils.parse(new String(Base64.getUrlDecoder().decode(disclosure)));
