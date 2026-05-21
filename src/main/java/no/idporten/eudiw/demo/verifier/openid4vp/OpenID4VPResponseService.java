@@ -30,6 +30,7 @@ import java.net.URI;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPublicKey;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -108,20 +109,12 @@ public class OpenID4VPResponseService {
     }
 
 
-    protected URI extractStatuslist(VerificationResult<SDJwt> sdjwt) {
-
+    protected Status extractStatuslistUriAndIdx(VerificationResult<SDJwt> sdjwt) {
         Object statusObj = sdjwt.getSdJwt().getFullPayload().get("status");
-
         if (Objects.isNull(statusObj) || !StringUtils.hasText(statusObj.toString())) {
             return null;
         }
-
-        Status status = objectMapper.convertValue(statusObj, Status.class);
-
-        if (status.statuslist().uri() == null || !StringUtils.hasText(status.statuslist().uri().content())) {
-            return null;
-        }
-        return URI.create(status.statuslist().uri().content());
+        return objectMapper.convertValue(statusObj, Status.class);
     }
 
 
@@ -137,9 +130,10 @@ public class OpenID4VPResponseService {
         if (!verificationResult.getVerified()) {
             throw new VerificationException("invalid_request", "Invalid vp_token. Signature verified: %s, disclosures verified: %s".formatted(verificationResult.getSignatureVerified(), verificationResult.getDisclosuresVerified()));
         }
-
-        tokenStatuslistService.requestStatusList(extractStatuslist(verificationResult));
-
+        Status statusRecord = extractStatuslistUriAndIdx(verificationResult);
+        if(statusRecord != null) {
+            int status = tokenStatuslistService.checkStatus(URI.create(statusRecord.statuslist().uri().content()), jwsAlgorithm, Integer.parseInt(statusRecord.statuslist().idx().content()), tokenStatuslistService.requestStatusList(URI.create(statusRecord.statuslist().uri().content())).getParsedString(), Instant.now(), jwsVerifier);
+        }
         Map<String, Object> claims = new HashMap<>();
         for (String disclosure : verificationResult.getSdJwt().getDisclosures()) {
             List<Object> parsedDisclosure = JSONArrayUtils.parse(new String(Base64.getUrlDecoder().decode(disclosure)));
