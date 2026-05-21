@@ -149,6 +149,10 @@ vcverifier:
 #        - place_of_birth
 #        - nationalities
 
+statuslist:
+  read-timeout: 3s
+  connect-timeout: 3s
+
 idporten-key-manager:
   default-keystore: access
   keystores:

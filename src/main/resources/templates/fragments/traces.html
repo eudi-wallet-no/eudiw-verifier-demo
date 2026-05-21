@@ -8,11 +8,11 @@
         <th:block th:each="trace, status : ${traces}">
             <div class="accordion-item">
                 <h2 class="accordion-header"
-                    th:id="${'heading' + trace.id}">
+                    th:id="|heading${trace.id}|">
                     <button class="accordion-button collapsed"
                             type="button"
                             data-bs-toggle="collapse"
-                            th:data-bs-target="${'#' + trace.id}"
+                            th:data-bs-target="|#${trace.id}|"
                             aria-expanded="false"
                             th:aria-controls="${trace.id}">
                         <span th:remove="tag" th:text="${trace.description}"></span>
@@ -20,7 +20,7 @@
                 </h2>
                 <div th:id="${trace.id}"
                      class="accordion-collapse collapse"
-                     th:aria-labelledby="${'heading' + trace.id}"
+                     th:aria-labelledby="|heading${trace.id}|"
                      data-bs-parent="#traces">
                     <div class="accordion-body" style="white-space: pre-wrap; overflow-wrap: break-word;" th:text="${trace.formatted}"></div>
                 </div>

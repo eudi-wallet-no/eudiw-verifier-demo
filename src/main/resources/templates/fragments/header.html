@@ -6,11 +6,15 @@
     <div class="top-bar">
         <div class="top-bar__container">
             <div class="top-bar__left">
-                <img class="top-bar__logo" th:src="@{/img/logo/logo_sandkasse.png}" alt="Logo">
-                <img class="top-bar__logo--mobile" th:src="@{/img/logo/logo-idporten-bare.svg}" alt="Logo">
+                <a th:href="@{/}" style="text-decoration: none;">
+                    <img class="top-bar__logo" th:src="@{/img/logo/logo_sandkasse.png}" alt="Logo">
+                </a>
+                <a th:href="@{/}" style="text-decoration: none;">
+                    <img class="top-bar__logo--mobile" th:src="@{/img/logo/logo-idporten-bare.svg}" alt="Logo">
+                </a>
             </div>
             <div class="top-bar__middle">
-                <div class="top-bar__service-provider" th:text="#{header.top_bar.text}"></div>
+                <a class="top-bar__service-provider" th:href="@{/}" th:text="#{header.top_bar.text}" style="text-decoration: none;"></a>
             </div>
             <div class="top-bar__right">
                 <div class="dropdowns">

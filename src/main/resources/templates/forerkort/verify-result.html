@@ -3,34 +3,26 @@
       xmlns:th="http://www.thymeleaf.org"
       lang="nn">
 
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="description" content="Demo-brukersted Nasjonal sandkasse for digital lommebok">
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link th:href="@{/css/idp-style-0.7.33.css}" rel="stylesheet">
-    <script th:src="@{/js/idp-script-0.7.33.js}" defer></script>
-    <title th:text="#{title}"></title>
-</head>
+<head th:replace="~{fragments/head :: head}"></head>
 <body>
 <header th:replace="~{fragments/header :: header}">...</header>
 
 <main>
-    <div class="box">
-        <div class="box__body">
-            <div class="notification notification--success">
-                <h1 th:text="#{result.header}"></h1>
+    <th:block th:replace="~{fragments/verification-status :: result(${verificationStatus}, ~{::#result-content})}">
+        <th:block id="result-content">
+            <th:block th:if="${verificationStatus != null and verificationStatus.name() == 'VALID'}">
                 <p th:text="#{result.forerkort.welcome(${given_name?.get(0) ?: ''}, ${family_name?.get(0) ?: ''})}"></p>
                 <p th:text="#{result.forerkort.classes(${driving_privileges[0].vehicle_category_code})}"></p>
-                <img th:if="${portrait}" width = "75%" th:src="'data:image/jpg;base64,' + ${portrait.get(0)}" th:alt="#{forerkort.claim.portrait}" />
-                <div class="btn-group">
-                    <a th:href="@{/}">
-                        <button class="button" th:text="#{result.button.back}"></button>
-                    </a>
-                </div>
+                <img th:if="${portrait}" width="75%" th:src="|data:image/jpg;base64,${portrait.get(0)}|" th:alt="#{forerkort.claim.portrait}" />
+            </th:block>
+            <div class="btn-group">
+                <a th:href="@{/}">
+                    <button class="button" th:text="#{result.button.back}"></button>
+                </a>
             </div>
-            <div th:replace="~{fragments/traces :: traces}">...</div>
-        </div>
-    </div>
+        </th:block>
+    </th:block>
+    <div th:replace="~{fragments/traces :: traces}">...</div>
 </main>
 <footer th:replace="~{fragments/footer :: footer}">...</footer>
 </body>
