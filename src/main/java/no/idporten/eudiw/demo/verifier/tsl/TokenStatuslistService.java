@@ -4,6 +4,7 @@ import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jwt.JWT;
 
+import no.idporten.eudiw.demo.verifier.VerificationException;
 import no.idporten.eudiw.demo.verifier.openid4vp.StatusListJwtValidator;
 import no.idporten.eudiw.demo.verifier.web.VerificationStatus;
 import org.slf4j.Logger;
@@ -60,8 +61,7 @@ public class TokenStatuslistService {
                         .retrieve()
                         .body(JWT.class);
             } catch (Exception e) {
-                logger.warn("Could not request status list for url {}", url, e);
-                return null;
+                throw new VerificationException("Could not request status list for url " + url, e.getMessage());
             }
         } else {
             return null;
