@@ -5,9 +5,11 @@ import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jwt.JWT;
 
 import no.idporten.eudiw.demo.verifier.openid4vp.StatusListJwtValidator;
+import no.idporten.eudiw.demo.verifier.web.VerificationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
 
 import java.net.URI;
@@ -33,12 +35,20 @@ public class TokenStatuslistService {
         this.restClient = restClient;
     }
 
-    public int checkStatus(URI uri, JWSAlgorithm jwsAlgorithm, int idx, String statusListJwt, Instant now, JWSVerifier jwsVerifier) {
-        if(uri == null){
-            return -1;
+    public VerificationStatus checkStatus(URI uri, JWSAlgorithm jwsAlgorithm, int idx, String statusListJwt, Instant now, JWSVerifier jwsVerifier) {
+        if(uri == null || !StringUtils.hasText(uri.toString())){
+            return VerificationStatus.INVALID;
         }
         statusListJwtValidator = new StatusListJwtValidator(Set.of(jwsAlgorithm), Duration.ofSeconds(10000));
-        return statusListJwtValidator.validateAndResolveStatus(uri, idx, statusListJwt, now, jwsVerifier);
+        return convertIntStatusToEnum(statusListJwtValidator.validateAndResolveStatus(uri, idx, statusListJwt, now, jwsVerifier));
+    }
+
+    protected VerificationStatus convertIntStatusToEnum(int status) {
+        if(status == 0){
+            return VerificationStatus.VALID;
+        } else {
+            return VerificationStatus.INVALID;
+        }
     }
 
     public JWT requestStatusList(URI url) {

@@ -34,6 +34,7 @@ public class VerificationResultController {
         verifiedCredentials.credentials().forEach(claims::add);
 
         model.addAllAttributes(claims);
+        model.addAttribute("status", verificationTransaction.getStatus());
         // TODO: bytte ut med faktisk resultat fra statuslist når det er implementert
         // TODO: Når statuslist er klar, håndter INVALID med early return (kun status + ev. traces), og hopp over claims.
         model.addAttribute("verificationStatus", VerificationStatus.VALID);
