@@ -19,9 +19,9 @@
 		<kotlin.version>2.3.21</kotlin.version>
 		<kotlinx-serialization-json-jvm.version>1.11.0</kotlinx-serialization-json-jvm.version>
 		<idporten.keystore.version>2.0.1</idporten.keystore.version>
-		<idporten-actuator.version>3.1.0</idporten-actuator.version>
+		<idporten-actuator.version>3.1.1</idporten-actuator.version>
 		<idporten-access-log.version>4.0.1</idporten-access-log.version>
-		<opentelemetry-instrumentation-api.version>1.61.0</opentelemetry-instrumentation-api.version>
+		<opentelemetry-instrumentation-api.version>1.62.0</opentelemetry-instrumentation-api.version>
 		<nimbus-jose-jwt.version>10.9</nimbus-jose-jwt.version>
 		<waltid-mdoc-credentials-jvm.version>0.19.0</waltid-mdoc-credentials-jvm.version>
 		<waltid-sdjwt-jvm.version>0.19.0</waltid-sdjwt-jvm.version>
@@ -173,7 +173,7 @@
 		<dependency>
 			<groupId>org.jetbrains.kotlinx</groupId>
 			<artifactId>kotlinx-coroutines-core</artifactId>
-			<version>1.10.2</version>
+			<version>1.11.0</version>
 			<type>pom</type>
 		</dependency>
 		<dependency>
