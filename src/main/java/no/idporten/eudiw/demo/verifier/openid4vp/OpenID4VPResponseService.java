@@ -19,6 +19,7 @@ import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
 import no.idporten.eudiw.demo.verifier.trace.*;
 import no.idporten.eudiw.demo.verifier.tsl.Status;
 import no.idporten.eudiw.demo.verifier.tsl.TokenStatuslistService;
+import no.idporten.eudiw.demo.verifier.web.VerificationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,7 @@ import java.net.URI;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPublicKey;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -66,17 +68,21 @@ public class OpenID4VPResponseService {
         }
         final String vpToken = extractVpToken(verificationTransaction.getCredentialConfiguration().getId(), claimsFromJwePayload);
         final Map<String, Object> claims;
+        final VerifiedCredentials verifiedCredentials;
+        final VerificationStatus status;
         if ("dc+sd-jwt".equals(verificationTransaction.getCredentialConfiguration().getFormat())) {
             verificationTransaction.addProtocolTrace(new SDJwtTrace("vpTokenSDJwt", "SD JWT ", vpToken));
-            claims = retrieveClaimsFromSDJwtCredential(vpToken);
+            verifiedCredentials = handleSDJwt(vpToken);
+            claims = verifiedCredentials.credentials();
+
         } else {
             verificationTransaction.addProtocolTrace(new CBORTrace("vpTokenCbor", "mdoc CBOR", vpToken));
             claims = retrieveClaimsFromMDocCredential(vpToken);
+            status = VerificationStatus.VALID;
+            verifiedCredentials = new VerifiedCredentials(vpToken, claims, status);
         }
         verificationTransaction.addProtocolTrace(new MapTrace("credentialClaims", "Claims from credential", claims));
-
-        VerifiedCredentials verifiedCredentials = new VerifiedCredentials(vpToken, claims);
-        verificationTransaction.setVerifiedCredentials(verifiedCredentials);
+        verificationTransaction.setVerifiedCredentials(verifiedCredentials); // TODO: LEGG INN HER!!
         String responseBody = "{}";
         if ("same-device".equals(verificationTransaction.getFlow())) {
             URI redirectURI = UriComponentsBuilder.fromUriString(configProvider.getExternalBaseUrl()).pathSegment("response-result", verifierTransactionId).build().toUri();
@@ -107,39 +113,59 @@ public class OpenID4VPResponseService {
         return jwe.getPayload().toJSONObject();
     }
 
-
-    protected URI extractStatuslist(VerificationResult<SDJwt> sdjwt) {
-
-        Object statusObj = sdjwt.getSdJwt().getFullPayload().get("status");
-
-        if (Objects.isNull(statusObj) || !StringUtils.hasText(statusObj.toString())) {
-            return null;
+    protected VerifiedCredentials handleSDJwt(String vpToken) throws Exception {
+        SDJwt unverifiedSDJwt = unverifiedSDJwt(vpToken);
+        X509Certificate cert = certificate(unverifiedSDJwt);
+        JWSVerifier jwsVerifier = jwsVerifier(cert);
+        JWSAlgorithm jwsAlgorithm = algorithm(cert);
+        SimpleJWTCryptoProvider cryptoProvider = new SimpleJWTCryptoProvider(jwsAlgorithm, null, jwsVerifier);
+        VerificationResult<SDJwt> result = verificationResult(cryptoProvider, unverifiedSDJwt);
+        final Map<String, Object> claims = retrieveClaimsFromSDJwtCredential(result);
+        Status statusRecord = extractStatuslistUriAndIdx(result);
+        VerificationStatus status;
+        if (statusRecord != null) {
+            status = tokenStatuslistService.checkStatus(URI.create(statusRecord.statuslist().uri().content()), jwsAlgorithm, Integer.parseInt(statusRecord.statuslist().idx().content()), tokenStatuslistService.requestStatusList(URI.create(statusRecord.statuslist().uri().content())).getParsedString(), Instant.now(), jwsVerifier);
+        } else {
+            status = VerificationStatus.INVALID;
         }
-
-        Status status = objectMapper.convertValue(statusObj, Status.class);
-
-        if (status.statuslist().uri() == null || !StringUtils.hasText(status.statuslist().uri().content())) {
-            return null;
-        }
-        return URI.create(status.statuslist().uri().content());
+        return new VerifiedCredentials(vpToken, claims, status);
     }
 
 
+    protected Status extractStatuslistUriAndIdx(VerificationResult<SDJwt> sdjwt) {
+        Object statusObj = sdjwt.getSdJwt().getFullPayload().get("status");
+        if (Objects.isNull(statusObj) || !StringUtils.hasText(statusObj.toString())) {
+            return null;
+        }
+        return objectMapper.convertValue(statusObj, Status.class);
+    }
 
-    protected Map<String, Object> retrieveClaimsFromSDJwtCredential(String vpToken) throws Exception{
-        SDJwt unverifiedSDJwt = SDJwt.Companion.parse(vpToken);
-        JWSHeader jwsHeader = JWSHeader.parse(unverifiedSDJwt.getHeader().toString());
-        X509Certificate cert = X509CertUtils.parse(jwsHeader.getX509CertChain().getFirst().decode());
-        JWSVerifier jwsVerifier = new ECDSAVerifier((ECPublicKey) cert.getPublicKey());
-        JWSAlgorithm jwsAlgorithm = ECUtils.jwsAlgorithmFromKey(cert.getPublicKey());
-        SimpleJWTCryptoProvider cryptoProvider = new SimpleJWTCryptoProvider(jwsAlgorithm, null, jwsVerifier);
-        VerificationResult<SDJwt> verificationResult = unverifiedSDJwt.verify(cryptoProvider, null);
+    protected VerificationResult<SDJwt> verificationResult(SimpleJWTCryptoProvider jwtCryptoProvider, SDJwt unverifiedSDJwt){
+        VerificationResult<SDJwt> verificationResult = unverifiedSDJwt.verify(jwtCryptoProvider, null);
         if (!verificationResult.getVerified()) {
             throw new VerificationException("invalid_request", "Invalid vp_token. Signature verified: %s, disclosures verified: %s".formatted(verificationResult.getSignatureVerified(), verificationResult.getDisclosuresVerified()));
         }
+        return verificationResult;
+    }
 
-        tokenStatuslistService.requestStatusList(extractStatuslist(verificationResult));
+    protected SDJwt unverifiedSDJwt(String vpToken) {
+        return SDJwt.Companion.parse(vpToken);
+    }
 
+    protected X509Certificate certificate(SDJwt unverifiedSDJwt) throws Exception{
+        JWSHeader jwsHeader = JWSHeader.parse(unverifiedSDJwt.getHeader().toString());
+        return X509CertUtils.parse(jwsHeader.getX509CertChain().getFirst().decode());
+    }
+
+    protected JWSVerifier jwsVerifier(X509Certificate cert) throws Exception {
+        return new ECDSAVerifier((ECPublicKey) cert.getPublicKey());
+    }
+
+    protected JWSAlgorithm algorithm(X509Certificate cert) {
+        return ECUtils.jwsAlgorithmFromKey(cert.getPublicKey());
+    }
+
+    protected Map<String, Object> retrieveClaimsFromSDJwtCredential(VerificationResult<SDJwt> verificationResult) throws ParseException {
         Map<String, Object> claims = new HashMap<>();
         for (String disclosure : verificationResult.getSdJwt().getDisclosures()) {
             List<Object> parsedDisclosure = JSONArrayUtils.parse(new String(Base64.getUrlDecoder().decode(disclosure)));
