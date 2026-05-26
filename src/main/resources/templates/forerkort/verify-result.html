@@ -20,9 +20,9 @@
                     <button class="button" th:text="#{result.button.back}"></button>
                 </a>
             </div>
+            <div th:replace="~{fragments/traces :: traces}">...</div>
         </th:block>
     </th:block>
-    <div th:replace="~{fragments/traces :: traces}">...</div>
 </main>
 <footer th:replace="~{fragments/footer :: footer}">...</footer>
 </body>
