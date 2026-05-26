@@ -1,0 +1,38 @@
+name: Deploy to systest from feature branch
+
+on:
+  workflow_dispatch: # manual trigger
+
+jobs:
+  build-and-publish-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+    outputs:
+      image-digest: ${{ steps.build.outputs.image-digest }}
+      image-version: ${{ steps.build.outputs.image-version }}
+    steps:
+      - id: build
+        uses: felleslosninger/github-workflows/.github/workflows/ci-spring-boot-build-publish-image.yml@main
+        with:
+          image-name: digital-lommebok-verifier-demo
+          java-version: 25
+        secrets: inherit
+
+  update-image-version:
+    needs: build-and-publish-image
+    permissions:
+      contents: write
+    uses: felleslosninger/github-workflows/.github/workflows/ci-call-update-image.yml@main
+    with:
+      application-name: digital-lommebok-verifier-demo
+      deployment-environment: systest
+      image-digest: ${{ needs.build-and-publish-image.outputs.image-digest }}
+      image-name: digital-lommebok-verifier-demo
+      image-version: ${{ needs.build-and-publish-image.outputs.image-version }}
+      kubernetes-repo: digital-lommebok-cd
+      product-name: digital-lommebok
+      lifecycle: 'development'
+    secrets: inherit
