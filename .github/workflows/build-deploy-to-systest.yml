@@ -5,22 +5,16 @@ on:
 
 jobs:
   build-and-publish-image:
-    runs-on: ubuntu-latest
     permissions:
       contents: write
       packages: write
       id-token: write
-    outputs:
-      image-digest: ${{ steps.build.outputs.image-digest }}
-      image-version: ${{ steps.build.outputs.image-version }}
-    steps:
-      - id: build
-        uses: felleslosninger/github-workflows/.github/workflows/ci-spring-boot-build-publish-image.yml@main
-        with:
-          lifecycle: 'development'
-          image-name: digital-lommebok-verifier-demo
-          java-version: 25
-        secrets: inherit
+    uses: felleslosninger/github-workflows/.github/workflows/ci-spring-boot-build-publish-image.yml@main
+    with:
+      lifecycle: 'development'
+      image-name: digital-lommebok-verifier-demo
+      java-version: 25
+    secrets: inherit
 
   update-image-version:
     needs: build-and-publish-image
