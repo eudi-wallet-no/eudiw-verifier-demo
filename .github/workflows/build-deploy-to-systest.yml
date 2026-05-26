@@ -4,29 +4,29 @@ on:
   workflow_dispatch: # manual trigger
 
 jobs:
-  build-and-publish-image:
+  call-workflow-image-build-publish:
+    uses: felleslosninger/github-workflows/.github/workflows/ci-build-publish-image.yml@main
     permissions:
       contents: write
       packages: write
       id-token: write
-    uses: felleslosninger/github-workflows/.github/workflows/ci-build-publish-image.yml@main
     with:
-      lifecycle: 'development'
       image-name: digital-lommebok-verifier-demo
       java-version: 25
+      lifecycle: 'development'
     secrets: inherit
 
   update-image-version:
-    needs: build-and-publish-image
-    permissions:
-      contents: write
     uses: felleslosninger/github-workflows/.github/workflows/ci-call-update-image.yml@main
+    permissions:
+      pull-requests: read
+    needs: call-workflow-image-build-publish
     with:
       application-name: digital-lommebok-verifier-demo
       deployment-environment: systest
-      image-digest: ${{ needs.build-and-publish-image.outputs.image-digest }}
+      image-digest: ${{ needs.call-workflow-image-build-publish.outputs.image-digest }}
       image-name: digital-lommebok-verifier-demo
-      image-version: ${{ needs.build-and-publish-image.outputs.image-version }}
+      image-version: ${{ needs.call-workflow-image-build-publish.outputs.image-version }}
       kubernetes-repo: digital-lommebok-cd
       product-name: digital-lommebok
       lifecycle: 'development'
