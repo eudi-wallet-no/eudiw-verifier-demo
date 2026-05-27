@@ -19,7 +19,6 @@ import java.net.URI;
 import java.text.ParseException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.Locale;
 import java.util.List;
@@ -34,8 +33,6 @@ import java.util.Set;
 
 @Service
 public class TokenStatuslistService {
-
-    private StatusListJwtValidator statusListJwtValidator;
     private final RestClient restClient;
     private final TokenStatuslistConfig tokenStatuslistConfig;
 
@@ -49,7 +46,7 @@ public class TokenStatuslistService {
             return VerificationStatus.INVALID;
         }
         validateAllowedHost(uri);
-        statusListJwtValidator = new StatusListJwtValidator(Set.of(JWSAlgorithm.RS256), Duration.ofSeconds(10000));
+        StatusListJwtValidator statusListJwtValidator = new StatusListJwtValidator(Set.of(JWSAlgorithm.RS256), tokenStatuslistConfig.clockSkew());
         JWSVerifier jwsVerifier = statusListJwsVerifier(statusListJwt);
         return convertIntStatusToEnum(statusListJwtValidator.validateAndResolveStatus(uri, idx, statusListJwt, now, jwsVerifier));
     }

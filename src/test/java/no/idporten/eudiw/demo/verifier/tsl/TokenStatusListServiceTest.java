@@ -10,20 +10,30 @@ import com.nimbusds.jwt.SignedJWT;
 import no.idporten.eudiw.demo.verifier.VerificationException;
 import no.idporten.eudiw.demo.verifier.config.TokenStatuslistConfig;
 import no.idporten.eudiw.demo.verifier.web.VerificationStatus;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
+import java.math.BigInteger;
 import java.net.URI;
-import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
-import java.security.cert.CertificateFactory;
+import java.security.SecureRandom;
+import java.security.Security;
 import java.security.cert.X509Certificate;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.Instant;
 import java.time.Duration;
 import java.util.Date;
@@ -39,23 +49,37 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 class TokenStatusListServiceTest {
 
+    private static final Instant NOW = Instant.parse("2026-05-27T10:00:00Z");
     private TokenStatuslistService service;
     private MockRestServiceServer mockServer;
     private static final String STATUSLIST = "https://status.eidas2sandkasse.dev/lists/1";
-    private static final String RSA_PRIVATE_KEY_RESOURCE = "fixtures/statuslist-test-private-key.pem";
-    private static final String RSA_CERT_RESOURCE = "fixtures/statuslist-test-certificate.pem";
+    private static PrivateKey rsaPrivateKey;
+    private static X509Certificate rsaCertificate;
+
+    @BeforeAll
+    static void initKeyMaterial() throws Exception {
+        if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+            Security.addProvider(new BouncyCastleProvider());
+        }
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048);
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        rsaPrivateKey = keyPair.getPrivate();
+        rsaCertificate = selfSignedCertificate(keyPair);
+    }
 
     @BeforeEach
-    void setup() {
+    void setUp() {
         RestClient.Builder builder = RestClient.builder();
         mockServer = MockRestServiceServer.bindTo(builder).build();
         RestClient restClient = builder.build();
-        TokenStatuslistConfig config = new TokenStatuslistConfig(Duration.ofSeconds(3), Duration.ofSeconds(3), List.of("status.eidas2sandkasse.dev"));
+        TokenStatuslistConfig config = new TokenStatuslistConfig(Duration.ofSeconds(3), Duration.ofSeconds(3), Duration.ofSeconds(10_000), List.of("status.eidas2sandkasse.dev"));
         service = new TokenStatuslistService(restClient, config);
     }
 
     @Test
-    void testRestClientCall() {
+    @DisplayName("calls status list endpoint when requesting status list JWT")
+    void testRequestStatusListCallsStatusListEndpoint() {
         final String vpToken = "eyJhbGciOiJFUzI1NiIsImtpZCI6IjEyIiwidHlwIjoic3RhdHVzbGlzdCtqd3QifQ.eyJleHAiOjIyOTE3MjAxNzAsImlhdCI6MTY4NjkyMDE3MCwiaXNzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbSIsInN0YXR1c19saXN0Ijp7ImJpdHMiOjEsImxzdCI6ImVOcmJ1UmdBQWhjQlhRIn0sInN1YiI6Imh0dHBzOi8vZXhhbXBsZS5jb20vc3RhdHVzbGlzdHMvMSIsInR0bCI6NDMyMDB9.2lKUUNG503R9htu4aHAYi7vjmr3sgApbfoDvPrl65N3URUO1EYqqQl45Jfzd-Av4QzlKa3oVALpLwOEUOq-U_g";
         mockServer.expect(requestTo(STATUSLIST))
                 .andRespond(withSuccess(vpToken, MediaType.parseMediaType("application/statuslist+jwt")));
@@ -66,8 +90,9 @@ class TokenStatusListServiceTest {
     }
 
     @Test
-    void checkStatus_validRs256JwtWithX5c_returnsValid() throws Exception {
-        Instant now = Instant.now();
+    @DisplayName("returns VALID when status list JWT is RS256-signed and includes x5c")
+    void testCheckStatusReturnsValidForRs256JwtWithX5c() throws Exception {
+        Instant now = NOW;
         String statusListJwt = signStatusListJwtWithX5c(STATUSLIST, now.minusSeconds(5), now.plusSeconds(300), 1, compressAndEncode(new byte[]{0}));
 
         VerificationStatus status = service.checkStatus(URI.create(STATUSLIST), 0, statusListJwt, now);
@@ -76,8 +101,9 @@ class TokenStatusListServiceTest {
     }
 
     @Test
-    void checkStatus_missingX5c_throwsVerificationException() throws Exception {
-        Instant now = Instant.now();
+    @DisplayName("throws VerificationException when status list JWT is missing x5c")
+    void testCheckStatusThrowsVerificationExceptionWhenX5cMissing() throws Exception {
+        Instant now = NOW;
         String statusListJwt = signStatusListJwtWithoutX5c(STATUSLIST, now.minusSeconds(5), now.plusSeconds(300), 1, compressAndEncode(new byte[]{0}));
 
         VerificationException e = assertThrows(VerificationException.class,
@@ -87,8 +113,9 @@ class TokenStatusListServiceTest {
     }
 
     @Test
-    void checkStatus_disallowedHost_throwsVerificationException() throws Exception {
-        Instant now = Instant.now();
+    @DisplayName("throws VerificationException when status list URI host is not allowed")
+    void testCheckStatusThrowsVerificationExceptionWhenHostNotAllowed() throws Exception {
+        Instant now = NOW;
         String statusListJwt = signStatusListJwtWithX5c("https://attacker.example/lists/1", now.minusSeconds(5), now.plusSeconds(300), 1, compressAndEncode(new byte[]{0}));
 
         VerificationException e = assertThrows(VerificationException.class,
@@ -98,10 +125,9 @@ class TokenStatusListServiceTest {
     }
 
     private String signStatusListJwtWithX5c(String subject, Instant iat, Instant exp, int bits, String lst) throws Exception {
-        X509Certificate cert = parseCertificate(loadResourceAsText(RSA_CERT_RESOURCE));
         JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256)
                 .type(new JOSEObjectType("statuslist+jwt"))
-                .x509CertChain(List.of(Base64.encode(cert.getEncoded())))
+                .x509CertChain(List.of(Base64.encode(rsaCertificate.getEncoded())))
                 .build();
         return signStatusListJwt(header, subject, iat, exp, bits, lst);
     }
@@ -122,37 +148,27 @@ class TokenStatusListServiceTest {
                 .build();
 
         SignedJWT jwt = new SignedJWT(header, claims);
-        jwt.sign(new RSASSASigner(parsePrivateKey(loadResourceAsText(RSA_PRIVATE_KEY_RESOURCE))));
+        jwt.sign(new RSASSASigner(rsaPrivateKey));
         return jwt.serialize();
     }
 
-    private String loadResourceAsText(String path) {
-        try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(path)) {
-            if (stream == null) {
-                throw new IllegalStateException("Missing test resource: " + path);
-            }
-            return new String(stream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private X509Certificate parseCertificate(String pem) throws Exception {
-        String base64 = pem.replace("-----BEGIN CERTIFICATE-----", "")
-                .replace("-----END CERTIFICATE-----", "")
-                .replaceAll("\\s+", "");
-        byte[] certBytes = java.util.Base64.getDecoder().decode(base64);
-        return (X509Certificate) CertificateFactory.getInstance("X.509")
-                .generateCertificate(new java.io.ByteArrayInputStream(certBytes));
-    }
-
-    private PrivateKey parsePrivateKey(String pem) throws Exception {
-        String base64 = pem.replace("-----BEGIN PRIVATE KEY-----", "")
-                .replace("-----END PRIVATE KEY-----", "")
-                .replaceAll("\\s+", "");
-        byte[] keyBytes = java.util.Base64.getDecoder().decode(base64);
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
-        return KeyFactory.getInstance("RSA").generatePrivate(keySpec);
+    private static X509Certificate selfSignedCertificate(KeyPair keyPair) throws Exception {
+        Instant now = Instant.now();
+        X500Name dn = new X500Name("CN=statuslist-test");
+        JcaX509v3CertificateBuilder certBuilder = new JcaX509v3CertificateBuilder(
+                dn,
+                BigInteger.valueOf(new SecureRandom().nextLong() & Long.MAX_VALUE),
+                Date.from(now.minusSeconds(60)),
+                Date.from(now.plusSeconds(3600)),
+                dn,
+                keyPair.getPublic());
+        ContentSigner signer = new JcaContentSignerBuilder("SHA256withRSA")
+                .setProvider(BouncyCastleProvider.PROVIDER_NAME)
+                .build(keyPair.getPrivate());
+        X509CertificateHolder certHolder = certBuilder.build(signer);
+        return new JcaX509CertificateConverter()
+                .setProvider(BouncyCastleProvider.PROVIDER_NAME)
+                .getCertificate(certHolder);
     }
 
     private String compressAndEncode(byte[] input) {

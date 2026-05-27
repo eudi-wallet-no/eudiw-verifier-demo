@@ -124,9 +124,15 @@ public class OpenID4VPResponseService {
         Status statusRecord = extractStatuslistUriAndIdx(result);
         VerificationStatus status;
         if (statusRecord != null) {
+            final int idx;
+            try {
+                idx = Integer.parseInt(statusRecord.statuslist().idx().content());
+            } catch (NumberFormatException e) {
+                throw new VerificationException("invalid_request", "Invalid status list idx in vp_token");
+            }
             status = tokenStatuslistService.checkStatus(
                     URI.create(statusRecord.statuslist().uri().content()),
-                    Integer.parseInt(statusRecord.statuslist().idx().content()),
+                    idx,
                     tokenStatuslistService.requestStatusList(URI.create(statusRecord.statuslist().uri().content())).getParsedString(),
                     Instant.now());
         } else {
