@@ -11,10 +11,9 @@ import no.idporten.eudiw.demo.verifier.VerificationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.ByteArrayOutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -46,7 +45,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("validates known bits=1 vector and resolves expected status values")
-    void validate_knownVectorBits1() throws Exception {
+    void testKnownVectorBits1() throws Exception {
         String jwt = signJwt(STATUS_LIST_URI.toString(), NOW.minusSeconds(10), NOW.plusSeconds(300), 1, "eNrbuRgAAhcBXQ");
         int statusAt0 = validator.validateAndResolveStatus(STATUS_LIST_URI, 0, jwt, NOW, verifier);
         int statusAt1 = validator.validateAndResolveStatus(STATUS_LIST_URI, 1, jwt, NOW, verifier);
@@ -59,7 +58,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("validates bits=2 extraction from known vector")
-    void validate_bits2Extraction() throws Exception {
+    void testBits2Extraction() throws Exception {
         String jwt = signJwt(STATUS_LIST_URI.toString(), NOW.minusSeconds(10), NOW.plusSeconds(300), 2, "eNo76fITAAPfAgc");
         int statusAt8 = validator.validateAndResolveStatus(STATUS_LIST_URI, 8, jwt, NOW, verifier);
         int statusAt9 = validator.validateAndResolveStatus(STATUS_LIST_URI, 9, jwt, NOW, verifier);
@@ -72,7 +71,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("validates bits=4 extraction from known vector")
-    void validate_bits4Extraction() throws Exception {
+    void testBits4Extraction() throws Exception {
         String jwt = signJwt(STATUS_LIST_URI.toString(), NOW.minusSeconds(10), NOW.plusSeconds(300), 4, "eNrbuRgAAhcBXQ");
         int statusAt0 = validator.validateAndResolveStatus(STATUS_LIST_URI, 0, jwt, NOW, verifier);
         int statusAt1 = validator.validateAndResolveStatus(STATUS_LIST_URI, 1, jwt, NOW, verifier);
@@ -87,7 +86,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("validates bits=8 extraction from known vector")
-    void validate_bits8Extraction() throws Exception {
+    void testBits8Extraction() throws Exception {
         String jwt = signJwt(STATUS_LIST_URI.toString(), NOW.minusSeconds(10), NOW.plusSeconds(300), 8, "eNrbuRgAAhcBXQ");
         int statusAt0 = validator.validateAndResolveStatus(STATUS_LIST_URI, 0, jwt, NOW, verifier);
         int statusAt1 = validator.validateAndResolveStatus(STATUS_LIST_URI, 1, jwt, NOW, verifier);
@@ -98,7 +97,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("uses required-bytes formula for all allowed bits")
-    void validate_requiredBytesFormulaForAllowedBits() {
+    void testRequiredBytesFormulaForAllowedBits() {
         String lst = compressAndEncode(new byte[16]);
         int idx = 8;
 
@@ -110,14 +109,14 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("allows decode at max supported required bytes")
-    void validate_requiredBytesAtMaxAllowed() {
+    void testRequiredBytesAtMaxAllowed() {
         String lst = compressAndEncode(new byte[1_000_000]);
         assertEquals(1_000_000, invokeDecodeAndDecompress(lst, 999_999, 8).length);
     }
 
     @Test
     @DisplayName("blocks decode when required bytes exceed max supported size")
-    void validate_requiredBytesExceedsMax() {
+    void testRequiredBytesExceedsMax() {
         String lst = compressAndEncode(new byte[1]);
         VerificationException e = assertThrows(VerificationException.class, () ->
                 invokeDecodeAndDecompress(lst, 1_000_000, 8));
@@ -127,7 +126,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("rejects when signature is invalid")
-    void validate_invalidSignature() throws Exception {
+    void testInvalidSignature() throws Exception {
         String jwt = signJwt(STATUS_LIST_URI.toString(), NOW.minusSeconds(10), NOW.plusSeconds(300), 1, "eNrbuRgAAhcBXQ");
         MACVerifier wrongVerifier = new MACVerifier("abcdefghijklmnopqrstuvwxyz123456".getBytes(StandardCharsets.UTF_8));
 
@@ -139,7 +138,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("rejects when typ is not statuslist+jwt")
-    void validate_invalidTyp() throws Exception {
+    void testInvalidTyp() throws Exception {
         String jwt = signJwt("JWT", STATUS_LIST_URI.toString(), NOW.minusSeconds(10), NOW.plusSeconds(300), 1, "eNrbuRgAAhcBXQ");
 
         VerificationException e = assertThrows(VerificationException.class, () ->
@@ -150,7 +149,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("rejects when subject does not match referenced uri")
-    void validate_subMismatch() throws Exception {
+    void testSubMismatch() throws Exception {
         String jwt = signJwt("https://status-provider.example/statuslists/2", NOW.minusSeconds(10), NOW.plusSeconds(300), 1, "eNrbuRgAAhcBXQ");
 
         VerificationException e = assertThrows(VerificationException.class, () ->
@@ -161,7 +160,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("rejects when subject is missing")
-    void validate_missingSub() throws Exception {
+    void testMissingSub() throws Exception {
         String jwt = signJwtWithClaims("statuslist+jwt", null, NOW.minusSeconds(10), NOW.plusSeconds(300), Map.of("bits", 1, "lst", "eNrbuRgAAhcBXQ"));
 
         VerificationException e = assertThrows(VerificationException.class, () ->
@@ -172,7 +171,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("rejects when iat is missing")
-    void validate_missingIat() throws Exception {
+    void testMissingIat() throws Exception {
         String jwt = signJwt(STATUS_LIST_URI.toString(), null, NOW.plusSeconds(300), 1, "eNrbuRgAAhcBXQ");
 
         VerificationException e = assertThrows(VerificationException.class, () ->
@@ -183,7 +182,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("rejects when iat is too far in the future")
-    void validate_futureIatBeyondSkew() throws Exception {
+    void testFutureIatBeyondSkew() throws Exception {
         String jwt = signJwt(STATUS_LIST_URI.toString(), NOW.plusSeconds(120), NOW.plusSeconds(300), 1, "eNrbuRgAAhcBXQ");
 
         VerificationException e = assertThrows(VerificationException.class, () ->
@@ -194,7 +193,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("rejects when exp is present and token is expired")
-    void validate_expiredToken() throws Exception {
+    void testExpiredToken() throws Exception {
         String jwt = signJwt(STATUS_LIST_URI.toString(), NOW.minusSeconds(300), NOW.minusSeconds(60), 1, "eNrbuRgAAhcBXQ");
 
         VerificationException e = assertThrows(VerificationException.class, () ->
@@ -205,7 +204,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("accepts token when exp is absent")
-    void validate_withoutExp() throws Exception {
+    void testWithoutExp() throws Exception {
         String jwt = signJwt(STATUS_LIST_URI.toString(), NOW.minusSeconds(10), null, 1, "eNrbuRgAAhcBXQ");
         int status = validator.validateAndResolveStatus(STATUS_LIST_URI, 0, jwt, NOW, verifier);
         assertEquals(1, status);
@@ -213,7 +212,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("rejects when bits is not one of 1,2,4,8")
-    void validate_invalidBits() throws Exception {
+    void testInvalidBits() throws Exception {
         String jwt = signJwt(STATUS_LIST_URI.toString(), NOW.minusSeconds(10), NOW.plusSeconds(300), 3, "eNrbuRgAAhcBXQ");
 
         VerificationException e = assertThrows(VerificationException.class, () ->
@@ -224,7 +223,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("rejects bits above 8")
-    void validate_bitsAboveEightRejected() throws Exception {
+    void testBitsAboveEightRejected() throws Exception {
         String jwt = signJwt(STATUS_LIST_URI.toString(), NOW.minusSeconds(10), NOW.plusSeconds(300), 16, "eNrbuRgAAhcBXQ");
 
         VerificationException e = assertThrows(VerificationException.class, () ->
@@ -235,7 +234,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("rejects decimal bits even when value is 1.0")
-    void validate_decimalBitsRejected() throws Exception {
+    void testDecimalBitsRejected() throws Exception {
         String jwt = signJwtWithClaims("statuslist+jwt", STATUS_LIST_URI.toString(), NOW.minusSeconds(10), NOW.plusSeconds(300), Map.of("bits", 1.0, "lst", "eNrbuRgAAhcBXQ"));
 
         VerificationException e = assertThrows(VerificationException.class, () ->
@@ -246,7 +245,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("rejects when status_list claim is missing")
-    void validate_missingStatusList() throws Exception {
+    void testMissingStatusList() throws Exception {
         String jwt = signJwtWithClaims("statuslist+jwt", STATUS_LIST_URI.toString(), NOW.minusSeconds(10), NOW.plusSeconds(300), null);
 
         VerificationException e = assertThrows(VerificationException.class, () ->
@@ -257,7 +256,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("rejects when lst is missing")
-    void validate_missingLst() throws Exception {
+    void testMissingLst() throws Exception {
         String jwt = signJwtWithClaims("statuslist+jwt", STATUS_LIST_URI.toString(), NOW.minusSeconds(10), NOW.plusSeconds(300), Map.of("bits", 1));
 
         VerificationException e = assertThrows(VerificationException.class, () ->
@@ -268,7 +267,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("rejects invalid base64url lst")
-    void validate_invalidBase64Lst() throws Exception {
+    void testInvalidBase64Lst() throws Exception {
         String jwt = signJwt(STATUS_LIST_URI.toString(), NOW.minusSeconds(10), NOW.plusSeconds(300), 1, "not_base64!");
 
         VerificationException e = assertThrows(VerificationException.class, () ->
@@ -279,7 +278,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("rejects lst that is not a valid zlib stream")
-    void validate_invalidZlibLst() throws Exception {
+    void testInvalidZlibLst() throws Exception {
         String invalidLst = Base64.getUrlEncoder().withoutPadding().encodeToString(new byte[]{0x01, 0x02, 0x03});
         String jwt = signJwt(STATUS_LIST_URI.toString(), NOW.minusSeconds(10), NOW.plusSeconds(300), 1, invalidLst);
 
@@ -291,7 +290,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("rejects idx that is out of bounds")
-    void validate_idxOutOfBounds() throws Exception {
+    void testIdxOutOfBounds() throws Exception {
         String jwt = signJwt(STATUS_LIST_URI.toString(), NOW.minusSeconds(10), NOW.plusSeconds(300), 1, "eNrbuRgAAhcBXQ");
         VerificationException e = assertThrows(VerificationException.class, () ->
                 validator.validateAndResolveStatus(STATUS_LIST_URI, 16, jwt, NOW, verifier));
@@ -301,7 +300,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("rejects negative idx")
-    void validate_negativeIdx() throws Exception {
+    void testNegativeIdx() throws Exception {
         String jwt = signJwt(STATUS_LIST_URI.toString(), NOW.minusSeconds(10), NOW.plusSeconds(300), 1, "eNrbuRgAAhcBXQ");
         VerificationException e = assertThrows(VerificationException.class, () ->
                 validator.validateAndResolveStatus(STATUS_LIST_URI, -1, jwt, NOW, verifier));
@@ -310,7 +309,7 @@ class StatusListJwtValidatorTest {
 
     @Test
     @DisplayName("rejects jwt signed with disallowed algorithm")
-    void validate_disallowedAlgorithm() throws Exception {
+    void testDisallowedAlgorithm() throws Exception {
         StatusListJwtValidator rsOnlyValidator = new StatusListJwtValidator(Set.of(JWSAlgorithm.RS256), Duration.ofSeconds(30));
         String jwt = signJwt(STATUS_LIST_URI.toString(), NOW.minusSeconds(10), NOW.plusSeconds(300), 1, "eNrbuRgAAhcBXQ");
 
@@ -349,18 +348,7 @@ class StatusListJwtValidatorTest {
     }
 
     private byte[] invokeDecodeAndDecompress(String lst, int idx, int bits) {
-        try {
-            Method method = StatusListJwtValidator.class.getDeclaredMethod("decodeAndDecompress", String.class, int.class, int.class);
-            method.setAccessible(true);
-            return (byte[]) method.invoke(validator, lst, idx, bits);
-        } catch (InvocationTargetException e) {
-            if (e.getCause() instanceof RuntimeException runtimeException) {
-                throw runtimeException;
-            }
-            throw new RuntimeException(e.getCause());
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
+        return (byte[]) ReflectionTestUtils.invokeMethod(validator, "decodeAndDecompress", lst, idx, bits);
     }
 
     private String compressAndEncode(byte[] input) {
