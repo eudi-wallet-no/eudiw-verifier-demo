@@ -152,7 +152,7 @@ vcverifier:
 statuslist:
   read-timeout: 3s
   connect-timeout: 3s
-  clock-skew: 10000s
+  clock-skew: 60s
 
 idporten-key-manager:
   default-keystore: access
