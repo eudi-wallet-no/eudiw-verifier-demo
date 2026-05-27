@@ -1,11 +1,14 @@
 package no.idporten.eudiw.demo.verifier.tsl;
 
-import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSVerifier;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jose.util.Base64;
+import com.nimbusds.jose.util.X509CertUtils;
 import com.nimbusds.jwt.JWT;
-
 import com.nimbusds.jwt.SignedJWT;
 import no.idporten.eudiw.demo.verifier.VerificationException;
+import no.idporten.eudiw.demo.verifier.config.TokenStatuslistConfig;
 import no.idporten.eudiw.demo.verifier.openid4vp.StatusListJwtValidator;
 import no.idporten.eudiw.demo.verifier.web.VerificationStatus;
 import org.springframework.stereotype.Service;
@@ -14,8 +17,12 @@ import org.springframework.web.client.RestClient;
 
 import java.net.URI;
 import java.text.ParseException;
+import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Locale;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -30,17 +37,65 @@ public class TokenStatuslistService {
 
     private StatusListJwtValidator statusListJwtValidator;
     private final RestClient restClient;
+    private final TokenStatuslistConfig tokenStatuslistConfig;
 
-    public TokenStatuslistService(RestClient restClient) {
+    public TokenStatuslistService(RestClient restClient, TokenStatuslistConfig tokenStatuslistConfig) {
         this.restClient = restClient;
+        this.tokenStatuslistConfig = tokenStatuslistConfig;
     }
 
-    public VerificationStatus checkStatus(URI uri, JWSAlgorithm jwsAlgorithm, int idx, String statusListJwt, Instant now, JWSVerifier jwsVerifier) {
+    public VerificationStatus checkStatus(URI uri, int idx, String statusListJwt, Instant now) {
         if(uri == null || !StringUtils.hasText(uri.toString())){
             return VerificationStatus.INVALID;
         }
-        statusListJwtValidator = new StatusListJwtValidator(Set.of(jwsAlgorithm), Duration.ofSeconds(10000));
+        validateAllowedHost(uri);
+        statusListJwtValidator = new StatusListJwtValidator(Set.of(JWSAlgorithm.RS256), Duration.ofSeconds(10000));
+        JWSVerifier jwsVerifier = statusListJwsVerifier(statusListJwt);
         return convertIntStatusToEnum(statusListJwtValidator.validateAndResolveStatus(uri, idx, statusListJwt, now, jwsVerifier));
+    }
+
+    private JWSVerifier statusListJwsVerifier(String statusListJwt) {
+        final SignedJWT jwt;
+        try {
+            jwt = SignedJWT.parse(statusListJwt);
+        } catch (ParseException e) {
+            throw new VerificationException("invalid_request", "Status list JWT is not a valid compact signed JWT");
+        }
+
+        List<Base64> x5c = jwt.getHeader().getX509CertChain();
+        if (x5c == null || x5c.isEmpty()) {
+            throw new VerificationException("invalid_request", "Status list JWT must include x5c certificate chain");
+        }
+
+        final byte[] encodedCert;
+        try {
+            encodedCert = x5c.getFirst().decode();
+        } catch (Exception e) {
+            throw new VerificationException("invalid_request", "Status list JWT x5c certificate could not be parsed");
+        }
+
+        X509Certificate cert = X509CertUtils.parse(encodedCert);
+        if (cert == null) {
+            throw new VerificationException("invalid_request", "Status list JWT x5c certificate could not be parsed");
+        }
+        if (!(cert.getPublicKey() instanceof RSAPublicKey rsaPublicKey)) {
+            throw new VerificationException("invalid_request", "Status list JWT x5c certificate must contain RSA public key");
+        }
+        return new RSASSAVerifier(rsaPublicKey);
+    }
+
+    private void validateAllowedHost(URI uri) {
+        String host = uri.getHost();
+        if (!StringUtils.hasText(host)) {
+            throw new VerificationException("invalid_request", "Statuslist uri host is missing");
+        }
+        String normalizedHost = host.toLowerCase(Locale.ROOT);
+        boolean isAllowed = tokenStatuslistConfig.allowedHosts().stream()
+                .map(value -> value.toLowerCase(Locale.ROOT))
+                .anyMatch(normalizedHost::equals);
+        if (!isAllowed) {
+            throw new VerificationException("invalid_request", "Statuslist uri host is not allowed");
+        }
     }
 
     protected VerificationStatus convertIntStatusToEnum(int status) {
@@ -77,4 +132,3 @@ public class TokenStatuslistService {
         }
     }
 }
-
