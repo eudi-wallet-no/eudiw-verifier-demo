@@ -153,9 +153,6 @@ statuslist:
   read-timeout: 3s
   connect-timeout: 3s
   clock-skew: 10000s
-  allowed-hosts:
-    - status.eidas2sandkasse.dev
-    - status.test.eidas2sandkasse.net
 
 idporten-key-manager:
   default-keystore: access

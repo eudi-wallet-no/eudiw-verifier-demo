@@ -20,7 +20,6 @@ import java.text.ParseException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
-import java.util.Locale;
 import java.util.List;
 import java.util.Set;
 
@@ -45,7 +44,6 @@ public class TokenStatuslistService {
         if(uri == null || !StringUtils.hasText(uri.toString())){
             return VerificationStatus.INVALID;
         }
-        validateAllowedHost(uri);
         StatusListJwtValidator statusListJwtValidator = new StatusListJwtValidator(Set.of(JWSAlgorithm.RS256), tokenStatuslistConfig.clockSkew());
         JWSVerifier jwsVerifier = statusListJwsVerifier(statusListJwt);
         return convertIntStatusToEnum(statusListJwtValidator.validateAndResolveStatus(uri, idx, statusListJwt, now, jwsVerifier));
@@ -79,20 +77,6 @@ public class TokenStatuslistService {
             throw new VerificationException("invalid_request", "Status list JWT x5c certificate must contain RSA public key");
         }
         return new RSASSAVerifier(rsaPublicKey);
-    }
-
-    private void validateAllowedHost(URI uri) {
-        String host = uri.getHost();
-        if (!StringUtils.hasText(host)) {
-            throw new VerificationException("invalid_request", "Statuslist uri host is missing");
-        }
-        String normalizedHost = host.toLowerCase(Locale.ROOT);
-        boolean isAllowed = tokenStatuslistConfig.allowedHosts().stream()
-                .map(value -> value.toLowerCase(Locale.ROOT))
-                .anyMatch(normalizedHost::equals);
-        if (!isAllowed) {
-            throw new VerificationException("invalid_request", "Statuslist uri host is not allowed");
-        }
     }
 
     protected VerificationStatus convertIntStatusToEnum(int status) {

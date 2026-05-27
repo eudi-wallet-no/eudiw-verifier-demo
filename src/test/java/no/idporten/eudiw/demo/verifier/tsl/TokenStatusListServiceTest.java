@@ -73,7 +73,7 @@ class TokenStatusListServiceTest {
         RestClient.Builder builder = RestClient.builder();
         mockServer = MockRestServiceServer.bindTo(builder).build();
         RestClient restClient = builder.build();
-        TokenStatuslistConfig config = new TokenStatuslistConfig(Duration.ofSeconds(3), Duration.ofSeconds(3), Duration.ofSeconds(10_000), List.of("status.eidas2sandkasse.dev"));
+        TokenStatuslistConfig config = new TokenStatuslistConfig(Duration.ofSeconds(3), Duration.ofSeconds(3), Duration.ofSeconds(10_000));
         service = new TokenStatuslistService(restClient, config);
     }
 
@@ -110,18 +110,6 @@ class TokenStatusListServiceTest {
                 () -> service.checkStatus(URI.create(STATUSLIST), 0, statusListJwt, now));
 
         assertTrue(e.getMessage().contains("x5c"));
-    }
-
-    @Test
-    @DisplayName("throws VerificationException when status list URI host is not allowed")
-    void testCheckStatusThrowsVerificationExceptionWhenHostNotAllowed() throws Exception {
-        Instant now = NOW;
-        String statusListJwt = signStatusListJwtWithX5c("https://attacker.example/lists/1", now.minusSeconds(5), now.plusSeconds(300), 1, compressAndEncode(new byte[]{0}));
-
-        VerificationException e = assertThrows(VerificationException.class,
-                () -> service.checkStatus(URI.create("https://attacker.example/lists/1"), 0, statusListJwt, now));
-
-        assertTrue(e.getMessage().contains("host is not allowed"));
     }
 
     private String signStatusListJwtWithX5c(String subject, Instant iat, Instant exp, int bits, String lst) throws Exception {
