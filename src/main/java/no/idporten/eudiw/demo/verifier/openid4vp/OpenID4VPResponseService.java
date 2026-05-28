@@ -136,7 +136,7 @@ public class OpenID4VPResponseService {
                     tokenStatuslistService.requestStatusList(URI.create(statusRecord.statuslist().uri().content())).getParsedString(),
                     Instant.now());
         } else {
-            status = VerificationStatus.INVALID;
+            status = VerificationStatus.VALID;
         }
         return new VerifiedCredentials(vpToken, claims, status);
     }

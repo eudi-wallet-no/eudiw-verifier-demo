@@ -99,7 +99,7 @@ class OpenID4VPResponseServiceTest {
             Assertions.assertEquals(URI.create("https://status.eidas2sandkasse.dev/lists/1"), capturedUri);
         }
 
-        @DisplayName("from norway vp token the statuslist is NOT included in token, and then it is sent to the service")
+        @DisplayName("from norway vp token the statuslist is NOT included in token, and then it is a valid proof")
         @Test
         void testExtractedStatusListUriWhenStatusDoesNotExist() throws Exception {
 
@@ -110,8 +110,7 @@ class OpenID4VPResponseServiceTest {
             Mockito.verify(tokenStatusListService, Mockito.times(0)).requestStatusList(Mockito.any());
 
             assertEquals("nullstilt@altinn.xyz", verifiedCredentials.credentials().get("epostadresse"));
-
-
+            assertEquals("VALID", verifiedCredentials.status().toString());
 
         }
 
