@@ -18,4 +18,10 @@ public class VerifierDemoControllerAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getError(), e.getErrorDescription()));
     }
 
+    @ExceptionHandler(StatusCommunicationException.class)
+    public ResponseEntity<ErrorResponse> handleException(StatusCommunicationException e) {
+        log.warn("Status api communication failed", e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getError(), e.getErrorDescription()));
+    }
+
 }

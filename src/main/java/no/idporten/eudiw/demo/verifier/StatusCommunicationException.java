@@ -11,6 +11,7 @@ public class StatusCommunicationException extends RuntimeException {
         this.error = errorCode;
         this.errorDescription = errorMessage;
     }
+
     public String getError() {
         return error;
     }
