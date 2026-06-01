@@ -98,7 +98,7 @@ public class TokenStatuslistService {
                         .retrieve()
                         .body(String.class);
             } catch (RestClientResponseException e) {
-                throw new StatusCommunicationException("Could not verify status" , "Error in communication with status api "+ e.getMessage());
+                throw new StatusCommunicationException("Could not verify status" , "Error in communication with status api "+ e.getMessage(), e.getCause());
             }
             catch (Exception e) {
                 throw new VerificationException("Invalid response" , "Error in communication with status api "+ e.getMessage());
