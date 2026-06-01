@@ -116,7 +116,7 @@ class TokenStatusListServiceTest {
     void testCheckStatusThrowsResourceAccessExceptionWhenTimeoutFromStatuslistApiCall() {
         mockServer.expect(requestTo(STATUSLIST))
                 .andRespond(withForbiddenRequest());
-        assertThrowsExactly(StatusCommunicationException.class,() -> service.requestStatusList(URI.create(STATUSLIST)), "Could not verify status");
+        assertThrowsExactly(StatusCommunicationException.class,() -> service.requestStatusList(URI.create(STATUSLIST)));
     }
 
     @DisplayName("throws StatusCommunicationException when timeout")
