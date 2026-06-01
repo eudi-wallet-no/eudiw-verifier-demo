@@ -7,6 +7,7 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import no.idporten.eudiw.demo.verifier.StatusCommunicationException;
 import no.idporten.eudiw.demo.verifier.VerificationException;
 import no.idporten.eudiw.demo.verifier.config.TokenStatuslistConfig;
 import no.idporten.eudiw.demo.verifier.web.VerificationStatus;
@@ -112,11 +113,11 @@ class TokenStatusListServiceTest {
     }
 
     @Test
-    @DisplayName("throws VerificationException when timeout from statuslist api-call")
+    @DisplayName("throws StatusCommunicationException when timeout from statuslist api-call")
     void testCheckStatusThrowsResourceAccessExceptionWhenTimeoutFromStatuslistApiCall() {
         mockServer.expect(requestTo(STATUSLIST))
                 .andRespond(withGatewayTimeout());
-        assertThrowsExactly(VerificationException.class,() -> service.requestStatusList(URI.create(STATUSLIST)), "Could not verify status");
+        assertThrowsExactly(StatusCommunicationException.class,() -> service.requestStatusList(URI.create(STATUSLIST)), "Could not verify status");
     }
 
     private String signStatusListJwtWithX5c(String subject, Instant iat, Instant exp, int bits, String lst) throws Exception {

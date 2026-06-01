@@ -7,6 +7,7 @@ import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jose.util.X509CertUtils;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.SignedJWT;
+import no.idporten.eudiw.demo.verifier.StatusCommunicationException;
 import no.idporten.eudiw.demo.verifier.VerificationException;
 import no.idporten.eudiw.demo.verifier.config.TokenStatuslistConfig;
 import no.idporten.eudiw.demo.verifier.openid4vp.StatusListJwtValidator;
@@ -97,7 +98,7 @@ public class TokenStatuslistService {
                         .retrieve()
                         .body(String.class);
             } catch (HttpServerErrorException.GatewayTimeout e) {
-                throw new VerificationException("Could not verify status " , "Error in communication with status api "+ e.getMessage());
+                throw new StatusCommunicationException("Could not verify status " , "Error in communication with status api "+ e.getMessage());
             }
 
             catch (Exception e) {
