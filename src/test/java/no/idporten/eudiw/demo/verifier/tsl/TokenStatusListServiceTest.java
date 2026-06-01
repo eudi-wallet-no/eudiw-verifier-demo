@@ -44,8 +44,7 @@ import java.util.zip.DeflaterOutputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withGatewayTimeout;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
 
 class TokenStatusListServiceTest {
 
@@ -113,8 +112,16 @@ class TokenStatusListServiceTest {
     }
 
     @Test
-    @DisplayName("throws StatusCommunicationException when timeout from statuslist api-call")
+    @DisplayName("throws StatusCommunicationException when mockserver has 4xx http code from statuslist api-call")
     void testCheckStatusThrowsResourceAccessExceptionWhenTimeoutFromStatuslistApiCall() {
+        mockServer.expect(requestTo(STATUSLIST))
+                .andRespond(withForbiddenRequest());
+        assertThrowsExactly(StatusCommunicationException.class,() -> service.requestStatusList(URI.create(STATUSLIST)), "Could not verify status");
+    }
+
+    @DisplayName("throws StatusCommunicationException when timeout")
+    @Test
+    void test(){
         mockServer.expect(requestTo(STATUSLIST))
                 .andRespond(withGatewayTimeout());
         assertThrowsExactly(StatusCommunicationException.class,() -> service.requestStatusList(URI.create(STATUSLIST)), "Could not verify status");
