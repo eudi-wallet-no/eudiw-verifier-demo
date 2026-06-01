@@ -112,10 +112,18 @@ class TokenStatusListServiceTest {
     }
 
     @Test
-    @DisplayName("throws StatusCommunicationException when mockserver has 4xx http code from statuslist api-call")
-    void testCheckStatusThrowsResourceAccessExceptionWhenTimeoutFromStatuslistApiCall() {
+    @DisplayName("throws StatusCommunicationException when mockserver has forbidden request http code from statuslist api-call")
+    void testCheckStatusThrowsResourceAccessExceptionWhenForbiddenRequestFromStatuslistApiCall() {
         mockServer.expect(requestTo(STATUSLIST))
                 .andRespond(withForbiddenRequest());
+        assertThrowsExactly(StatusCommunicationException.class,() -> service.requestStatusList(URI.create(STATUSLIST)));
+    }
+
+    @Test
+    @DisplayName("throws StatusCommunicationException when mockserver has bad request http code from statuslist api-call")
+    void testCheckStatusThrowsResourceAccessExceptionWhenTimeoutFromStatuslistApiCall() {
+        mockServer.expect(requestTo(STATUSLIST))
+                .andRespond(withBadRequest());
         assertThrowsExactly(StatusCommunicationException.class,() -> service.requestStatusList(URI.create(STATUSLIST)));
     }
 
