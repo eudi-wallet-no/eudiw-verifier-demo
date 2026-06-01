@@ -13,6 +13,7 @@ import no.idporten.eudiw.demo.verifier.openid4vp.StatusListJwtValidator;
 import no.idporten.eudiw.demo.verifier.web.VerificationStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.net.URI;
@@ -95,7 +96,11 @@ public class TokenStatuslistService {
                         .uri(url)
                         .retrieve()
                         .body(String.class);
-            } catch (Exception e) {
+            } catch (HttpServerErrorException.GatewayTimeout e) {
+                throw new VerificationException("Could not verify status " , "Error in communication with status api "+ e.getMessage());
+            }
+
+            catch (Exception e) {
                 throw new VerificationException("Invalid response " , "Error in communication with status api "+ e.getMessage());
             }
         } else {

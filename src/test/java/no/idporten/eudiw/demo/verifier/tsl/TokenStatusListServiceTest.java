@@ -41,10 +41,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.DeflaterOutputStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withGatewayTimeout;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 class TokenStatusListServiceTest {
@@ -110,6 +109,14 @@ class TokenStatusListServiceTest {
                 () -> service.checkStatus(URI.create(STATUSLIST), 0, statusListJwt, now));
 
         assertTrue(e.getMessage().contains("x5c"));
+    }
+
+    @Test
+    @DisplayName("throws VerificationException when timeout from statuslist api-call")
+    void testCheckStatusThrowsResourceAccessExceptionWhenTimeoutFromStatuslistApiCall() {
+        mockServer.expect(requestTo(STATUSLIST))
+                .andRespond(withGatewayTimeout());
+        assertThrowsExactly(VerificationException.class,() -> service.requestStatusList(URI.create(STATUSLIST)), "Could not verify status");
     }
 
     private String signStatusListJwtWithX5c(String subject, Instant iat, Instant exp, int bits, String lst) throws Exception {
