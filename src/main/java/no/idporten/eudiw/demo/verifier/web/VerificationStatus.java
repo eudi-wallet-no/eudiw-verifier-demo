@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum VerificationStatus {
     VALID("success", "result.status.heading.VALID"),
-    INVALID("error", "result.status.heading.INVALID");
+    INVALID("error", "result.status.heading.INVALID"),
+    INCONCLUSIVE("warning", "result.status.heading.INCONCLUSIVE");
 
     private final String notificationVariant;
     private final String headingKey;
