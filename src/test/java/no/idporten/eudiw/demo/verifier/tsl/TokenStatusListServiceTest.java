@@ -7,6 +7,7 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import no.idporten.eudiw.demo.verifier.StatusCommunicationException;
 import no.idporten.eudiw.demo.verifier.VerificationException;
 import no.idporten.eudiw.demo.verifier.config.TokenStatuslistConfig;
 import no.idporten.eudiw.demo.verifier.web.VerificationStatus;
@@ -41,11 +42,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.DeflaterOutputStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
 
 class TokenStatusListServiceTest {
 
@@ -110,6 +109,30 @@ class TokenStatusListServiceTest {
                 () -> service.checkStatus(URI.create(STATUSLIST), 0, statusListJwt, now));
 
         assertTrue(e.getMessage().contains("x5c"));
+    }
+
+    @Test
+    @DisplayName("throws StatusCommunicationException when mockserver has forbidden request http code from statuslist api-call")
+    void testCheckStatusThrowsResourceAccessExceptionWhenForbiddenRequestFromStatuslistApiCall() {
+        mockServer.expect(requestTo(STATUSLIST))
+                .andRespond(withForbiddenRequest());
+        assertThrowsExactly(StatusCommunicationException.class,() -> service.requestStatusList(URI.create(STATUSLIST)));
+    }
+
+    @Test
+    @DisplayName("throws StatusCommunicationException when mockserver has bad request http code from statuslist api-call")
+    void testCheckStatusThrowsResourceAccessExceptionWhenTimeoutFromStatuslistApiCall() {
+        mockServer.expect(requestTo(STATUSLIST))
+                .andRespond(withBadRequest());
+        assertThrowsExactly(StatusCommunicationException.class,() -> service.requestStatusList(URI.create(STATUSLIST)));
+    }
+
+    @DisplayName("throws StatusCommunicationException when timeout")
+    @Test
+    void test(){
+        mockServer.expect(requestTo(STATUSLIST))
+                .andRespond(withGatewayTimeout());
+        assertThrowsExactly(StatusCommunicationException.class,() -> service.requestStatusList(URI.create(STATUSLIST)), "Could not verify status");
     }
 
     private String signStatusListJwtWithX5c(String subject, Instant iat, Instant exp, int bits, String lst) throws Exception {

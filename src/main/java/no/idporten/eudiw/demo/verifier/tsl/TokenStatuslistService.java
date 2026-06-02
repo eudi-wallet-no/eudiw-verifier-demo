@@ -7,6 +7,7 @@ import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jose.util.X509CertUtils;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.SignedJWT;
+import no.idporten.eudiw.demo.verifier.StatusCommunicationException;
 import no.idporten.eudiw.demo.verifier.VerificationException;
 import no.idporten.eudiw.demo.verifier.config.TokenStatuslistConfig;
 import no.idporten.eudiw.demo.verifier.openid4vp.StatusListJwtValidator;
@@ -14,6 +15,7 @@ import no.idporten.eudiw.demo.verifier.web.VerificationStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientResponseException;
 
 import java.net.URI;
 import java.text.ParseException;
@@ -95,21 +97,24 @@ public class TokenStatuslistService {
                         .uri(url)
                         .retrieve()
                         .body(String.class);
-            } catch (Exception e) {
-                throw new VerificationException("Invalid response " , "Error in communication with status api "+ e.getMessage());
+            } catch (RestClientResponseException e) {
+                throw new StatusCommunicationException("Could not verify status" , "Error in communication with status api "+ e.getMessage(), e.getCause());
+            }
+            catch (Exception e) {
+                throw new VerificationException("Invalid response" , "Error in communication with status api "+ e.getMessage());
             }
         } else {
-            throw new VerificationException("Invalid response ", "Statuslist url is null for url "+ url);
+            throw new VerificationException("Invalid response", "Statuslist url is null for url "+ url);
         }
         if(jwt != null) {
             try {
                 return SignedJWT.parse(jwt);
             } catch (ParseException e) {
-                throw new VerificationException("Invalid response ", "Signed statuslist JWT cannot be parsed " +url + " "+ e.getMessage());
+                throw new VerificationException("Invalid response", "Signed statuslist JWT cannot be parsed " +url + " "+ e.getMessage());
             }
         }
         else {
-            throw new VerificationException("Invalid response ","Response body from statusAPI is null for url  " + url  + " JWT is null");
+            throw new VerificationException("Invalid response","Response body from statusAPI is null for url  " + url  + " JWT is null");
         }
     }
 }

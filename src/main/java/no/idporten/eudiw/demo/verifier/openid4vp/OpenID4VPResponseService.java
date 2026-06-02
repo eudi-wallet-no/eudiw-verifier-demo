@@ -13,6 +13,7 @@ import id.walt.mdoc.issuersigned.IssuerSigned;
 import id.walt.sdjwt.SDJwt;
 import id.walt.sdjwt.SimpleJWTCryptoProvider;
 import id.walt.sdjwt.VerificationResult;
+import no.idporten.eudiw.demo.verifier.StatusCommunicationException;
 import no.idporten.eudiw.demo.verifier.VerificationException;
 import no.idporten.eudiw.demo.verifier.api.EncryptedAuthorizationResponse;
 import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
@@ -130,11 +131,15 @@ public class OpenID4VPResponseService {
             } catch (NumberFormatException e) {
                 throw new VerificationException("invalid_request", "Invalid status list idx in vp_token");
             }
-            status = tokenStatuslistService.checkStatus(
-                    URI.create(statusRecord.statuslist().uri().content()),
-                    idx,
-                    tokenStatuslistService.requestStatusList(URI.create(statusRecord.statuslist().uri().content())).getParsedString(),
-                    Instant.now());
+            try {
+                status = tokenStatuslistService.checkStatus(
+                        URI.create(statusRecord.statuslist().uri().content()),
+                        idx,
+                        tokenStatuslistService.requestStatusList(URI.create(statusRecord.statuslist().uri().content())).getParsedString(),
+                        Instant.now());
+            } catch (StatusCommunicationException e) {
+                status = VerificationStatus.INCONCLUSIVE;
+            }
         } else {
             status = VerificationStatus.VALID;
         }
