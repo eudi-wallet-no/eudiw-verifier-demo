@@ -98,7 +98,7 @@ public class TokenStatuslistService {
                         .body(String.class);
             }
             catch (Exception e) {
-                throw new StatusCommunicationException("Could not verify status" , "Error in communication with status api "+ e.getMessage(), e.getCause());
+                throw new StatusCommunicationException("Could not verify status" , "Error in communication with status api "+ e.getMessage(), e);
             }
         } else {
             throw new VerificationException("Invalid response", "Statuslist url is null for url "+ url);
