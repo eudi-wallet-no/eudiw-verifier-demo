@@ -15,10 +15,7 @@ import no.idporten.eudiw.demo.verifier.web.VerificationStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestClientResponseException;
 
-import java.net.ConnectException;
-import java.net.SocketException;
 import java.net.URI;
 import java.text.ParseException;
 import java.security.cert.X509Certificate;
