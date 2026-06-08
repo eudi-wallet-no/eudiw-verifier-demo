@@ -15,7 +15,6 @@ import no.idporten.eudiw.demo.verifier.web.VerificationStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestClientResponseException;
 
 import java.net.URI;
 import java.text.ParseException;
@@ -97,11 +96,9 @@ public class TokenStatuslistService {
                         .uri(url)
                         .retrieve()
                         .body(String.class);
-            } catch (RestClientResponseException e) {
-                throw new StatusCommunicationException("Could not verify status" , "Error in communication with status api "+ e.getMessage(), e.getCause());
             }
             catch (Exception e) {
-                throw new VerificationException("Invalid response" , "Error in communication with status api "+ e.getMessage());
+                throw new StatusCommunicationException("Could not verify status" , "Error in communication with status api "+ e.getMessage(), e);
             }
         } else {
             throw new VerificationException("Invalid response", "Statuslist url is null for url "+ url);
