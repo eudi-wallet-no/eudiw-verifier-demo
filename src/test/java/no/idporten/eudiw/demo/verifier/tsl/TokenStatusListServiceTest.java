@@ -90,8 +90,8 @@ class TokenStatusListServiceTest {
     }
 
     @Test
-    @DisplayName("returns VALID when status list JWT is RS256-signed and includes x5c")
-    void testCheckStatusReturnsValidForRs256JwtWithX5c() throws Exception {
+    @DisplayName("returns VALID when status list JWT is ES256-signed and includes x5c")
+    void testCheckStatusReturnsValidForES256JwtWithX5c() throws Exception {
         Instant now = NOW;
         String statusListJwt = signStatusListJwtWithX5c(STATUSLIST, now.minusSeconds(5), now.plusSeconds(300), 1, compressAndEncode(new byte[]{0}));
 
