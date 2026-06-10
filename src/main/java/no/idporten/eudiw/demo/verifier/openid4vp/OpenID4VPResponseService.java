@@ -235,11 +235,17 @@ public class OpenID4VPResponseService {
         VerificationStatus verificationStatus;
         if(!Objects.isNull(mDoc.getMSO()) && !Objects.isNull(mDoc.getMSO().getStatus()) && !Objects.isNull(mDoc.getMSO().getStatus().getStatusList())) {
             StatusMDoc statusMdoc = new StatusMDoc(mDoc.getMSO().getStatus().getStatusList().toJSON().get("idx").toString(), URI.create(mDoc.getMSO().getStatus().getStatusList().getUri()));
-            if (statusMdoc.uri() != null && StringUtils.hasText(statusMdoc.uri().toString()) && statusMdoc.idx() != null && Integer.parseInt(statusMdoc.idx()) > 0) {
+            final int idx;
+            try {
+                idx = Integer.parseInt(statusMdoc.idx());
+            } catch (NumberFormatException e) {
+                throw new VerificationException("invalid_request", "Invalid status list idx in vp_token");
+            }
+            if (statusMdoc.uri() != null && StringUtils.hasText(statusMdoc.uri().toString())) {
                 try {
                     verificationStatus = tokenStatuslistService.checkStatus(
                             statusMdoc.uri(),
-                            Integer.parseInt(statusMdoc.idx()),
+                            idx,
                             tokenStatuslistService.requestStatusList(statusMdoc.uri()).getParsedString(),
                             Instant.now());
                 } catch (StatusCommunicationException e) {
