@@ -6,3 +6,7 @@ CVE-2026-43515 # tomcat-embed-core. Authorization. Fixed in  9.0.118, 10.1.55, 1
 CVE-2026-41284 # tomcat-embed-core. Allocation of Resources. Fixed in  9.0.118, 10.1.55, 11.0.22
 CVE-2026-42498 # tomcat-embed-core. HTTP Authentication Header. Fixed in  9.0.118, 10.1.55, 11.0.22
 CVE-2026-43513 # tomcat-embed-core. Case Sensitivity. Fixed in  9.0.118, 10.1.55, 11.0.22
+CVE-2026-44249 # netty.  Fixed in 4.2.15.Final, 4.1.135.Final
+CVE-2026-45416 # netty.  Fixed in 4.2.15.Final, 4.1.135.Final
+CVE-2026-45674 # netty.  Fixed in 4.2.15.Final, 4.1.135.Final
+CVE-2026-47691 # netty.  Fixed in 4.2.15.Final, 4.1.135.Final

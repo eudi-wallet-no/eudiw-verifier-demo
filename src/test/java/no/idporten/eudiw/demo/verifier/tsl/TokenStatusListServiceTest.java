@@ -3,7 +3,7 @@ package no.idporten.eudiw.demo.verifier.tsl;
 import com.nimbusds.jose.JOSEObjectType;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.crypto.ECDSASigner;
 import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
@@ -35,6 +35,7 @@ import java.security.PrivateKey;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.ECPrivateKey;
 import java.time.Instant;
 import java.time.Duration;
 import java.util.Date;
@@ -52,19 +53,19 @@ class TokenStatusListServiceTest {
     private TokenStatuslistService service;
     private MockRestServiceServer mockServer;
     private static final String STATUSLIST = "https://status.eidas2sandkasse.dev/lists/1";
-    private static PrivateKey rsaPrivateKey;
-    private static X509Certificate rsaCertificate;
+    private static PrivateKey ecPrivateKey;
+    private static X509Certificate x509Certificate;
 
     @BeforeAll
     static void initKeyMaterial() throws Exception {
         if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
             Security.addProvider(new BouncyCastleProvider());
         }
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(2048);
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
+        keyPairGenerator.initialize(256);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        rsaPrivateKey = keyPair.getPrivate();
-        rsaCertificate = selfSignedCertificate(keyPair);
+        ecPrivateKey = keyPair.getPrivate();
+        x509Certificate = selfSignedCertificate(keyPair);
     }
 
     @BeforeEach
@@ -89,8 +90,8 @@ class TokenStatusListServiceTest {
     }
 
     @Test
-    @DisplayName("returns VALID when status list JWT is RS256-signed and includes x5c")
-    void testCheckStatusReturnsValidForRs256JwtWithX5c() throws Exception {
+    @DisplayName("returns VALID when status list JWT is ES256-signed and includes x5c")
+    void testCheckStatusReturnsValidForES256JwtWithX5c() throws Exception {
         Instant now = NOW;
         String statusListJwt = signStatusListJwtWithX5c(STATUSLIST, now.minusSeconds(5), now.plusSeconds(300), 1, compressAndEncode(new byte[]{0}));
 
@@ -136,15 +137,15 @@ class TokenStatusListServiceTest {
     }
 
     private String signStatusListJwtWithX5c(String subject, Instant iat, Instant exp, int bits, String lst) throws Exception {
-        JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256)
+        JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.ES256)
                 .type(new JOSEObjectType("statuslist+jwt"))
-                .x509CertChain(List.of(Base64.encode(rsaCertificate.getEncoded())))
+                .x509CertChain(List.of(Base64.encode(x509Certificate.getEncoded())))
                 .build();
         return signStatusListJwt(header, subject, iat, exp, bits, lst);
     }
 
     private String signStatusListJwtWithoutX5c(String subject, Instant iat, Instant exp, int bits, String lst) throws Exception {
-        JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256)
+        JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.ES256)
                 .type(new JOSEObjectType("statuslist+jwt"))
                 .build();
         return signStatusListJwt(header, subject, iat, exp, bits, lst);
@@ -159,7 +160,7 @@ class TokenStatusListServiceTest {
                 .build();
 
         SignedJWT jwt = new SignedJWT(header, claims);
-        jwt.sign(new RSASSASigner(rsaPrivateKey));
+        jwt.sign(new ECDSASigner((ECPrivateKey) ecPrivateKey));
         return jwt.serialize();
     }
 
@@ -173,7 +174,7 @@ class TokenStatusListServiceTest {
                 Date.from(now.plusSeconds(3600)),
                 dn,
                 keyPair.getPublic());
-        ContentSigner signer = new JcaContentSignerBuilder("SHA256withRSA")
+        ContentSigner signer = new JcaContentSignerBuilder("SHA256withECDSA")
                 .setProvider(BouncyCastleProvider.PROVIDER_NAME)
                 .build(keyPair.getPrivate());
         X509CertificateHolder certHolder = certBuilder.build(signer);
