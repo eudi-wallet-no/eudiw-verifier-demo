@@ -191,13 +191,10 @@ public class OpenID4VPResponseService {
     protected VerifiedCredentials handleMDoc(String vpToken) {
         DeviceResponse deviceResponse = DeviceResponse.Companion.fromCBORBase64URL(vpToken);
         Map<String, Object> claims = new HashMap<>();
-        VerificationStatus status = VerificationStatus.INVALID;
-        for(MDoc mdoc : deviceResponse.getDocuments()) {
-            verifyMDoc(mdoc);
-            mDocClaims(mdoc.getIssuerSigned(), claims);
-            status = verificationStatusMdoc(mdoc);
-        }
-        return new VerifiedCredentials(vpToken, claims, status);
+        MDoc mdc = deviceResponse.getDocuments().getFirst();
+        verifyMDoc(mdc);
+        mDocClaims(mdc.getIssuerSigned(), claims);
+        return new VerifiedCredentials(vpToken, claims, verificationStatusMdoc(mdc));
     }
 
     protected void verifyMDoc(MDoc mDoc) {
