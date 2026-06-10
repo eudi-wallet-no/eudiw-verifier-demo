@@ -191,7 +191,7 @@ public class OpenID4VPResponseService {
     protected VerifiedCredentials handleMDoc(String vpToken) {
         DeviceResponse deviceResponse = DeviceResponse.Companion.fromCBORBase64URL(vpToken);
         Map<String, Object> claims = new HashMap<>();
-        VerificationStatus status = VerificationStatus.VALID;
+        VerificationStatus status = VerificationStatus.INVALID;
         for(MDoc mdoc : deviceResponse.getDocuments()) {
             verifyMDoc(mdoc);
             mDocClaims(mdoc.getIssuerSigned(), claims);
