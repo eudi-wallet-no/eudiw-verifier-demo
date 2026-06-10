@@ -18,7 +18,8 @@ import no.idporten.eudiw.demo.verifier.VerificationException;
 import no.idporten.eudiw.demo.verifier.api.EncryptedAuthorizationResponse;
 import no.idporten.eudiw.demo.verifier.config.ConfigProvider;
 import no.idporten.eudiw.demo.verifier.trace.*;
-import no.idporten.eudiw.demo.verifier.tsl.Status;
+import no.idporten.eudiw.demo.verifier.tsl.StatusSdJwt;
+import no.idporten.eudiw.demo.verifier.tsl.StatusMDoc;
 import no.idporten.eudiw.demo.verifier.tsl.TokenStatuslistService;
 import no.idporten.eudiw.demo.verifier.web.VerificationStatus;
 import org.slf4j.Logger;
@@ -120,7 +121,7 @@ public class OpenID4VPResponseService {
         SimpleJWTCryptoProvider cryptoProvider = new SimpleJWTCryptoProvider(jwsAlgorithm, null, jwsVerifier);
         VerificationResult<SDJwt> result = verificationResult(cryptoProvider, unverifiedSDJwt);
         final Map<String, Object> claims = retrieveClaimsFromSDJwtCredential(result);
-        Status statusRecord = extractStatuslistUriAndIdx(result);
+        StatusSdJwt statusRecord = extractStatuslistUriAndIdx(result);
         VerificationStatus status;
         if (statusRecord != null) {
             final int idx;
@@ -145,12 +146,12 @@ public class OpenID4VPResponseService {
     }
 
 
-    protected Status extractStatuslistUriAndIdx(VerificationResult<SDJwt> sdjwt) {
+    protected StatusSdJwt extractStatuslistUriAndIdx(VerificationResult<SDJwt> sdjwt) {
         Object statusObj = sdjwt.getSdJwt().getFullPayload().get("status");
         if (Objects.isNull(statusObj) || !StringUtils.hasText(statusObj.toString())) {
             return null;
         }
-        return objectMapper.convertValue(statusObj, Status.class);
+        return objectMapper.convertValue(statusObj, StatusSdJwt.class);
     }
 
     protected VerificationResult<SDJwt> verificationResult(SimpleJWTCryptoProvider jwtCryptoProvider, SDJwt unverifiedSDJwt){
@@ -232,15 +233,14 @@ public class OpenID4VPResponseService {
 
     protected VerificationStatus verificationStatusMdoc(MDoc mDoc) {
         VerificationStatus verificationStatus;
-        if(Objects.requireNonNull(Objects.requireNonNull(mDoc.getMSO()).getStatus()).getStatusList() != null) {
-
-            Status statusObj = objectMapper.convertValue(mDoc.getMSO().getStatus(), Status.class);
-            if (statusObj != null) {
+        if(!Objects.isNull(mDoc.getMSO()) && !Objects.isNull(mDoc.getMSO().getStatus()) && !Objects.isNull(mDoc.getMSO().getStatus().getStatusList())) {
+            StatusMDoc statusMdoc = new StatusMDoc(mDoc.getMSO().getStatus().getStatusList().toJSON().get("idx").toString(), URI.create(mDoc.getMSO().getStatus().getStatusList().getUri()));
+            if (statusMdoc.uri() != null && StringUtils.hasText(statusMdoc.uri().toString()) && statusMdoc.idx() != null && Integer.parseInt(statusMdoc.idx()) > 0) {
                 try {
                     verificationStatus = tokenStatuslistService.checkStatus(
-                            URI.create(statusObj.statuslist().uri().content()),
-                            Integer.parseInt(statusObj.statuslist().idx().content()),
-                            tokenStatuslistService.requestStatusList(URI.create(statusObj.statuslist().uri().content())).getParsedString(),
+                            statusMdoc.uri(),
+                            Integer.parseInt(statusMdoc.idx()),
+                            tokenStatuslistService.requestStatusList(statusMdoc.uri()).getParsedString(),
                             Instant.now());
                 } catch (StatusCommunicationException e) {
                     verificationStatus = VerificationStatus.INCONCLUSIVE;
