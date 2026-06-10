@@ -1,15 +1,12 @@
 package no.idporten.eudiw.demo.verifier;
 
-public class VerificationException extends RuntimeException {
+public class StatusCommunicationException extends RuntimeException {
 
     private String error;
     private String errorDescription;
 
-    public VerificationException(String errorCode, String errorMessage) {
-        this(errorCode, errorMessage, null);
-    }
 
-    public VerificationException(String errorCode, String errorMessage, Throwable cause) {
+    public StatusCommunicationException(String errorCode, String errorMessage, Throwable cause) {
         super(errorMessage, cause);
         this.error = errorCode;
         this.errorDescription = errorMessage;
