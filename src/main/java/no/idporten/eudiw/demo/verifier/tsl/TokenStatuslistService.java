@@ -1,8 +1,10 @@
 package no.idporten.eudiw.demo.verifier.tsl;
 
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jose.crypto.factories.DefaultJWSVerifierFactory;
 import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jose.util.X509CertUtils;
 import com.nimbusds.jwt.JWT;
@@ -17,9 +19,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
 
 import java.net.URI;
-import java.text.ParseException;
+import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
+import java.text.ParseException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +49,7 @@ public class TokenStatuslistService {
         if(uri == null || !StringUtils.hasText(uri.toString())){
             return VerificationStatus.INVALID;
         }
-        StatusListJwtValidator statusListJwtValidator = new StatusListJwtValidator(Set.of(JWSAlgorithm.RS256), tokenStatuslistConfig.clockSkew());
+        StatusListJwtValidator statusListJwtValidator = new StatusListJwtValidator(Set.of(JWSAlgorithm.ES256, JWSAlgorithm.RS256), tokenStatuslistConfig.clockSkew());
         JWSVerifier jwsVerifier = statusListJwsVerifier(statusListJwt);
         return convertIntStatusToEnum(statusListJwtValidator.validateAndResolveStatus(uri, idx, statusListJwt, now, jwsVerifier));
     }
@@ -55,10 +59,10 @@ public class TokenStatuslistService {
         try {
             jwt = SignedJWT.parse(statusListJwt);
         } catch (ParseException e) {
-            throw new VerificationException("invalid_request", "Status list JWT is not a valid compact signed JWT");
+            throw new VerificationException("invalid_request", "Status list JWT is not a valid compact signed JWT", e);
         }
-
-        List<Base64> x5c = jwt.getHeader().getX509CertChain();
+        JWSHeader jwsHeader = jwt.getHeader();
+        List<Base64> x5c = jwsHeader.getX509CertChain();
         if (x5c == null || x5c.isEmpty()) {
             throw new VerificationException("invalid_request", "Status list JWT must include x5c certificate chain");
         }
@@ -67,17 +71,22 @@ public class TokenStatuslistService {
         try {
             encodedCert = x5c.getFirst().decode();
         } catch (Exception e) {
-            throw new VerificationException("invalid_request", "Status list JWT x5c certificate could not be parsed");
+            throw new VerificationException("invalid_request", "Status list JWT x5c certificate could not be parsed", e);
         }
 
         X509Certificate cert = X509CertUtils.parse(encodedCert);
         if (cert == null) {
             throw new VerificationException("invalid_request", "Status list JWT x5c certificate could not be parsed");
         }
-        if (!(cert.getPublicKey() instanceof RSAPublicKey rsaPublicKey)) {
-            throw new VerificationException("invalid_request", "Status list JWT x5c certificate must contain RSA public key");
+        PublicKey publicKey = cert.getPublicKey();
+        if (!(publicKey instanceof RSAPublicKey || publicKey instanceof ECPublicKey)) {
+            throw new VerificationException("invalid_request", "Status list JWT x5c certificate must contain an EC or RSA public key");
         }
-        return new RSASSAVerifier(rsaPublicKey);
+        try {
+            return new DefaultJWSVerifierFactory().createJWSVerifier(jwsHeader, publicKey);
+        } catch (JOSEException e) {
+            throw new VerificationException("invalid_request", "Failed to create JWS verifier for Status list JWT", e);
+        }
     }
 
     protected VerificationStatus convertIntStatusToEnum(int status) {
