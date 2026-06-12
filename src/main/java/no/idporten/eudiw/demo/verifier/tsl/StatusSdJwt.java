@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 
-public record Status(
+public record StatusSdJwt(
         @JsonProperty("status_list")
         Statuslist statuslist
 ) {
