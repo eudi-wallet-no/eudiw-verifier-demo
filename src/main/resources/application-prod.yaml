@@ -1,0 +1,32 @@
+spring:
+  application:
+    environment: prod
+  data:
+    redis:
+      password: ${REDIS_PASSWORD}
+      sentinel:
+        master: mymaster
+        password: ${REDIS_PASSWORD}
+        nodes:
+          - digital-lommebok-redis-ha-server-0.digital-lommebok-redis-ha:26379
+          - digital-lommebok-redis-ha-server-1.digital-lommebok-redis-ha:26379
+          - digital-lommebok-redis-ha-server-2.digital-lommebok-redis-ha:26379
+
+vcverifier:
+  siop2ClientId: demo-brukersted.eidas2sandkasse.net
+  client-identifier-scheme: x509_hash
+  authorization-request-url-scheme: eudi-openid4vp
+  externalBaseUrl: https://demo-brukersted.eidas2sandkasse.net
+
+  credential-configurations:
+    - id: minid
+      doc-type: "no:minid:mpid:1"
+      format: dc+sd-jwt
+      claims:
+        - personal_administrative_number
+        - family_name
+        - given_name
+        - middle_name
+        - birth_date
+        - expiry_date
+        - issuance_date
