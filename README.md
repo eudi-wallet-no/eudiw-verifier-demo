@@ -21,29 +21,26 @@ Digdir demo brukarstad for verification of verifiable credentials for the digita
 
 The local hosts file should include:
 ```
-127.0.0.1 abr.vc.local
+127.0.0.1 abr.vc.local redis eudiw-verifier
 ```
 
-Start Redis locally by running Docker compose (see below).
+Start the required dependencies by running Docker Compose.
+```
+docker-compose up --scale eudiw-verifier=0 -d
+```
 
 The application can be started with Maven:
-
-```
-docker-compose up redis
-```
-
-Then run the application from IntelliJ (with `dev` profile) or with Maven:
-
 ```
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
+Or, if you are using IntelliJ (with `dev` profile). 
 
 The application will run on https://abr.vc.local:8080/ with the `dev` profile.
 
 ### Docker (docker profile)
 This setup is currently not fully working for local development...
 
-The application can be started with Docker compose:
+The application and requirements can be started with Docker compose:
 ```
 docker compose up --build
 ```
